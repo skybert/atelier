@@ -16,7 +16,7 @@ List<PostPlace> postPlaceList = postPlaceView.getAllPostPlaces();
       <a href="javascript:history.go(-1)">
         <img src="graphics/go-previous.png" alt="tilbake" title="tilbake"/>
         Avbryt, g&aring; tilbake
-      </a>      
+      </a>
     </div>
 <%
 if (customer != null)
@@ -24,10 +24,10 @@ if (customer != null)
   <h2>Rediger kunde nummer <%= customer.getId() %></h2><%
 }
 else
-{ 
+{
 %>
   <h2>Ny kunde</h2>
-<% 
+<%
 }
  %>
     <form action="<%= request.getContextPath()
@@ -119,6 +119,7 @@ for (PostPlace postPlace : postPlaceList)
         Epost:
         <input
           name="<%= Person.KEY_EMAIL %>"
+          type="email"
           value="<%= customer != null ?
                      view.print(customer.getEmailAddress()) : "" %>"
         />

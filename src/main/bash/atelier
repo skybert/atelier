@@ -2,15 +2,12 @@
 
 #####################################################
 # Script for starting/stopping Atelier
-# 
-# Last edited by: $Author: torstein $ $Date: 2008/11/08 11:41:25 $
-# $Id: atelier,v 1.2 2008/11/08 11:41:25 torstein Exp $
 #####################################################
 
 #####################################################
 # Read user settings
 #####################################################
-source /home/torstein/projects/atelier/src/main/bash/atelier.conf
+source $HOME/src/atelier/src/main/bash/atelier.conf
 
 #####################################################
 # Default settings
@@ -52,14 +49,14 @@ function exit_on_error()
 function start_atelier() {
     echo $id "`date` starting atelier" >> $log_file
     echo -n $id "Starting Atelier: atelier" "..."
-    
+
     if [ $appserver = "tomcat" ]; then
         export CATALINA_OPTS=$atelier_opts
         $tomcat_home/bin/catalina.sh run\
                 1>>$log_file\
                 2>>$log_file & pid=$!
     fi
-    
+
     echo $pid > $pid_file
     echo `date +%s` > $uptime_file
     exit_on_error "start_atelier"
@@ -69,14 +66,14 @@ function start_atelier() {
 function stop_atelier() {
     echo $id `date` "stopping atelier" >> $log_file
     echo -n $id "Stopping Atelier: atelier" "..."
-    
+
     kill `cat $pid_file`\
         1>>$log_file\
         2>>$log_file
     rm $pid_file\
         1>>$log_file\
         2>>$log_file
-        
+
     exit_on_error "stop_atelier"
     echo " done"
 }
@@ -85,7 +82,7 @@ function tail_applog() {
     if [ $appserver = "tomcat" ]; then
         applog="$tomcat_home/logs/localhost.`date +%F`.log"
     fi
-    
+
     echo $id "tailing $applog"
     tail -f $applog
 }
@@ -116,12 +113,12 @@ function get_status()
 function print_usage() {
     echo $id "Usage: `basename $0` <start|stop|kill|restart|log|applog>"
     echo $id
-    echo $id  "start     - starts the atelier" 
-    echo $id  "stop      - controlled stop of the atelier" 
-    echo $id  "kill      - tries to kill the atelier process" 
-    echo $id  "log       - displays the atelier log" 
-    echo $id  "applog    - tails the app server log" 
-    echo $id  "outlog    - tails the standard out log" 
+    echo $id  "start     - starts the atelier"
+    echo $id  "stop      - controlled stop of the atelier"
+    echo $id  "kill      - tries to kill the atelier process"
+    echo $id  "log       - displays the atelier log"
+    echo $id  "applog    - tails the app server log"
+    echo $id  "outlog    - tails the standard out log"
 }
 
 case "$1" in

@@ -136,6 +136,8 @@ public abstract class AbstractPerson extends AbstractAtelierEntity implements
     final String variableSeparator = "  ";
     final StringBuffer sb = new StringBuffer(sbSize);
 
+    sb.append("creationDate=").append(getCreationDate());
+    sb.append(variableSeparator);
     sb.append("mBirthDate=").append(mBirthDate);
     sb.append(variableSeparator);
     sb.append("mFirstName=").append(mFirstName);
