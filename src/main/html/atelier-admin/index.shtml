@@ -1,0 +1,49 @@
+<html>
+  <head>
+    <title>Atelier admin - $Revision: 1.1 $</title>
+    <script type="text/javascript">
+      function restart()
+      {
+        var ok = confirm("Vil du virkelig restarte Atelier?");
+        if (ok)
+        {
+          window.location = "restart.shtml";
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Atelier admin side</h1>
+    <p>
+      Kj&oslash;rer p&aring; server:
+      <strong>
+        <!--#exec cmd="echo $HOSTNAME" -->
+      </strong>
+      <br/>
+      Status:
+      <!--#exec cmd="bash /home/torstein/projects/atelier/src/main/bash/atelier status" -->
+    </p>
+    <ul>
+      <li>
+        <a onclick="restart(this)" href="">Start Atelier p&aring; nytt</a>
+      </li>
+      <li>
+        Alternativt, kan du gj&oslash;re alle steg manuelt:
+        <a href="stop.shtml">stopp Atelier</a>
+        (eller <a href="stop2.shtml">stopp Atelier brutalt</a>)
+        <a href="start.shtml">start Atelier</a>
+      </li>
+    </ul>
+    <p>
+      Serveren har v&aelig;rt oppe:
+      <code>
+        <!--#exec cmd="uptime" -->
+      </code>
+    <hr/>
+    <div>
+      <code>
+        $Id: index.shtml,v 1.1 2008/11/08 11:41:25 torstein Exp $
+      </code>
+    </div>
+  </body>
+</html>

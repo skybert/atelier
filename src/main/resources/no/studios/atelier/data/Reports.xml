@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap
+PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Reports">
+  <select id="get-list-ordered-a-certain-product"
+          parameterClass="java.util.Map"
+          resultClass="java.util.HashMap"
+          >
+    select distinct c.id, first_name, last_name, address, post_code,
+    co.creation_date, co.paid_amount, oi.order_id
+    from customer c, customer_order co, order_item oi, product p
+    where c.id = co.customer_id
+    and co.id = oi.order_id
+    and co.creation_date > #creationDate#
+    and oi.product_id = p.id
+    and p.id in
+    <iterate
+       property="productIdList"
+       open="(" close=")"
+       conjunction=",">
+      #productIdList[]#
+    </iterate>
+    order by co.creation_date;
+  </select>
+
+</sqlMap>

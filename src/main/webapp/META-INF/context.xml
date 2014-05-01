@@ -1,0 +1,27 @@
+<!--
+    J2EE context configuration for the Atelier webapp.
+
+   File           : $Header: /home/torstein/cvs/atelier/src/main/webapp/META-INF/context.xml,v 1.5 2008/11/08 11:51:49 torstein Exp $
+   Last edited by : $Author: torstein $ $Date: 2008/11/08 11:51:49 $
+   Version        : $Revision: 1.5 $
+-->
+<Context allowLinking="true">
+
+  <WatchedResource>WEB-INF/web.xml</WatchedResource>
+
+  <!-- for possible parameters, values and defaults, see
+       http://commons.apache.org/dbcp/configuration.html -->
+  <Resource
+      name="jdbc/atelier"
+      auth="Container"
+      type="javax.sql.DataSource"
+      username="atelieruser"
+      password="atelierpassword"
+      driverClassName="com.mysql.jdbc.Driver"
+      url="jdbc:mysql://localhost/atelierdb"
+      validationQuery="select 1"
+      removeAbandoned="true"
+      logAbandoned="true"
+   />
+
+</Context>

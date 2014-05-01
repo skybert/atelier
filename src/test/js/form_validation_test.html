@@ -1,0 +1,23 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <script type="text/javascript" src="../../main/webapp/js/validation.js">
+    </script>
+    <title>Atelier Form validation test</title>
+  </head>
+  <body>
+    <h1>Atelier Form validation test</h1>
+    <form action="">
+      <div>
+        Valuta:
+        <input type="text" name="currency" onblur="validate(this)"/>
+        Dato:
+        <input type="text" name="date" onblur="validate(this)"/>
+      </div>
+    </form>
+    <p id="feedback">
+    </p>
+    <code>
+      $Id: form_validation_test.html,v 1.1 2008/11/08 12:20:49 torstein Exp $
+    </code>
+  </body>
+</html>

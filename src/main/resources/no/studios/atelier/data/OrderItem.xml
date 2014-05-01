@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap
+PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="OrderItem">
+
+  <typeAlias alias="OrderItem"
+             type="no.studios.atelier.data.DefaultOrderItem"/>
+
+  <resultMap id="orderItemResult" class="OrderItem">
+    <result property="id" column="id"/>
+    <result property="orderId" column="order_id"/>
+    <result property="product"
+            column="product_id"
+            select="get-product-by-id"
+            />
+    <result property="numberOfItems" column="number_of_items"/>
+    <result property="discount" column="discount"/>
+    <result property="totalAmount" column="total_amount"/>
+    <result property="comment" column="comment"/>
+  </resultMap>
+  <!--iBATIS automatically converts SMALLINT into boolean-->
+
+
+  <parameterMap id="orderItemParam" class="OrderItem">
+    <parameter property="id"/>
+    <parameter property="orderId"/>
+    <parameter property="product.id"/>
+    <parameter property="discount"/>
+    <parameter property="totalAmount"/>
+    <parameter property="numberOfItems"/>
+    <parameter property="comment"/>
+  </parameterMap>
+  <!-- iBATIS automatically converts boolean into SMALLINT-->
+
+  <sql id="orderItemFieldList">
+    id,
+    order_id,
+    product_id,
+    creation_date,
+    discount,
+    total_amount,
+    number_of_items,
+    comment
+  </sql>
+
+  <!-- Select with no parameters using the result map for
+       OrderItem class. -->
+  <select id="get-order-items-by-order-id"
+          parameterClass="int"
+          resultMap="orderItemResult">
+    select
+    <include refid="orderItemFieldList"/>
+    from order_item
+    where order_id = #id#
+  </select>
+
+  <select id="getAllOrderItemIds" resultClass="integer">
+    select id from order_item
+  </select>
+
+  <select id="get-order-id-by-item-id" resultClass="integer">
+    select order_id from order_item
+    where id = #id#
+  </select>
+
+  <select id="getOrderItemById"
+          parameterClass="int"
+          resultMap="orderItemResult">
+    select <include refid="orderItemFieldList" />
+    from order_item
+    where id = #id#
+  </select>
+
+  <select id="getOrderItemsByOrderId"
+          parameterClass="int"
+          resultMap="orderItemResult">
+    select <include refid="orderItemFieldList" />
+    from order_item
+    where order_id = #id#
+  </select>
+
+  <insert id="insertOrderItem" parameterClass="OrderItem">
+    insert into order_item
+    (
+    order_id,
+    <isNotNull property="product">
+      product_id,
+    </isNotNull>
+    creation_date,
+    discount,
+    total_amount,
+    number_of_items,
+    comment
+    )
+
+    values
+    (
+    #orderId#,
+    <isNotNull property="product">
+      #product.id#,
+    </isNotNull>
+    #creationDate:TIMESTAMP#,
+    #discount#,
+    #totalAmount#,
+    #numberOfItems#,
+    #comment#
+    )
+
+    <selectKey keyProperty="id">
+      select max(id) from order_item
+    </selectKey>
+  </insert>
+
+  <delete id="deleteOrderItem" parameterClass="integer">
+    delete from order_item where id=#id#
+  </delete>
+
+  <delete id="delete-order-item-by-order-id" parameterClass="integer">
+    delete from order_item where order_id=#id#
+  </delete>
+
+  <update id="updateOrderItem" parameterClass="OrderItem">
+    update order_item
+    set
+    <isNotNull property="product">
+      product_id=#product.id#,
+    </isNotNull>
+    discount=#discount#,
+    total_amount=#totalAmount#,
+    number_of_items=#numberOfItems#,
+    comment=#comment#
+    where id=#id#
+  </update>
+
+</sqlMap>

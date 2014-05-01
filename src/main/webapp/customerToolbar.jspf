@@ -1,0 +1,33 @@
+    <div id="toolbar">
+      <a href="newCustomer.jsp">
+        <img src="graphics/document-new.png" alt="new"
+          title="Ny kunde"
+        />
+        Ny kunde
+      </a>
+      <!--
+      <a href="printCustomer.jsp">
+        <img src="graphics/printer.png" alt="print"
+          title="Skriv ut"
+        />
+      </a>
+      -->
+      <a href="searchCustomer.jsp">
+        <img src="graphics/system-search.png" alt="search"
+          title="S&oslash;k etter kunde"
+        />
+        S&oslash;k etter kunde
+      </a>
+      <!--
+      <a href="index.jsp">
+        <img src="graphics/go-home.png" alt="home"
+          title="G&aring; til forsiden"
+        />
+      </a>
+      <a href="quit.jsp">
+        <img src="graphics/system-log-out.png" alt="quit"
+          title="Avslutt"
+        />
+      </a>
+      -->
+    </div>

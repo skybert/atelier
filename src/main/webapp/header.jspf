@@ -1,0 +1,12 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Atelier Fotosystem</title>
+    <link rel="stylesheet" type="text/css" href="styles/atelier.css"/>
+    <link rel="stylesheet" type="text/css" href="styles/common.css"/>
+    <meta http-equiv="Content-Type"
+          content="text/html;charset=utf-8"
+          />
+    <script type="text/javascript" src="js/validation.js">
+    </script>
+  </head>
+  <body>

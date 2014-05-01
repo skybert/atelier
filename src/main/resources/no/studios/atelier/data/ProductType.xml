@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ProductType">
+
+  <typeAlias alias="ProductType"
+             type="no.studios.atelier.data.DefaultProductType"
+             />
+
+  <resultMap id="productTypeResult" class="ProductType">
+    <result property="id" column="id"/>
+    <result property="name" column="name"/>
+  </resultMap>
+
+  <select id="getProductTypeById"
+          parameterClass="integer"
+          resultMap="productTypeResult">
+    select id, name
+    from product_type
+    where id=#id#
+  </select>
+
+  <select id="getAllProductTypes" resultMap="productTypeResult">
+    select id, name
+    from product_type
+  </select>
+
+  <insert id="insertProductType" parameterClass="ProductType">
+    insert into product_type (name)
+    values(#name#)
+    <selectKey keyProperty="id">
+      select max(id) from product_type
+    </selectKey>
+  </insert>
+
+  <!-- updates a tip productType -->
+  <update id="updateProductType" parameterClass="ProductType">
+    update product_type
+    set name=#name#
+    where id=#id#
+  </update>
+
+  <delete id="deleteProductType" parameterClass="integer">
+    delete from product_type where id=#id#
+  </delete>
+
+</sqlMap>

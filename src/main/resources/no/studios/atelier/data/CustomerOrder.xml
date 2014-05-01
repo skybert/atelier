@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap
+PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="CustomerOrder">
+
+  <typeAlias alias="CustomerOrder"
+             type="no.studios.atelier.data.DefaultCustomerOrder"/>
+
+  <resultMap id="customer-order-result" class="CustomerOrder">
+    <result property="id" column="id"/>
+    <result property="customer"
+            column="customer_id"
+            select="getCustomerById"
+            />
+    <result property="creationDate"
+            column="creation_date"
+            javaType="java.util.Date"
+            />
+    <result property="updatedDate"
+            column="updated_date"
+            javaType="java.util.Date"
+            />
+    <result property="deliveryDate"
+            column="delivery_date"
+            javaType="java.util.Date"/>
+    <result property="comment"
+            column="comment"
+            />
+    <result property="paymentType"
+            column="payment_type_id"
+            select="get-payment-type-by-id"
+            />
+    <result property="orderStatus"
+            column="order_status_id"
+            select="getOrderStatusById"
+            />
+    <result property="paidAmount" column="paid_amount"/>
+    <result property="totalAmount" column="total_amount"/>
+    <result property="allowedUsedInNewspaper"
+            column="newspaper_allowed"
+            javaType="boolean"
+            jdbcType="SMALLINT"
+            />
+    <result property="allowedUsedForMarketing"
+            column="marketing_allowed"
+            javaType="boolean"
+            jdbcType="SMALLINT"
+            />
+  </resultMap>
+  <!--iBATIS automatically converts SMALLINT into boolean-->
+
+
+  <parameterMap id="customerOrderParam" class="CustomerOrder">
+    <parameter property="id"/>
+    <parameter property="customer.id" />
+    <parameter property="orderStatus.id"/>
+    <parameter property="paymentType.id"/>
+    <parameter property="creationDate"
+               javaType="java.util.Date"
+               jdbcType="Timestamp"/>
+    <parameter property="updatedDate"
+               javaType="java.util.Date"
+               jdbcType="Timestamp"/>
+    <parameter property="deliveryDate"
+               javaType="java.util.Date"
+               jdbcType="Timestamp"/>
+    <parameter property="paidAmount"/>
+    <parameter property="totalAmount"/>
+    <parameter property="comment"/>
+  </parameterMap>
+  <!-- iBATIS automatically converts boolean into SMALLINT-->
+
+  <sql id="customerOrderFieldList">
+    id,
+    customer_id,
+    payment_type_id,
+    order_status_id,
+    creation_date,
+    updated_date,
+    delivery_date,
+    paid_amount,
+    total_amount,
+    comment,
+    newspaper_allowed,
+    marketing_allowed
+  </sql>
+
+  <!-- Select with no parameters using the result map for
+       CustomerOrder class. -->
+  <select id="getAllCustomerOrders"
+          parameterClass="int"
+          resultMap="customer-order-result">
+    select
+    <include refid="customerOrderFieldList"/>
+    from customer_order
+    where customer_id = #id#
+  </select>
+
+  <select id="getAllCustomerOrderIds" resultClass="integer">
+    select id from customer_order
+  </select>
+
+  <select id="get-orders-after-date"
+          parameterClass="java.util.Date"
+          resultMap="customer-order-result">
+    select
+    <include refid="customerOrderFieldList"/>
+    from customer_order
+    where creation_date > #date#
+  </select>
+
+
+  <select id="get-last-order-id" resultClass="integer">
+    select max(id) from customer_order
+  </select>
+
+  <select id="getCustomerOrderById"
+          parameterClass="int"
+          resultMap="customer-order-result">
+    select <include refid="customerOrderFieldList" />
+    from customer_order
+    where id = #id#
+  </select>
+
+  <insert id="insertCustomerOrder" parameterClass="CustomerOrder">
+    insert into customer_order
+    (
+    <isNotNull property="customer">
+      customer_id,
+    </isNotNull>
+    <isNotNull property="paymentType">
+      payment_type_id,
+    </isNotNull>
+    <isNotNull property="orderStatus">
+      order_status_id,
+    </isNotNull>
+    creation_date,
+    updated_date,
+    delivery_date,
+    paid_amount,
+    total_amount,
+    comment,
+    newspaper_allowed,
+    marketing_allowed
+    )
+
+    values
+    (
+    <isNotNull property="customer">
+      #customer.id#,
+    </isNotNull>
+    <isNotNull property="paymentType">
+      #paymentType.id#,
+    </isNotNull>
+    <isNotNull property="orderStatus">
+      #orderStatus.id#,
+    </isNotNull>
+    #creationDate:TIMESTAMP#,
+    #updatedDate:TIMESTAMP#,
+    #deliveryDate:TIMESTAMP#,
+    #paidAmount#,
+    #totalAmount#,
+    #comment#,
+    #allowedUsedInNewspaper#,
+    #allowedUsedForMarketing#
+    )
+
+    <selectKey keyProperty="id">
+      select max(id) from customer_order
+    </selectKey>
+  </insert>
+
+  <delete id="deleteCustomerOrder" parameterClass="integer">
+    delete from customer_order where id=#id#
+  </delete>
+
+  <update id="updateCustomerOrder" parameterClass="CustomerOrder">
+    update customer_order
+    set
+    <isNotNull property="customer">
+      customer_id=#customer.id#,
+    </isNotNull>
+    <isNotNull property="paymentType">
+      payment_type_id=#paymentType.id#,
+    </isNotNull>
+    <isNotNull property="orderStatus">
+      order_status_id=#orderStatus.id#,
+    </isNotNull>
+    updated_date=#updatedDate:TIMESTAMP#,
+    delivery_date=#deliveryDate:TIMESTAMP#,
+    paid_amount=#paidAmount#,
+    total_amount=#totalAmount#,
+    comment=#comment#,
+    newspaper_allowed=#allowedUsedInNewspaper#,
+    marketing_allowed=#allowedUsedForMarketing#
+    where id=#id#
+  </update>
+
+</sqlMap>

@@ -1,0 +1,16 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <title>Atelier Foto</title>
+    <link rel="stylesheet" type="text/css" href="styles/atelier.css"/>
+    <meta http-equiv="Content-Type"
+          content="text/html;charset=iso-8859-1"
+          />
+    <script type="text/javascript">
+      function printAndReturn()
+      {
+        window.print();
+        history.go(-1);
+      }
+    </script>
+  </head>
+  <body onload="printAndReturn()">

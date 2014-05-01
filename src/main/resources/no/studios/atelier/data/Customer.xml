@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap
+PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="Customer">
+
+  <!-- Use type aliases to avoid typing the full classname every
+       time. -->
+  <typeAlias alias="Customer" type="no.studios.atelier.data.DefaultCustomer"/>
+
+  <!-- Result maps describe the mapping between the columns returned
+       from a query, and the class properties.  A result map isn't
+       necessary if the columns (or aliases) match to the properties
+       exactly. -->
+  <resultMap id="customerResult" class="Customer">
+    <result property="id" column="id"/>
+    <result property="firstName" column="first_name"/>
+    <result property="lastName" column="last_name"/>
+    <result property="creationDate" column="creation_date"
+            javaType="java.util.Date"/>
+    <result property="address" column="address"/>
+    <result property="postCode" column="post_code"/>
+    <!--
+        doesn't work, am getting a type mismatch error.
+
+<result property="postPlace"
+column="post_code"
+select="getPostPlaceByCode"
+/>
+    -->
+    <result property="homePhone" column="home_phone"/>
+    <result property="mobilePhone" column="mobile_phone"/>
+    <result property="workPhone" column="work_phone"/>
+    <result property="emailAddress" column="email_address"/>
+    <result property="birthDate"
+            column="birth_date"
+            javaType="java.util.Date"/>
+    <result property="oldCustomerId" column="old_customer_id"/>
+    <result property="oldArchiveId" column="old_archive_id"/>
+  </resultMap>
+  <!--iBATIS automatically converts SMALLINT into boolean-->
+
+
+  <parameterMap id="customerParam" class="Customer">
+    <parameter property="id"/>
+    <parameter property="firstName"
+               jdbcType="varchar" nullValue=""
+               javaType="java.lang.String"/>
+    <parameter property="lastName" jdbcType="varchar" nullValue=""
+               javaType="java.lang.String"/>
+    <parameter property="creationDate" javaType="java.util.Date"/>
+    <parameter property="address" javaType="java.lang.String" />
+    <parameter property="postCode" javaType="java.lang.String"/>
+    <parameter property="homePhone" javaType="java.lang.String"/>
+    <parameter property="mobilePhone" javaType="java.lang.String"/>
+    <parameter property="workPhone" javaType="java.lang.String"/>
+    <parameter property="emailAddress" javaType="java.lang.String"/>
+    <parameter property="birthDate" javaType="java.util.Date"/>
+    <parameter property="oldCustomerId"/>
+    <parameter property="oldArchiveId"/>
+  </parameterMap>
+  <!-- iBATIS automatically converts boolean into SMALLINT-->
+
+  <sql id="customerFieldList">
+    customer.id,
+    first_name,
+    last_name,
+    creation_date,
+    address,
+    post_code,
+    home_phone,
+    mobile_phone,
+    work_phone,
+    email_address,
+    birth_date,
+    old_customer_id,
+    old_archive_id
+  </sql>
+
+  <!-- Select with name part parameter using the result map for
+       Customer class. -->
+  <select id="getCustomersByAnyName"
+          resultMap="customerResult"
+          parameterClass="java.lang.String">
+    select distinct
+    <include refid="customerFieldList"/>
+    from customer
+    where
+    first_name LIKE #value#
+    OR
+    last_name LIKE #value#
+    OR
+    CONCAT(CONCAT(first_name,' '), last_name) LIKE #value#
+  </select>
+
+  <!-- Select with no parameters using the result map for Customer class. -->
+  <select id="getAllCustomers" resultMap="customerResult">
+    select
+    <include refid="customerFieldList"/>
+    from customer
+  </select>
+
+  <select id="getAllCustomerIds" resultClass="integer">
+    select id from customer
+  </select>
+
+  <select id="get-last-customer-id" resultClass="integer">
+    select max(id) from customer
+  </select>
+
+  <select id="getCustomerById"
+          parameterClass="int"
+          resultMap="customerResult">
+    select
+    <include refid="customerFieldList" />
+    from customer
+    where id = #id#
+  </select>
+
+  <select id="getCustomerByOldArchiveId"
+          parameterClass="java.lang.String"
+          resultMap="customerResult">
+    select
+    <include refid="customerFieldList" />
+    from customer
+    where old_archive_id = #oldArchiveId#
+  </select>
+
+  <select id="getCustomerByOldCustomerId"
+          parameterClass="java.lang.String"
+          resultMap="customerResult">
+    select
+    <include refid="customerFieldList" />
+    from customer
+    where old_customer_id = #oldCustomerId#
+  </select>
+
+  <select id="getCustomersByAnyOldId"
+          parameterClass="java.lang.String"
+          resultMap="customerResult">
+    select
+    <include refid="customerFieldList" />
+    from customer
+    where old_customer_id = #oldCustomerId#
+    or old_archive_id = #oldArchiveId#
+  </select>
+
+  <!-- query to retrieve a user by its first_name column -->
+  <select id="getCustomersByFirstName"
+          parameterClass="java.lang.String"
+          resultMap="customerResult">
+    select
+    <include refid="customerFieldList" />
+    from customer
+    where lower(first_name) = lower(#value#)
+  </select>
+
+  <!-- query to retrieve a user by its last_name column -->
+  <select id="getCustomersByLastName"
+          parameterClass="java.lang.String"
+          resultMap="customerResult">
+    select
+    <include refid="customerFieldList" />
+    from customer
+    where lower(last_name) = lower(#value#)
+  </select>
+
+  <!-- query to retrieve a user by its phone (work_phone or
+       home_phone) column -->
+  <select id="getCustomersByPhone"
+          parameterClass="java.lang.String"
+          resultMap="customerResult">
+    select
+    <include refid="customerFieldList" />
+    from customer
+    where home_phone = #value:VARCHAR#
+    or work_phone = #value:VARCHAR#
+    or mobile_phone = #value:VARCHAR#
+  </select>
+
+  <select id="getCustomerByFirstNameLastName"
+          parameterClass="java.util.Map"
+          resultMap="customerResult">
+    select
+    <include refid="customerFieldList" />
+    from customer
+    where lower(first_name) = lower(#firstName#)
+    and lower(last_name) = lower(#lastName#)
+  </select>
+
+  <insert id="insertCustomer" parameterClass="Customer">
+    insert into customer
+    (
+    first_name,
+    last_name,
+    creation_date,
+    address,
+    post_code,
+    home_phone,
+    mobile_phone,
+    work_phone,
+    email_address,
+    old_customer_id,
+    old_archive_id,
+    birth_date)
+
+    <!-- columns that can have null values must contain their type
+         associated with them -->
+    values
+    (
+    #firstName:VARCHAR#,
+    #lastName:VARCHAR#,
+    #creationDate:TIMESTAMP#,
+    #address:VARCHAR#,
+    #postCode:VARCHAR#,
+    #homePhone:VARCHAR#,
+    #mobilePhone:VARCHAR#,
+    #workPhone:VARCHAR#,
+    #emailAddress:VARCHAR#,
+    #oldCustomerId:VARCHAR#,
+    #oldArchiveId:VARCHAR#,
+    #birthDate:TIMESTAMP#
+    )
+
+    <selectKey keyProperty="id">
+      select max(id) from customer
+    </selectKey>
+  </insert>
+
+  <delete id="deleteCustomer" parameterClass="integer">
+    delete from customer where id=#id#
+  </delete>
+
+  <update id="updateCustomer" parameterClass="Customer">
+    update customer
+    set first_name=#firstName#,
+    last_name=#lastName#,
+    address=#address:VARCHAR#,
+    post_code=#postCode:VARCHAR#,
+    home_phone=#homePhone:VARCHAR#,
+    mobile_phone=#mobilePhone:VARCHAR#,
+    work_phone=#workPhone:VARCHAR#,
+    email_address=#emailAddress:VARCHAR#,
+    old_customer_id=#oldCustomerId#,
+    old_archive_id=#oldArchiveId#,
+    birth_date=#birthDate:TIMESTAMP#
+    where id=#id#
+
+  </update>
+
+</sqlMap>
