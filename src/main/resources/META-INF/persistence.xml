@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence
+  version="1.0"
+  xmlns="http://java.sun.com/xml/ns/persistence">
+  <persistence-unit name="atelier-pu">
+    <properties>
+      <property
+        name="hibernate.ejb.naming_strategy"
+        value="org.hibernate.cfg.ImprovedNamingStrategy"
+        />
+    </properties>
+  </persistence-unit>
+</persistence>
