@@ -49,42 +49,42 @@ public class OrderItem extends AtelierEntityBase
     creationDate = date;
   }
 
-  public Integer getNumberOfItems()
+  public Integer numberOfItems()
   {
     return numberOfItems;
   }
 
-  public void setNumberOfItems(Integer numberOfItems)
+  public void numberOfItems(Integer numberOfItems)
   {
     this.numberOfItems = numberOfItems;
   }
 
-  public Double getDiscount()
+  public Double discount()
   {
     return discount;
   }
 
-  public void setDiscount(Double discount)
+  public void discount(Double discount)
   {
     this.discount = discount;
   }
 
-  public Double getTotalAmount()
+  public Double totalAmount()
   {
     return totalAmount;
   }
 
-  public void setTotalAmount(Double totalAmount)
+  public void totalAmount(Double totalAmount)
   {
     this.totalAmount = totalAmount;
   }
 
-  public String getComment()
+  public String comment()
   {
     return comment;
   }
 
-  public void setComment(String comment)
+  public void comment(String comment)
   {
     this.comment = comment;
   }
