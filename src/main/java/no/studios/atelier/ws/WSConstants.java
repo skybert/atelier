@@ -2,7 +2,7 @@ package no.studios.atelier.ws;
 
 /**
  * WSConstants.
- *
+ * 
  * @author Torstein Krause Johansen
  * @version 1.0
  */

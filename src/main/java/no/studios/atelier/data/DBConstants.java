@@ -8,6 +8,7 @@ package no.studios.atelier.data;
  */
 public final class DBConstants
 {
+  public static final String ATELIER_PERSISTENCE_UNIT = "atelier-pu";
   public static final String NAME = "name";
   public static final String ORDER_ID = "order_id";
   public static final String ORDER_STATUS_ID = "order_status_id";

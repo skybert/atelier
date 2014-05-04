@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence version="1.0"
              xmlns="http://java.sun.com/xml/ns/persistence">
-  <persistence-unit name="test-pu" transaction-type="RESOURCE_LOCAL">
+  <persistence-unit name="atelier-pu" transaction-type="RESOURCE_LOCAL">
     <provider>org.hibernate.ejb.HibernatePersistence</provider>
 
     <class>no.studios.atelier.data.Customer</class>
