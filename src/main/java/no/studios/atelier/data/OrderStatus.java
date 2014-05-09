@@ -39,7 +39,7 @@ public class OrderStatus extends AtelierEntityBase
   }
 
   @Override
-  public Integer id()
+  public Integer getId()
   {
     return id;
   }
@@ -50,7 +50,7 @@ public class OrderStatus extends AtelierEntityBase
     id = pId;
   }
 
-  public Date creationDate()
+  public Date getCreationDate()
   {
     return creationDate;
   }
@@ -60,7 +60,7 @@ public class OrderStatus extends AtelierEntityBase
     creationDate = date;
   }
 
-  public String name()
+  public String getName()
   {
     return name;
   }
@@ -70,7 +70,7 @@ public class OrderStatus extends AtelierEntityBase
     this.name = name;
   }
 
-  public String description()
+  public String getDescription()
   {
     return description;
   }

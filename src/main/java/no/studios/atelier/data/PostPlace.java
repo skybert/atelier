@@ -32,17 +32,17 @@ public class PostPlace extends AtelierEntityBase
   }
 
   @Override
-  public Integer id()
+  public Integer getId()
   {
     return id;
   }
 
-  public String postCode()
+  public String getPostCode()
   {
     return postCode;
   }
 
-  public String postPlace()
+  public String getPostPlace()
   {
     return postPlace;
   }

@@ -18,7 +18,9 @@ public class CustomerOrder extends AtelierEntityBase
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
-  private Integer customerId;
+  @ManyToOne
+  @JoinColumn(name = DBConstants.CUSTOMER_ID)
+  private Customer customer;
 
   @ManyToOne
   @JoinColumn(name = DBConstants.PAYMENT_TYPE_ID)
@@ -38,12 +40,12 @@ public class CustomerOrder extends AtelierEntityBase
   private boolean marketingAllowed;
 
   @Override
-  public Integer id()
+  public Integer getId()
   {
     return id;
   }
 
-  public PaymentType paymentType()
+  public PaymentType getPaymentType()
   {
     return paymentType;
   }
@@ -53,7 +55,7 @@ public class CustomerOrder extends AtelierEntityBase
     paymentType = pPaymentType;
   }
 
-  public OrderStatus orderStatus()
+  public OrderStatus getOrderStatus()
   {
     return orderStatus;
   }
@@ -63,7 +65,7 @@ public class CustomerOrder extends AtelierEntityBase
     orderStatus = pStatus;
   }
 
-  public Date creationDate()
+  public Date getCreationDate()
   {
     return creationDate;
   }
@@ -73,7 +75,7 @@ public class CustomerOrder extends AtelierEntityBase
     creationDate = date;
   }
 
-  public Date deliveryDate()
+  public Date getDeliveryDate()
   {
     return deliveryDate;
   }
@@ -83,17 +85,17 @@ public class CustomerOrder extends AtelierEntityBase
     deliveryDate = date;
   }
 
-  public Integer customerId()
+  public Customer getCustomer()
   {
-    return customerId;
+    return customer;
   }
 
-  public void customerId(Integer customerId)
+  public void customer(final Customer pCustomer)
   {
-    this.customerId = customerId;
+    customer = pCustomer;
   }
 
-  public Date updatedDate()
+  public Date getUpdatedDate()
   {
     return updatedDate;
   }
@@ -103,7 +105,7 @@ public class CustomerOrder extends AtelierEntityBase
     this.updatedDate = updatedDate;
   }
 
-  public Double paidAmount()
+  public Double getPaidAmount()
   {
     return paidAmount;
   }
@@ -113,7 +115,7 @@ public class CustomerOrder extends AtelierEntityBase
     this.paidAmount = paidAmount;
   }
 
-  public Double totalAmount()
+  public Double getTotalAmount()
   {
     return totalAmount;
   }
@@ -123,7 +125,7 @@ public class CustomerOrder extends AtelierEntityBase
     this.totalAmount = totalAmount;
   }
 
-  public String comment()
+  public String getComment()
   {
     return comment;
   }

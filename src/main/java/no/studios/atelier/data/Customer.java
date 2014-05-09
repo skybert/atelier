@@ -36,12 +36,12 @@ public class Customer extends AtelierEntityBase
   @JoinColumn(name = DBConstants.POST_PLACE_ID)
   private PostPlace postPlace;
 
-  public Integer id()
+  public Integer getId()
   {
     return id;
   }
 
-  public Date creationDate()
+  public Date getCreationDate()
   {
     return creationDate;
   }
@@ -51,7 +51,7 @@ public class Customer extends AtelierEntityBase
     creationDate = date;
   }
 
-  public Date birthDate()
+  public Date getBirthDate()
   {
     return birthDate;
   }
@@ -66,7 +66,7 @@ public class Customer extends AtelierEntityBase
     firstName = pFirstName;
   }
 
-  public String firstName()
+  public String getFirstName()
   {
     return firstName;
   }
@@ -76,7 +76,7 @@ public class Customer extends AtelierEntityBase
     lastName = pLastName;
   }
 
-  public String lastName()
+  public String getLastName()
   {
     return lastName;
   }
@@ -86,7 +86,7 @@ public class Customer extends AtelierEntityBase
     address = pAddress;
   }
 
-  public String address()
+  public String getAddress()
   {
     return address;
   }
@@ -96,12 +96,12 @@ public class Customer extends AtelierEntityBase
     emailAddress = pEmailAddress;
   }
 
-  public String emailAddress()
+  public String getEmailAddress()
   {
     return emailAddress;
   }
 
-  public String oldCustomerId()
+  public String getOldCustomerId()
   {
     return oldCustomerId;
   }
@@ -111,7 +111,7 @@ public class Customer extends AtelierEntityBase
     this.oldCustomerId = oldCustomerId;
   }
 
-  public String oldArchiveId()
+  public String getOldArchiveId()
   {
     return oldArchiveId;
   }
@@ -121,7 +121,7 @@ public class Customer extends AtelierEntityBase
     this.oldArchiveId = oldArchiveId;
   }
 
-  public PostPlace postPlace()
+  public PostPlace getPostPlace()
   {
     return postPlace;
   }
@@ -131,7 +131,7 @@ public class Customer extends AtelierEntityBase
     this.postPlace = pPostPlace;
   }
 
-  public String homePhone()
+  public String getHomePhone()
   {
     return homePhone;
   }
@@ -141,7 +141,7 @@ public class Customer extends AtelierEntityBase
     homePhone = pHomePhone;
   }
 
-  public String workPhone()
+  public String getWorkPhone()
   {
     return workPhone;
   }
@@ -152,7 +152,7 @@ public class Customer extends AtelierEntityBase
 
   }
 
-  public String mobilePhone()
+  public String getMobilePhone()
   {
     return mobilePhone;
   }

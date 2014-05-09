@@ -38,9 +38,9 @@ public final class CustomerOrderTest extends DBTestBase
     em.persist(order);
 
     assertTrue(em.contains(order));
-    CustomerOrder readAgainOrder = em.find(CustomerOrder.class, order.id());
+    CustomerOrder readAgainOrder = em.find(CustomerOrder.class, order.getId());
     assertNotNull(readAgainOrder);
-    assertEquals(order.id(), readAgainOrder.id());
+    assertEquals(order.getId(), readAgainOrder.getId());
 
     em.getTransaction().commit();
   }

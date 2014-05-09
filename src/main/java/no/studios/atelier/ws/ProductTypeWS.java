@@ -9,8 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import no.studios.atelier.data.Customer;
 import no.studios.atelier.data.DBConstants;
+import no.studios.atelier.data.ProductType;
 
 /**
  * CustomerWS
@@ -18,9 +18,9 @@ import no.studios.atelier.data.DBConstants;
  * @author Torstein Krause Johansen
  * @version 1.0
  */
-@Path(WSConstants.PATH_CUSTOMER)
+@Path(WSConstants.PATH_PRODUCT_TYPE)
 @RequestScoped
-public class CustomerWS
+public class ProductTypeWS
 {
   @PersistenceContext(unitName = DBConstants.ATELIER_PERSISTENCE_UNIT)
   private EntityManager entityManager;
@@ -35,13 +35,13 @@ public class CustomerWS
   @GET
   @Path("{id}")
   @Produces(MediaType.APPLICATION_JSON)
-  public Customer getCustomer(@PathParam("id") Integer pId)
+  public ProductType getProductType(@PathParam("id") Integer pId)
   {
-    Customer customer = entityManager.find(Customer.class, pId);
+    ProductType productType = entityManager.find(ProductType.class, pId);
 
-    System.out.println("customer=" + customer);
+    System.out.println("productType=" + productType);
 
-    return customer;
+    return productType;
   }
 
 }

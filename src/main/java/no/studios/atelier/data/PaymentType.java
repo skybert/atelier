@@ -29,7 +29,7 @@ public class PaymentType extends AtelierEntityBase
   }
 
   @Override
-  public Integer id()
+  public Integer getId()
   {
     return id;
   }
@@ -40,7 +40,7 @@ public class PaymentType extends AtelierEntityBase
     id = pId;
   }
 
-  public Date creationDate()
+  public Date getCreationDate()
   {
     return creationDate;
   }
@@ -50,7 +50,7 @@ public class PaymentType extends AtelierEntityBase
     creationDate = date;
   }
 
-  public String name()
+  public String getName()
   {
     return name;
   }
@@ -60,7 +60,7 @@ public class PaymentType extends AtelierEntityBase
     this.name = name;
   }
 
-  public String description()
+  public String getDescription()
   {
     return description;
   }

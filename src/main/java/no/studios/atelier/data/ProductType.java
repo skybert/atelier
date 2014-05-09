@@ -6,8 +6,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -21,30 +19,29 @@ public class ProductType extends AtelierEntityBase
   private Date creationDate;
   private String name;
 
+  public ProductType()
+  {
+  }
+
+  public ProductType(final String pName)
+  {
+    name = pName;
+  }
+
   @Override
-  public Integer id()
+  public Integer getId()
   {
     return id;
   }
 
-  public Date creationDate()
+  public Date getCreationDate()
   {
     return creationDate;
   }
 
-  public void creationDate(Date date)
-  {
-    creationDate = date;
-  }
-
-  public String name()
+  public String getName()
   {
     return name;
-  }
-
-  public void name(String name)
-  {
-    this.name = name;
   }
 
 }

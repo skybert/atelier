@@ -27,10 +27,10 @@ public final class PostPlaceTest extends DBTestBase
     em.persist(postPlace);
     assertTrue(em.contains(postPlace));
 
-    PostPlace readAgain = em.find(PostPlace.class, postPlace.id());
+    PostPlace readAgain = em.find(PostPlace.class, postPlace.getId());
     assertNotNull(readAgain);
-    assertEquals(postCode, readAgain.postCode());
-    assertEquals(place, readAgain.postPlace());
+    assertEquals(postCode, readAgain.getPostCode());
+    assertEquals(place, readAgain.getPostPlace());
 
     em.getTransaction().commit();
 

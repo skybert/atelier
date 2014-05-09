@@ -11,7 +11,8 @@ public abstract class DBTestBase
 
   protected void setUp() throws Exception
   {
-    emFactory = Persistence.createEntityManagerFactory("test-pu");
+    emFactory = Persistence
+        .createEntityManagerFactory(DBConstants.ATELIER_PERSISTENCE_UNIT);
     em = emFactory.createEntityManager();
   }
 

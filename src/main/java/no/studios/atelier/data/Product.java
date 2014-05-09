@@ -29,7 +29,7 @@ public class Product extends AtelierEntityBase
   private ProductType productType;
 
   @Override
-  public Integer id()
+  public Integer getId()
   {
     return id;
   }

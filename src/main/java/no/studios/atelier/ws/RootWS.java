@@ -14,12 +14,11 @@ import javax.ws.rs.core.MediaType;
 @Path(WSConstants.PATH_ROOT)
 public class RootWS
 {
-
   @GET
   @Produces(MediaType.TEXT_PLAIN)
   public String sayPlainTextHello()
   {
-    return "Hello from " + getClass().getName();
+    return "Hello from " + getClass().getName() + "\n";
   }
 
 }

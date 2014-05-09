@@ -39,8 +39,9 @@ public final class CustomerTest extends DBTestBase
     em.persist(customer);
     assertTrue(em.contains(customer));
 
-    Customer readAgain = em.find(Customer.class, customer.id());
+    Customer readAgain = em.find(Customer.class, customer.getId());
     assertNotNull(readAgain);
+    System.out.println("readAgain=" + customer);
 
     em.getTransaction().commit();
 

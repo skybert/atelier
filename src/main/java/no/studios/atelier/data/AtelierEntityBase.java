@@ -5,7 +5,7 @@ public abstract class AtelierEntityBase implements AtelierEntity
   @Override
   public String toString()
   {
-    return getClass().getName() + "[" + "id=" + id() + "]";
+    return getClass().getName() + "[" + "id=" + getId() + "]";
   }
 
 }

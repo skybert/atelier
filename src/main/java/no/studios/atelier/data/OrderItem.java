@@ -34,7 +34,7 @@ public class OrderItem extends AtelierEntityBase
   private String comment;
 
   @Override
-  public Integer id()
+  public Integer getId()
   {
     return id;
   }
