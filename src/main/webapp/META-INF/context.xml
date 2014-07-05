@@ -18,7 +18,7 @@
       username="atelieruser"
       password="atelierpassword"
       driverClassName="com.mysql.jdbc.Driver"
-      url="jdbc:mysql://localhost/atelierdb?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;characterSetResults=UTF-8"
+      url="jdbc:mysql://localhost/atelierdb?autoReconnect=true"
       validationQuery="select 1"
       removeAbandoned="true"
       logAbandoned="true"
