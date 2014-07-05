@@ -61,7 +61,8 @@ public class OrderItemServlet extends AbstractAtelierServlet
               + pRequest.getRequestURI());
         }
 
-        pResponse.sendRedirect(pRequest.getContextPath());
+        pResponse
+            .sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath());
         break;
     }
   }
@@ -208,7 +209,7 @@ public class OrderItemServlet extends AbstractAtelierServlet
 
         mOrderItemFactory.updateOrderItem(originalOrderItem);
 
-        pResponse.sendRedirect(pRequest.getContextPath()
+        pResponse.sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath()
             + "/viewOrderItem.jsp?" + Customer.KEY_ORDER_ID + "="
             + originalOrderItem.getOrderId() + "&"
             + AtelierEntity.KEY_ORDER_ITEM_ID + "=" + originalOrderItem.getId()
@@ -256,7 +257,8 @@ public class OrderItemServlet extends AbstractAtelierServlet
         try
         {
           mOrderItemFactory.createOrderItem(orderItem);
-          pResponse.sendRedirect(pRequest.getContextPath() + "/viewOrder.jsp?"
+          pResponse.sendRedirect(getBaseURL(pRequest)
+              + pRequest.getContextPath() + "/viewOrder.jsp?"
               + AtelierEntity.KEY_ORDER_ID + "=" + orderItem.getOrderId() + "&"
               + AtelierEntity.URI_NEW + "=" + AtelierEntity.URI_SUCCESS);
         }
@@ -276,9 +278,9 @@ public class OrderItemServlet extends AbstractAtelierServlet
     final HttpServletRequest pRequest,
     final HttpServletResponse pResponse) throws IOException
   {
-    pResponse.sendRedirect(pRequest.getContextPath() + "/viewOrder.jsp?"
-        + OrderItem.KEY_ORDER_ID + "=" + pOrderId + "&" + pOperation + "="
-        + AtelierEntity.URI_FAILED);
+    pResponse.sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath()
+        + "/viewOrder.jsp?" + OrderItem.KEY_ORDER_ID + "=" + pOrderId + "&"
+        + pOperation + "=" + AtelierEntity.URI_FAILED);
   }
 
   private void deleteOrderItem(
@@ -293,9 +295,9 @@ public class OrderItemServlet extends AbstractAtelierServlet
       if (orderItemId != -1 && customerOrderId != -1)
       {
         mOrderItemFactory.deleteOrderItem(orderItemId);
-        pResponse.sendRedirect(pRequest.getContextPath() + "/viewOrder.jsp?"
-            + Customer.KEY_ORDER_ID + "=" + customerOrderId + "&"
-            + Customer.URI_DELETE + "=" + Customer.URI_SUCCESS);
+        pResponse.sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath()
+            + "/viewOrder.jsp?" + Customer.KEY_ORDER_ID + "=" + customerOrderId
+            + "&" + Customer.URI_DELETE + "=" + Customer.URI_SUCCESS);
         return;
       }
     }

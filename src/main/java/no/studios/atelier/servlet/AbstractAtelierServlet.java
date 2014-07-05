@@ -17,9 +17,9 @@ import org.apache.log4j.Logger;
 
 /**
  * Describe class <code>AbstractAtelierServlet</code> here.
- *
+ * 
  * @author Torstein Krause Johansen
- *
+ * 
  * @version $Revision$ $Date$
  */
 public abstract class AbstractAtelierServlet extends HttpServlet implements
@@ -77,7 +77,7 @@ public abstract class AbstractAtelierServlet extends HttpServlet implements
 
   /**
    * Writes a string using UTF8 encoding.
-   *
+   * 
    * @param pResponse
    *          a <code>HttpServletResponse</code> value.
    * @param pString
@@ -125,7 +125,7 @@ public abstract class AbstractAtelierServlet extends HttpServlet implements
   /**
    * Gets the ID converted to an int. Returns <code>-1</code> if the conversion
    * fails or if the key couldn't be found.
-   *
+   * 
    * @param pRequest
    *          a <code>HttpServletRequest</code> value
    * @param pIdKey

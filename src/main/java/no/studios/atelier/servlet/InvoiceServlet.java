@@ -135,7 +135,8 @@ public class InvoiceServlet extends AbstractAtelierServlet
               + pRequest.getRequestURI());
         }
 
-        pResponse.sendRedirect(pRequest.getContextPath());
+        pResponse
+            .sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath());
         break;
     }
   }
@@ -155,9 +156,9 @@ public class InvoiceServlet extends AbstractAtelierServlet
         // show the new user
         int invoiceId = mObjectFactory.getLastInvoiceId();
         invoice.setId(invoiceId);
-        pResponse.sendRedirect(pRequest.getContextPath() + "/viewInvoice.jsp?"
-            + URIBuilder.getURIFragment(invoice) + "&" + Invoice.URI_NEW + "="
-            + Invoice.URI_SUCCESS);
+        pResponse.sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath()
+            + "/viewInvoice.jsp?" + URIBuilder.getURIFragment(invoice) + "&"
+            + Invoice.URI_NEW + "=" + Invoice.URI_SUCCESS);
         return;
       }
       catch (DataOperationFailedException dofe)
@@ -184,9 +185,9 @@ public class InvoiceServlet extends AbstractAtelierServlet
       {
         Invoice invoice = getInvoice(pRequest);
         mObjectFactory.updateInvoice(invoice);
-        pResponse.sendRedirect(pRequest.getContextPath() + "/viewInvoice.jsp?"
-            + URIBuilder.getURIFragment(invoice) + "&" + Invoice.URI_EDIT + "="
-            + Invoice.URI_SUCCESS);
+        pResponse.sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath()
+            + "/viewInvoice.jsp?" + URIBuilder.getURIFragment(invoice) + "&"
+            + Invoice.URI_EDIT + "=" + Invoice.URI_SUCCESS);
         // pResponse.setStatus(HttpServletResponse.SC_OK);
         return;
       }
@@ -220,13 +221,14 @@ public class InvoiceServlet extends AbstractAtelierServlet
       CustomerOrder order = invoice.getOrder();
       if (order != null)
       {
-        pResponse.sendRedirect(pRequest.getContextPath() + "/viewOrder.jsp?"
-            + URIBuilder.getURIFragment(order) + "&" + Invoice.URI_DELETE + "="
-            + Invoice.URI_SUCCESS);
+        pResponse.sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath()
+            + "/viewOrder.jsp?" + URIBuilder.getURIFragment(order) + "&"
+            + Invoice.URI_DELETE + "=" + Invoice.URI_SUCCESS);
       }
       else
       {
-        pResponse.sendRedirect(pRequest.getContextPath());
+        pResponse
+            .sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath());
       }
 
       return;

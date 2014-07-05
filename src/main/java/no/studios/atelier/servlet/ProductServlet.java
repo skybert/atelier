@@ -134,7 +134,8 @@ public class ProductServlet extends AbstractAtelierServlet
               + pRequest.getRequestURI());
         }
 
-        pResponse.sendRedirect(pRequest.getContextPath());
+        pResponse
+            .sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath());
         break;
     }
   }
@@ -153,9 +154,9 @@ public class ProductServlet extends AbstractAtelierServlet
 
         // show the new user
         int productId = mProductFactory.getLastProductId();
-        pResponse.sendRedirect(pRequest.getContextPath() + "/viewProduct.jsp?"
-            + Product.KEY_PRODUCT_ID + "=" + productId + "&" + Product.URI_NEW
-            + "=" + Product.URI_SUCCESS);
+        pResponse.sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath()
+            + "/viewProduct.jsp?" + Product.KEY_PRODUCT_ID + "=" + productId
+            + "&" + Product.URI_NEW + "=" + Product.URI_SUCCESS);
         return;
       }
       catch (DataOperationFailedException dofe)
@@ -182,9 +183,10 @@ public class ProductServlet extends AbstractAtelierServlet
       {
         Product product = getProduct(pRequest);
         mProductFactory.updateProduct(product);
-        pResponse.sendRedirect(pRequest.getContextPath() + "/viewProduct.jsp?"
-            + Product.KEY_PRODUCT_ID + "=" + product.getId() + "&"
-            + Product.URI_EDIT + "=" + Product.URI_SUCCESS);
+        pResponse.sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath()
+            + "/viewProduct.jsp?" + Product.KEY_PRODUCT_ID + "="
+            + product.getId() + "&" + Product.URI_EDIT + "="
+            + Product.URI_SUCCESS);
         // pResponse.setStatus(HttpServletResponse.SC_OK);
         return;
       }
@@ -215,7 +217,7 @@ public class ProductServlet extends AbstractAtelierServlet
       Product product = getProduct(pRequest);
       mProductFactory.deleteProduct(product.getId());
 
-      pResponse.sendRedirect(pRequest.getContextPath()
+      pResponse.sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath()
           + "/viewAllProducts.jsp?" + Product.URI_DELETE + "="
           + Product.URI_SUCCESS);
       return;

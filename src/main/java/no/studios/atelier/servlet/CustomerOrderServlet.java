@@ -60,9 +60,12 @@ public class CustomerOrderServlet extends AbstractAtelierServlet
               + pRequest.getRequestURI());
         }
 
-        pResponse.sendRedirect(pRequest.getContextPath());
+        pResponse
+            .sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath());
         break;
     }
+
+    mLogger.debug("finished with doGet()");
   }
 
   private boolean validOrder(final Map pOrderMap)
@@ -212,8 +215,8 @@ public class CustomerOrderServlet extends AbstractAtelierServlet
             .getAllowedUsedForMarketing());
 
         mCustomerOrderFactory.updateCustomerOrder(originalOrder);
-        pResponse.sendRedirect(pRequest.getContextPath() + "/viewOrder.jsp?"
-            + Customer.KEY_CUSTOMER_ID + "="
+        pResponse.sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath()
+            + "/viewOrder.jsp?" + Customer.KEY_CUSTOMER_ID + "="
             + originalOrder.getCustomer().getId() + "&" + Customer.KEY_ORDER_ID
             + "=" + orderId + "&" + CustomerOrder.URI_EDIT + "="
             + CustomerOrder.URI_SUCCESS);
@@ -260,14 +263,11 @@ public class CustomerOrderServlet extends AbstractAtelierServlet
           mCustomerOrderFactory.createCustomerOrder(customerOrder);
 
           int newOrderId = mCustomerOrderFactory.getLastOrderId();
-          pResponse
-              .sendRedirect(pRequest.getContextPath() + "/newOrderItem.jsp?"
-                  + Customer.KEY_ORDER_ID + "=" + newOrderId);
-          /*
-           * pResponse.sendRedirect(pRequest.getContextPath() +
-           * "/viewCustomer.jsp?" + Customer.KEY_CUSTOMER_ID + "=" + customerId
-           * + "&new-order=success");
-           */
+          String redirectTo = getBaseURL(pRequest) + pRequest.getContextPath()
+              + "/newOrderItem.jsp?" + Customer.KEY_ORDER_ID + "=" + newOrderId;
+
+          mLogger.debug("redirecting to=" + redirectTo);
+          pResponse.sendRedirect(redirectTo);
         }
         catch (DataOperationFailedException dofe)
         {
@@ -288,8 +288,8 @@ public class CustomerOrderServlet extends AbstractAtelierServlet
     final HttpServletRequest pRequest,
     final HttpServletResponse pResponse) throws IOException
   {
-    pResponse.sendRedirect(pRequest.getContextPath() + "/newOrder.jsp?"
-        + CustomerOrder.KEY_CUSTOMER_ID + "=" + pCustomerId
+    pResponse.sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath()
+        + "/newOrder.jsp?" + CustomerOrder.KEY_CUSTOMER_ID + "=" + pCustomerId
         + "&new-order=failed" + "&" + pRequest.getQueryString());
   }
 
@@ -305,9 +305,10 @@ public class CustomerOrderServlet extends AbstractAtelierServlet
       if (customerOrderId != -1 && customerId != -1)
       {
         mCustomerOrderFactory.deleteCustomerOrder(customerOrderId);
-        pResponse.sendRedirect(pRequest.getContextPath() + "/viewCustomer.jsp?"
-            + Customer.KEY_CUSTOMER_ID + "=" + customerId + "&"
-            + Customer.URI_DELETE + "=" + Customer.URI_SUCCESS);
+        pResponse.sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath()
+            + "/viewCustomer.jsp?" + Customer.KEY_CUSTOMER_ID + "="
+            + customerId + "&" + Customer.URI_DELETE + "="
+            + Customer.URI_SUCCESS);
         return;
       }
     }
