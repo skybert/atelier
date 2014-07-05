@@ -17,9 +17,9 @@ import org.apache.log4j.Logger;
 
 /**
  * Describe class <code>AbstractAtelierServlet</code> here.
- * 
+ *
  * @author Torstein Krause Johansen
- * 
+ *
  * @version $Revision$ $Date$
  */
 public abstract class AbstractAtelierServlet extends HttpServlet implements
@@ -77,7 +77,7 @@ public abstract class AbstractAtelierServlet extends HttpServlet implements
 
   /**
    * Writes a string using UTF8 encoding.
-   * 
+   *
    * @param pResponse
    *          a <code>HttpServletResponse</code> value.
    * @param pString
@@ -125,7 +125,7 @@ public abstract class AbstractAtelierServlet extends HttpServlet implements
   /**
    * Gets the ID converted to an int. Returns <code>-1</code> if the conversion
    * fails or if the key couldn't be found.
-   * 
+   *
    * @param pRequest
    *          a <code>HttpServletRequest</code> value
    * @param pIdKey
@@ -186,6 +186,16 @@ public abstract class AbstractAtelierServlet extends HttpServlet implements
     {
       StringBuffer debug = new StringBuffer();
       debug.append("requestURI=" + pRequest.getRequestURI() + "\n");
+      debug.append("requestURL=" + pRequest.getRequestURL() + "\n");
+
+      Enumeration headerNames = pRequest.getHeaderNames();
+      while (headerNames.hasMoreElements())
+      {
+        String name = (String) headerNames.nextElement();
+        String value = (String) pRequest.getHeader(name);
+        debug.append("header " + name + "=" + value + "\n");
+      }
+
       Enumeration names = pRequest.getParameterNames();
 
       while (names.hasMoreElements())
@@ -204,4 +214,14 @@ public abstract class AbstractAtelierServlet extends HttpServlet implements
     }
   }
 
+  protected String getBaseURL(HttpServletRequest pRequest)
+  {
+    String scheme = "http";
+    if (pRequest.getHeader(HEADER_X_SCHEME) != null)
+    {
+      scheme = pRequest.getHeader(HEADER_X_SCHEME);
+    }
+
+    return scheme + "://" + pRequest.getHeader("host");
+  }
 }
