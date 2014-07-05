@@ -139,7 +139,8 @@ public class CustomerServlet extends AbstractAtelierServlet
               + pRequest.getRequestURI());
         }
 
-        pResponse.sendRedirect(pRequest.getContextPath());
+        pResponse
+            .sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath());
         break;
     }
   }
@@ -158,9 +159,9 @@ public class CustomerServlet extends AbstractAtelierServlet
 
         // show the new user
         int customerId = mCustomerFactory.getLastCustomerId();
-        pResponse.sendRedirect(pRequest.getContextPath() + "/viewCustomer.jsp?"
-            + Customer.KEY_CUSTOMER_ID + "=" + customerId + "&"
-            + Customer.URI_NEW + "=" + Customer.URI_SUCCESS);
+        pResponse.sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath()
+            + "/viewCustomer.jsp?" + Customer.KEY_CUSTOMER_ID + "="
+            + customerId + "&" + Customer.URI_NEW + "=" + Customer.URI_SUCCESS);
         return;
       }
       catch (DataOperationFailedException dofe)
@@ -187,9 +188,10 @@ public class CustomerServlet extends AbstractAtelierServlet
       {
         Customer customer = getCustomer(pRequest);
         mCustomerFactory.updateCustomer(customer);
-        pResponse.sendRedirect(pRequest.getContextPath() + "/viewCustomer.jsp?"
-            + Customer.KEY_CUSTOMER_ID + "=" + customer.getId() + "&"
-            + Customer.URI_EDIT + "=" + Customer.URI_SUCCESS);
+        pResponse.sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath()
+            + "/viewCustomer.jsp?" + Customer.KEY_CUSTOMER_ID + "="
+            + customer.getId() + "&" + Customer.URI_EDIT + "="
+            + Customer.URI_SUCCESS);
         // pResponse.setStatus(HttpServletResponse.SC_OK);
         return;
       }
@@ -220,8 +222,9 @@ public class CustomerServlet extends AbstractAtelierServlet
       Customer customer = getCustomer(pRequest);
       mCustomerFactory.deleteCustomer(customer.getId());
 
-      pResponse.sendRedirect(pRequest.getContextPath() + "/searchCustomer.jsp?"
-          + Customer.URI_DELETE + "=" + Customer.URI_SUCCESS);
+      pResponse.sendRedirect(getBaseURL(pRequest) + pRequest.getContextPath()
+          + "/searchCustomer.jsp?" + Customer.URI_DELETE + "="
+          + Customer.URI_SUCCESS);
       return;
     }
     catch (DataOperationFailedException dofe)
