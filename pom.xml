@@ -19,11 +19,64 @@
       scm:git:ssh://github.com/skybert/atelier.git
     </developerConnection>
   </scm>
+  <properties>
+    <jetty.version>9.2.1.v20140609</jetty.version>
+  </properties>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>jetty-plus</artifactId>
+        <groupId>org.eclipse.jetty</groupId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <artifactId>jetty-webapp</artifactId>
+        <groupId>org.eclipse.jetty</groupId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <artifactId>jetty-security</artifactId>
+        <groupId>org.eclipse.jetty</groupId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <artifactId>jetty-annotations</artifactId>
+        <groupId>org.eclipse.jetty</groupId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <artifactId>jetty-jndi</artifactId>
+        <groupId>org.eclipse.jetty</groupId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.4</version>
+      </dependency>
+      <dependency>
+        <artifactId>jetty-server</artifactId>
+        <groupId>org.eclipse.jetty</groupId>
+        <version>${jetty.version}</version>
+      </dependency>
+      <dependency>
+        <artifactId>jetty-util</artifactId>
+        <groupId>org.eclipse.jetty</groupId>
+        <version>${jetty.version}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
   <dependencies>
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
       <version>4.3.5.Final</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.1-api</artifactId>
+      <version>1.0.0.Final</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -42,11 +95,47 @@
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.26</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>javax</groupId>
       <artifactId>javaee-api</artifactId>
       <version>7.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <artifactId>jetty-plus</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <artifactId>jetty-webapp</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <artifactId>jetty-security</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <artifactId>jetty-annotations</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <artifactId>jetty-jndi</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <artifactId>jetty-server</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <artifactId>jetty-util</artifactId>
+      <groupId>org.eclipse.jetty</groupId>
       <scope>provided</scope>
     </dependency>
     <!-- test -->
@@ -71,6 +160,27 @@
       </resource>
     </resources>
     <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <archive>
+            <manifest>
+              <mainClass>no.studios.atelier.Atelier</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-resources-plugin</artifactId>
@@ -116,6 +226,14 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>${jetty.version}</version>
+        <configuration>
+          <jettyXml>${project.basedir}/src/main/resources/jetty-config.xml</jettyXml>
+        </configuration>
       </plugin>
     </plugins>
   </build>
