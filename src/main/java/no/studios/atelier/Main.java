@@ -1,27 +1,19 @@
 package no.studios.atelier;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.security.ProtectionDomain;
+import io.undertow.servlet.api.DeploymentInfo;
+import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
+import org.jboss.resteasy.test.TestPortProvider;
+import no.studios.atelier.ws.AtelierWebServices;
 
-import org.eclipse.jetty.server.Connector;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.ServerConnector;
-import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.util.thread.QueuedThreadPool;
-import org.eclipse.jetty.webapp.WebAppContext;
-
-import org.eclipse.jetty.plus.jndi.Resource;
-import org.eclipse.jetty.plus.jndi.EnvEntry;
-import org.eclipse.jetty.plus.jndi.Transaction;
-import org.eclipse.jetty.plus.jndi.EnvEntry;
-import org.eclipse.jetty.plus.jndi.Resource;
-import org.eclipse.jetty.plus.jndi.Transaction;
-import org.eclipse.jetty.webapp.Configuration.ClassList;
-import org.eclipse.jetty.security.HashLoginService;
-import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.webapp.WebAppContext;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.Application;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Main class starting Atelier.
@@ -33,6 +25,13 @@ public class Main
 {
   private final static int DEFAULT_PORT = 8080;
   private final static String DEFAULT_CONTEXT_PATH = "/";
+  private UndertowJaxrsServer server;
+
+  public Main()
+  {
+    server = new UndertowJaxrsServer();
+    server.deploy(AtelierWebServices.class);
+  }
 
   public static void main(String[] args) throws Exception
   {
@@ -42,30 +41,14 @@ public class Main
 
   private void start() throws Exception
   {
-    Server server = new Server(new QueuedThreadPool(512));
-    server.setStopAtShutdown(true);
-    server.setStopTimeout(5000);
-
-    ServerConnector connector = new ServerConnector(server);
-    connector.setPort(DEFAULT_PORT);
-    connector.setIdleTimeout(30000);
-    server.setConnectors(new Connector[] { connector });
-
-    ProtectionDomain protectionDomain = Main.class.getProtectionDomain();
-    String warFile = protectionDomain.getCodeSource().getLocation()
-        .toExternalForm();
-    String currentDir = new File(protectionDomain.getCodeSource().getLocation()
-        .getPath()).getParent();
-
-    WebAppContext webapp = new WebAppContext(warFile, DEFAULT_CONTEXT_PATH);
-    webapp.setServer(server);
-
-    HandlerList handlers = new HandlerList();
-    handlers.addHandler(webapp);
-    server.setHandler(handlers);
+    System.out.println("Starting " + getClass().getName());
 
     server.start();
-    server.join();
+  }
+
+  private void stop() throws Exception
+  {
+    server.stop();
   }
 
 }

@@ -1,5 +1,7 @@
 package no.studios.atelier.ws;
 
+import java.util.Set;
+import java.util.HashSet;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
@@ -14,4 +16,12 @@ import javax.ws.rs.core.Application;
 public class AtelierWebServices extends Application
 {
 
+  @Override
+  public Set<Class<?>> getClasses()
+  {
+    HashSet<Class<?>> classes = new HashSet<Class<?>>();
+    classes.add(RootWS.class);
+    classes.add(CustomerWS.class);
+    return classes;
+  }
 }
