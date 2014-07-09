@@ -1,6 +1,5 @@
 package no.studios.atelier.data;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
