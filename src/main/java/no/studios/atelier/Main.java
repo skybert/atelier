@@ -6,7 +6,7 @@ import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
 
 /**
  * Main class starting Atelier.
- *
+ * 
  * @author Torstein Krause Johansen
  * @version 1.0
  */
