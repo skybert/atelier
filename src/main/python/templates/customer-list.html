@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}
+    <h1>Kunde(r)</h1>
+{% endblock %}
+{% block content %}
+    <table class="table">
+      <tr>
+        <th>Kundenummer</th>
+        <th>Fornavn</th>
+        <th>Etternavn</th>
+        <th>Dato opprettet</th>
+      </tr>
+      {% for customer in customers %}
+      <tr>
+        <td>{{ customer["id"] }}</td>
+        <td>{{ customer["first_name"] }}</td>
+        <td>{{ customer["last_name"] }}</td>
+        <td>{{ customer["creation_date"] }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+

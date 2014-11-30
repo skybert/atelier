@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC
+"-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
+>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="author" content="Torstein Krause Johansen"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <link rel="stylesheet"
+          type="text/css"
+          href="/files/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet"
+          type="text/css"
+          href="/files/bootstrap/css/bootstrap-theme.min.css"/>
+    {% block head_title %}
+    <title>
+      Atelier Fotosystem 2.0
+    </title>
+    {% endblock %}
+  </head>
+  <body>
+{% block menu %}{% include "menu.html" %}{% endblock %}
+    <div class="container">
+      <div class="page-header">
+{% block title %}{% endblock %}
+      </div>
+{% block content %}{% endblock %}
+    </div>
+  </body>
+</html>

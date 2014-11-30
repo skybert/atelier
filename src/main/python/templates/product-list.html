@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}
+    <h1>products</h1>
+{% endblock %}
+{% block content %}
+    <table>
+      <tr>
+        <th>id</th>
+        <th>name</th>
+        <th>creation_date</th>
+        <th>price</th>
+        <th>production_time</th>
+        <th>product_type_id</th>
+      </tr>
+      {% for product in products %}
+      <tr>
+        <td>{{ product["id"] }}</td>
+        <td>{{ product["name"] }}</td>
+        <td>{{ product["creation_date"] }}</td>
+        <td>{{ product["price"] }}</td>
+        <td>{{ product["production_time"] }}</td>
+        <td>{{ product["product_type_id"] }}</td>
+      </tr>                     
+      {% endfor %}
+    </table>
+{% endblock %}
+
