@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block title %}
+<h1>Kunde</h1>
+{% endblock %}
+{% block content %}
+      <form action="/customer"
+            method="post"
+            class="form-horizontal">
+
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="id">Kundenummer</label>
+          <div class="col-xs-10">
+            {{ customer['id'] }}
+          </div>
+          </div><div class="form-group">
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="first_name">Fornavn</label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="first_name"
+                   name="first_name"
+                   value="{{ customer['first_name'] }}"
+                   placeholder="first_name"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="last_name">Etternavn</label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="last_name"
+                   name="last_name"
+                   value="{{ customer['last_name'] }}"
+                   placeholder="last_name"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2"
+                 for="creation_date">
+            Registrert dato
+          </label>
+          <div class="col-xs-10">
+            {{ customer["creation_date"] }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="email_address">Epost</label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="email_address"
+                   name="email_address"
+                   type="email"
+                   value="{{ customer['email_address'] }}"
+                   placeholder="email_address"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="address">Adresse</label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="address"
+                   name="address"
+                   value="{{ customer['address'] }}"
+                   placeholder="address"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="post_code">Postnummer</label>
+          <div class="col-xs-10">
+            <select class="form-control">
+              {% for pp in post_place_list %}
+              <option value="{{ pp['id'] }}">
+                {{ pp["post_code"]  }}
+                {{ pp["post_place"].decode("utf-8") }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2"
+                 for="home_phone">
+            Telefon hjem
+          </label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="home_phone"
+                   name="home_phone"
+                   type="number"
+                   value="{{ customer['home_phone'] }}"
+                   placeholder="home_phone"/>
+
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="mobile_phone">
+            Telefon mobil
+          </label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="mobile_phone"
+                   name="mobile_phone"
+                   value="{{ customer['mobile_phone'] }}"
+                   placeholder="mobile_phone"
+                   type="number"
+                   />
+
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="work_phone">
+            Telefon arbeid
+          </label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="work_phone" name="work_phone"
+                   value="{{ customer['work_phone'] }}"
+                   type="number"
+                   placeholder="work_phone"/>
+
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="birth_date">
+            Fødselsdato
+          </label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="birth_date"
+                   name="birth_date"
+                   value="{{ customer['birth_date'] }}"
+                   type="date"
+                   placeholder="birth_date"/>
+
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-offset-2 col-xs-10">
+            <button type="submit" class="btn btn-primary">
+              {% if customer["id"] %}
+                Oppdater kunde
+              {% else %}
+                Opprett ny kunde
+              {% endif %}
+            </button>
+          </div>
+        </div>
+      </form>
+      {% if customer["id"] %}
+      <form action="/customer/delete"
+            method="post"
+            class="form-horizontal">
+        <div class="form-group">
+          <div class="col-xs-offset-2 col-xs-10">
+            <button type="submit" class="btn btn-danger">
+              Slett kunde
+            </button>
+          </div>
+        </div>
+      </form>
+      {% endif %}
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+

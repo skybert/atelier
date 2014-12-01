@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}
+    <h1>Om Atelier Fotostystem</h1>
+{% endblock %}
+{% block content %}
+    <table class="table">
+      <tr>
+        <th>Key</th>
+        <th>Value</th>
+      </tr>
+      {% for info in about_info %}
+      <tr>
+        <td>
+          {{ info }}
+        </td>
+        <td>
+          {{ about_info[info] }}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
