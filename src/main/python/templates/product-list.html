@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}
-    <h1>products</h1>
+    <h1>Produkter</h1>
 {% endblock %}
 {% block content %}
     <table>
@@ -20,7 +20,7 @@
         <td>{{ product["price"] }}</td>
         <td>{{ product["production_time"] }}</td>
         <td>{{ product["product_type_id"] }}</td>
-      </tr>                     
+      </tr>
       {% endfor %}
     </table>
 {% endblock %}
