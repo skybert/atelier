@@ -4,8 +4,8 @@ from flask import Flask
 from flask import render_template
 from flask import request
 import MySQLdb as mdb
-from adb import AtelierDB
-import conf
+from atelier_db import AtelierDB
+import atelier_conf
 import flask
 
 app = Flask(__name__, static_url_path="/files", static_folder="files")
@@ -31,49 +31,72 @@ def customer(customer=None):
     customer_id = request.args.get("id")
     customer={}
     if customer_id:
-        query = "select * from customer where id = %s"
-        customer = db.get_object_from_query(query, (customer_id))
+        customer = get_customer(customer_id)
 
     return render_template("customer.html",
                            customer=customer,
                            post_place_list=get_post_place_list())
 
+def get_customer(customer_id):
+    query = "select * from customer where id = %s"
+    return db.get_object_from_query(query, (customer_id))
+
+def get_sql_and_values(table_name, form):
+    values = list()
+    if form.has_key("id") and form["id"] != "":
+        customer_id = form["id"]
+        sql = "update " + table_name + " set "
+    else:
+        sql = "insert into " + table_name + " ("
+
+    for key in form:
+        if key == "id":
+            continue
+        if form[key] == "":
+            continue
+
+        if form.has_key("id") and form["id"] != "":
+            sql += "\n\t" + key + " = %s, "
+        else:
+            sql += "\n\t" + key + ", "
+
+        values.append(form[key])
+
+    # abort if no values are to be inserted/updated
+    if len(values) == 0:
+        return "no change", 304
+
+    # remove the last comma
+    sql = sql[:-2]
+
+    if form.has_key("id") and form["id"] != "":
+        sql += "\nwhere id = %s"
+        values.append(customer_id)
+    else:
+        sql += ")"
+        sql += "\nvalues ("
+        for key in form:
+            if key == "id":
+                continue
+            if form[key] == "":
+                continue
+            sql += "%s, "
+
+        sql = sql[:-2] + ")"
+
+    return sql, values
+
+
 @app.route("/customer", methods=["POST", "PUT"])
 def update_customer():
-    customer={}
-    if request.form.has_key("id"):
-        sql = "update customer set "
-        for key in request.form:
-            if isinstance(request.form[key], basestring):
-                sql += "\n\t" + key + "= '%s',"
-            else:
-                sql += "\n\t" + key + "= %s,"
-        sql += "\nwhere id = " + request.form["id"]
-    else:
-        sql = "insert into customer ("
-        for key in request.form:
-            if request.form[key]:
-                sql += key + ", "
-        sql = sql[:-2] + ")"
-        sql += "\nvalues ("
-        for key in request.form:
-            if request.form[key]:
-                if isinstance(request.form[key], basestring):
-                    sql += "'" + request.form[key] + "', "
-                else:
-                    sql += request.form[key] + ","
+    # TODO customer_id dynamically
+    customer_id=1
+    sql, values = get_sql_and_values("customer", request.form)
 
-        sql = sql[:-2] + ")"
-
-    app.logger.debug(sql)
-
-    con = get_db_connection()
-    with con:
-        cur = con.cursor()
-        cur.execute(sql);
-
-
-    return "hello"
+    app.logger.debug(sql + "\n" + str(values))
+    db.get_object_from_query(sql, tuple(values))
+    customer = get_customer(customer_id)
+    return render_template("customer.html", customer=customer), 201
 
 @app.route("/about")
 def about():
@@ -92,8 +115,15 @@ def about():
     info["mysql_version"] = db_version[0]
     return render_template("about.html", about_info=info)
 
+def filter_suppress_none(value):
+    if not value is None:
+        return value
+    else:
+        return ""
+
 if __name__ == '__main__':
-    conf_data = conf.read_conf_from_file()
+    conf_data = atelier_conf.read_conf_from_file()
+    app.jinja_env.filters["sn"] = filter_suppress_none
     db = AtelierDB(
         conf_data["db"]["host"],
         conf_data["db"]["user"],

@@ -1,6 +1,5 @@
 import MySQLdb as mdb
 
-
 class AtelierDB:
     def __init__(self, db_host, db_user, db_password, db):
         self.db_host = db_host

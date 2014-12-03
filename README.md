@@ -1,5 +1,3 @@
-title: Atelier Photo System
-
 ## What is Atelier?
 Atelier is a simple customer and order management system written
 especially with photographers in mind.
