@@ -16,15 +16,43 @@ def get_search():
 
 @app.route("/search/query")
 def search():
-    customer_id=request.args.get("customer_id")
-    app.logger.debug("customer_id=" + customer_id)
-    query = "select * from customer where id=" + customer_id
-    customers = db.get_dict_from_query(query)
+    customer_id = request.args.get("customer_id")
+    customers = {}
+
+    if customer_id:
+        app.logger.debug("customer_id=" + customer_id)
+        query = "select * from customer where id=" + customer_id
+        customers = db.execute_return_list(query)
+
+    name = request.args.get("name")
+    if name:
+        query = "select * from customer where first_name like '%" + name + "%' or last_name like '%" + name + "%'"
+        customers = db.execute_return_list(query)
+        
     return render_template("customer-list.html", customers=customers)
 
 @app.route("/post-place-list")
 def get_post_place_list():
-    return db.get_dict_from_query("select * from post_place")
+    return db.execute_return_list("select * from post_place")
+
+@app.route("/product-list")
+def get_product_list():
+    products = db.execute_return_list("select p.id, p.name, p.creation_date, p.production_time, p.price, pt.name from product p, product_type pt where p.product_type_id = pt.id;")
+    return render_template("product-list.html", products=products)
+
+def get_product(id):
+    return db.execute_return_one("select * from product where id = %s", (id))
+
+@app.route("/product/<id>", methods = ["GET"])
+def product(id):
+    product = get_product(id)
+    return render_template("product.html", product=product)
+
+@app.route("/product/<id>", methods = ["POST", "PUT"])
+def update_product(id):
+    sql, values = get_sql_and_values("product", request.form)
+    db.execute_return_one(sql, tuple(values))
+    return render_template("product.html", product=get_product(id)), 201
 
 @app.route("/customer", methods = ["GET"])
 def customer(customer=None):
@@ -39,7 +67,7 @@ def customer(customer=None):
 
 def get_customer(customer_id):
     query = "select * from customer where id = %s"
-    return db.get_object_from_query(query, (customer_id))
+    return db.execute_return_one(query, (customer_id))
 
 def get_sql_and_values(table_name, form):
     values = list()
@@ -94,7 +122,7 @@ def update_customer():
     sql, values = get_sql_and_values("customer", request.form)
 
     app.logger.debug(sql + "\n" + str(values))
-    db.get_object_from_query(sql, tuple(values))
+    db.execute_return_one(sql, tuple(values))
     customer = get_customer(customer_id)
     return render_template("customer.html", customer=customer), 201
 

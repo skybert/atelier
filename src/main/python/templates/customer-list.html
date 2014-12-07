@@ -13,8 +13,8 @@
       {% for customer in customers %}
       <tr>
         <td>{{ customer["id"] }}</td>
-        <td>{{ customer["first_name"] }}</td>
-        <td>{{ customer["last_name"] }}</td>
+        <td>{{ customer["first_name"].decode('utf-8') }}</td>
+        <td>{{ customer["last_name"].decode('utf-8') }}</td>
         <td>{{ customer["creation_date"] }}</td>
       </tr>
       {% endfor %}

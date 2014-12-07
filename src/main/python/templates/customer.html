@@ -25,7 +25,7 @@
             <input class="form-control"
                    id="first_name"
                    name="first_name"
-                   value="{{ customer['first_name'] }}"
+                   value="{{ customer['first_name'].decode('utf-8') }}"
                    placeholder="first_name"/>
           </div>
         </div>
@@ -35,7 +35,7 @@
             <input class="form-control"
                    id="last_name"
                    name="last_name"
-                   value="{{ customer['last_name'] }}"
+                   value="{{ customer['last_name'].decode('utf-8') }}"
                    placeholder="last_name"/>
           </div>
         </div>

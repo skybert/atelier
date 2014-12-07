@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}
+      <h1>Produkt</h1>
+{% endblock %}
+{% block content %}
+      <form action="/product/{{ product['id'] }}"
+            method="post"
+            class="form-horizontal">
+
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="id">Produktnummer</label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="id"
+                   name="id"
+                   value="{{ product['id'] }}"
+                   placeholder="produktnummer"
+                   readonly/>
+          </div>
+          </div><div class="form-group">
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="name">Navn</label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="name"
+                   name="name"
+                   value="{{ product['name'] }}"
+                   placeholder="name"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2"
+                 for="creation_date">
+            Registrert dato
+          </label>
+          <div class="col-xs-10">
+            {{ product["creation_date"] | sn }}
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-offset-2 col-xs-10">
+            <button type="submit" class="btn btn-primary">
+              {% if product["id"] %}
+                Oppdater produkt
+              {% else %}
+                Opprett ny produkt
+              {% endif %}
+            </button>
+          </div>
+        </div>
+      </form>
+      {% if product["id"] %}
+      <form action="/product/{{ product['id'] }}/delete"
+            method="post"
+            class="form-horizontal">
+        <div class="form-group">
+          <div class="col-xs-offset-2 col-xs-10">
+            <button type="submit" class="btn btn-danger">
+              Slett produkt
+            </button>
+          </div>
+        </div>
+      </form>
+      {% endif %}
+{% endblock %}
