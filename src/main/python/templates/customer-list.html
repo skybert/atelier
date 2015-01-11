@@ -12,9 +12,21 @@
       </tr>
       {% for customer in customers %}
       <tr>
-        <td>{{ customer["id"] }}</td>
-        <td>{{ customer["first_name"].decode('utf-8') }}</td>
-        <td>{{ customer["last_name"].decode('utf-8') }}</td>
+        <td>
+          <a href="/customer/{{ customer["id"] }}">
+            {{ customer["id"] }}
+          </a>
+        </td>
+        <td>
+          <a href="/customer/{{ customer["id"] }}">
+            {{ customer["first_name"].decode('utf-8') }}
+          </a>
+        </td>
+        <td>
+          <a href="/customer/{{ customer["id"] }}">
+            {{ customer["last_name"].decode('utf-8') }}
+          </a>
+        </td>
         <td>{{ customer["creation_date"] }}</td>
       </tr>
       {% endfor %}

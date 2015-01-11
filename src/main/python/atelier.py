@@ -9,6 +9,8 @@ import atelier_conf
 import flask
 
 app = Flask(__name__, static_url_path="/files", static_folder="files")
+
+## Search
 @app.route("/")
 @app.route("/search")
 def get_search():
@@ -29,6 +31,7 @@ def search():
 
     return render_template("customer-list.html", customers=customers)
 
+## Product
 @app.route("/product-list")
 def get_product_list():
     products = db.get_product_list()
@@ -36,9 +39,10 @@ def get_product_list():
 
 @app.route("/product/<id>", methods = ["GET"])
 def product(id):
-    product = db.get_product(id)
+    product = db.product(id)
     return render_template("product.html", product=product)
 
+## Customer
 @app.route("/customer/<id>", methods = ["GET"])
 def get_customer(id):
     customer = db.customer(id)
@@ -49,9 +53,26 @@ def get_customer(id):
 
 @app.route("/customer", methods=["POST", "PUT"])
 def update_customer():
-    customer = db.update_customer(request_form)
+    customer = db.update_customer(request.form)
     return render_template("customer.html", customer=customer), 201
 
+## Order
+@app.route("/order", methods = ["POST"])
+def new_order():
+    order_id = db.create_order(request.form)
+    ## TODO make new_order 201 > Location /order/<order_id>
+
+
+@app.route("/order/<id>", methods = ["GET"])
+def get_order(id):
+    order = db.order(id)
+    customer = db.customer(order["customer_id"])
+    return render_template("order.html",
+                           order=order,
+                           customer=customer,
+                           product_list=db.get_product_list()), 201
+
+## Various
 @app.route("/about")
 def about():
     app.logger.debug(flask.__version__)
@@ -69,12 +90,14 @@ def about():
     info["mysql_version"] = db_version[0]
     return render_template("about.html", about_info=info)
 
+## Filters
 def filter_suppress_none(value):
     if not value is None:
         return value.decode('utf-8')
     else:
         return ""
 
+## Main
 if __name__ == '__main__':
     conf_data = atelier_conf.read_conf_from_file()
     app.jinja_env.filters["sn"] = filter_suppress_none

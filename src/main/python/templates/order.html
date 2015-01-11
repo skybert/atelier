@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}
+      <h1>Ordre #{{ order["id"] }}</h1>
+{% endblock %}
+{% block content %}
+      <div class="well">
+        Kundenummer {{ customer["id"] }},
+        <a href="/customer/{{ customer["id"] }}">
+          {{ customer["first_name" ] | sn }}
+          {{ customer["last_name"] | sn}}
+        </a>
+      </div>
+      <form action="/order/{{ order['id'] }}" method="post" class="form-inline">
+        <div class="form-group">
+          <label class="control-label" for="product_id">Produkt</label>
+          <select id="product_id" name="product_name" class="form-control">
+            {% for product in product_list %}
+              <option value="{{ product['id'] }}">
+                {{ product['name'] }}
+              </option>
+            {% endfor %}
+          </select>
+          <button type="submit" class="btn btn-primary">
+            Legg til vare
+          </button>
+        </div>
+      </form>
+{% endblock %}

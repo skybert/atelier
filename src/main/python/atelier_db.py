@@ -28,9 +28,19 @@ class AtelierDB:
             cur.execute(query, query_values)
             return cur.fetchone()
 
+    ## Returns the ID from the DB cursor
+    def insert(self, query, query_values):
+        con = self.get_db_connection()
+        with con:
+            cur = con.cursor(mdb.cursors.DictCursor)
+            cur.execute(query, query_values)
+            return cur.lastrowid
+
+    ## Post place
     def get_post_place_list(self):
         return self.execute_return_list("select * from post_place")
 
+    ## Customer
     def customer(self, id):
         return self.execute_return_one("select * from customer where id = %s", (id))
 
@@ -39,13 +49,22 @@ class AtelierDB:
         query = "select * from customer where first_name like '%" + name + "%' or last_name like '%" + name + "%'"
         return self.execute_return_list(query)
 
-
     def update_customer(self, request_form):
-        sql, values = sql.get_sql_and_values("customer", request_form)
-        app.logger.debug(sql + "\n" + str(values))
-        self.execute_return_one(sql, tuple(values))
+        update_sql, values = sql.get_sql_and_values("customer", request_form)
+        self.logger.debug(update_sql + "\n" + str(values))
+        self.execute_return_one(update_sql, tuple(values))
 
-    def get_product(self, id):
+    ## Order
+    def order(self, id):
+        return self.execute_return_one("select * from customer_order where id = %s", (id))
+
+    def create_order(self, request_form):
+        update_sql, values = sql.get_sql_and_values("customer_order", request_form)
+        self.logger.debug("update_sql="+ update_sql + "\n" + str(values))
+        return self.insert(update_sql, tuple(values))
+
+    ## Product
+    def product(self, id):
         return self.execute_return_one("select * from product where id = %s", (id))
 
     def get_product_list(self):
