@@ -6,6 +6,8 @@ It's designed to accommodate the needs of a small company with 4-5
 users and has been running practically with no maintenance since May
 2008 (exactly six years at the time of writing).
 
+It's now being re-written in Python.
+
 ## Can I use it too?
 
 Yes you can. We release the source code as open source under the GPLv3
@@ -16,9 +18,8 @@ file for more information on licensing.
 
 ## What do I need to run it?
 
-You just need a servlet container, like
-[Apache Tomcat](http://tomcat.apache.org) and a MySQL compatible
-database, like [Percona](http://percona.com).
+You need a Python 2.7 runtime environment a MySQL compatible database,
+like [Percona](http://percona.com).
 
 Cheers,
 
