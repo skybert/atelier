@@ -16,114 +16,40 @@ def get_search():
 
 @app.route("/search/query")
 def search():
-    customer_id = request.args.get("customer_id")
-    customers = {}
+    customers = []
 
+    customer_id = request.args.get("customer_id")
     if customer_id:
         app.logger.debug("customer_id=" + customer_id)
-        query = "select * from customer where id=" + customer_id
-        customers = db.execute_return_list(query)
+        customers.append(db.customer(customer_id))
 
     name = request.args.get("name")
     if name:
-        query = "select * from customer where first_name like '%" + name + "%' or last_name like '%" + name + "%'"
-        customers = db.execute_return_list(query)
-        
-    return render_template("customer-list.html", customers=customers)
+        customers = db.find_customers_by_name(name)
 
-@app.route("/post-place-list")
-def get_post_place_list():
-    return db.execute_return_list("select * from post_place")
+    return render_template("customer-list.html", customers=customers)
 
 @app.route("/product-list")
 def get_product_list():
-    products = db.execute_return_list("select p.id, p.name, p.creation_date, p.production_time, p.price, pt.name from product p, product_type pt where p.product_type_id = pt.id;")
+    products = db.get_product_list()
     return render_template("product-list.html", products=products)
-
-def get_product(id):
-    return db.execute_return_one("select * from product where id = %s", (id))
 
 @app.route("/product/<id>", methods = ["GET"])
 def product(id):
-    product = get_product(id)
+    product = db.get_product(id)
     return render_template("product.html", product=product)
 
-@app.route("/product/<id>", methods = ["POST", "PUT"])
-def update_product(id):
-    sql, values = get_sql_and_values("product", request.form)
-    db.execute_return_one(sql, tuple(values))
-    return render_template("product.html", product=get_product(id)), 201
-
-@app.route("/customer", methods = ["GET"])
-def customer(customer=None):
-    customer_id = request.args.get("id")
-    customer={}
-    if customer_id:
-        customer = get_customer(customer_id)
-
+@app.route("/customer/<id>", methods = ["GET"])
+def get_customer(id):
+    customer = db.customer(id)
+    # TODO customer not found 404
     return render_template("customer.html",
                            customer=customer,
-                           post_place_list=get_post_place_list())
-
-def get_customer(customer_id):
-    query = "select * from customer where id = %s"
-    return db.execute_return_one(query, (customer_id))
-
-def get_sql_and_values(table_name, form):
-    values = list()
-    if form.has_key("id") and form["id"] != "":
-        customer_id = form["id"]
-        sql = "update " + table_name + " set "
-    else:
-        sql = "insert into " + table_name + " ("
-
-    for key in form:
-        if key == "id":
-            continue
-        if form[key] == "":
-            continue
-
-        if form.has_key("id") and form["id"] != "":
-            sql += "\n\t" + key + " = %s, "
-        else:
-            sql += "\n\t" + key + ", "
-
-        values.append(form[key])
-
-    # abort if no values are to be inserted/updated
-    if len(values) == 0:
-        return "no change", 304
-
-    # remove the last comma
-    sql = sql[:-2]
-
-    if form.has_key("id") and form["id"] != "":
-        sql += "\nwhere id = %s"
-        values.append(customer_id)
-    else:
-        sql += ")"
-        sql += "\nvalues ("
-        for key in form:
-            if key == "id":
-                continue
-            if form[key] == "":
-                continue
-            sql += "%s, "
-
-        sql = sql[:-2] + ")"
-
-    return sql, values
-
+                           post_place_list=db.get_post_place_list()), 200
 
 @app.route("/customer", methods=["POST", "PUT"])
 def update_customer():
-    # TODO customer_id dynamically
-    customer_id=1
-    sql, values = get_sql_and_values("customer", request.form)
-
-    app.logger.debug(sql + "\n" + str(values))
-    db.execute_return_one(sql, tuple(values))
-    customer = get_customer(customer_id)
+    customer = db.update_customer(request_form)
     return render_template("customer.html", customer=customer), 201
 
 @app.route("/about")
@@ -145,7 +71,7 @@ def about():
 
 def filter_suppress_none(value):
     if not value is None:
-        return value
+        return value.decode('utf-8')
     else:
         return ""
 
@@ -157,6 +83,7 @@ if __name__ == '__main__':
         conf_data["db"]["user"],
         conf_data["db"]["password"],
         conf_data["db"]["db"],
+        app.logger
     )
     app.run(debug=True)
 

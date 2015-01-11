@@ -1,0 +1,4 @@
+#! /usr/bin/env bash
+
+find src/main/python -maxdepth 1 -name "*.py" -type f | \
+    xargs grep -n -i -e TODO
