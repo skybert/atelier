@@ -7,22 +7,79 @@
         Kundenummer {{ customer["id"] }},
         <a href="/customer/{{ customer["id"] }}">
           {{ customer["first_name" ] | sn }}
-          {{ customer["last_name"] | sn}}
+          {{ customer["last_name"] | sn }}
         </a>
       </div>
-      <form action="/order/{{ order['id'] }}" method="post" class="form-inline">
+      <form action="/order/{{ order['id'] }}/item-list"
+            method="post" class="form-inline">
         <div class="form-group">
           <label class="control-label" for="product_id">Produkt</label>
-          <select id="product_id" name="product_name" class="form-control">
+          <select id="product_id" name="product_id" class="form-control">
             {% for product in product_list %}
               <option value="{{ product['id'] }}">
                 {{ product['name'] }}
               </option>
             {% endfor %}
           </select>
+          <label class="control-label" for="number_of_items">Antall</label>
+          <input
+            id="number_of_items"
+            name="number_of_items"
+            class="form-control span2"
+            type="number"
+            placeholder="antall"
+            size="3"
+            />
           <button type="submit" class="btn btn-primary">
             Legg til vare
           </button>
         </div>
       </form>
+      {% if order_item_list | length > 0 %}
+      <h2>
+        Varer
+      </h2>
+      <table class="table table-hover">
+        <tr>
+          <th>Varekjøp #</th>
+          <th>Vare</th>
+          <th>Antall</th>
+          <th>Opprettet</th>
+        </tr>
+        {% for order_item in order_item_list %}
+        <tr>
+          <td>
+            <a href="/order-item/{{ order_item['id'] }}">
+              {{ order_item["id"] }}
+            </a>
+          </td>
+          <td>{{ order_item["product_name"] }}</td>
+          <td>{{ order_item["number_of_items"] }}</td>
+          <td>{{ order_item["creation_date"] }}</td>
+          <td>
+            <form action="/order-item/{{ order_item['id'] }}/delete" method="post">
+              <button type="submit" class="btn btn-danger">
+                Slett
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% endif %}
+    </div>
 {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

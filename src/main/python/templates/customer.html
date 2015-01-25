@@ -180,7 +180,33 @@
           </div>
         </div>
       </form>
-
+      {% endif %}
+      {% if order_list | length > 1 %}
+        <h2>
+          Ordrer
+        </h2>
+        <table class="table table-hover">
+          <tr>
+            <th>
+              Ordre #
+            </th>
+            <th>
+              Opprettet
+            </th>
+          </tr>
+          {% for order in order_list %}
+          <tr>
+            <td>
+              <a href="/order/{{ order['id'] }}">
+                {{ order["id"] }}
+              </a>
+            </td>
+            <td>
+              {{ order["creation_date"] }}
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
       {% endif %}
 {% endblock %}
 

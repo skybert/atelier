@@ -9,4 +9,6 @@ Run the command ```what-to-do-next``` to see what to do next :-)
 - CRUD product
 - CRUD order
 
-
+### Reports
+- All customers that have been ordering a certain set of products
+  within a certain time span.

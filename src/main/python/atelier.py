@@ -1,12 +1,17 @@
 #! pyenv/bin/python
 
+from datetime import datetime
+
+import flask
 from flask import Flask
 from flask import render_template
 from flask import request
+
 import MySQLdb as mdb
+
 from atelier_db import AtelierDB
 import atelier_conf
-import flask
+from atelier_filters import filter_suppress_none
 
 app = Flask(__name__, static_url_path="/files", static_folder="files")
 
@@ -45,32 +50,74 @@ def product(id):
 ## Customer
 @app.route("/customer/<id>", methods = ["GET"])
 def get_customer(id):
+    # TODO get_customer customer not found -> 404
     customer = db.customer(id)
-    # TODO customer not found 404
+    order_list = db.customer_order_list(id)
+    post_place_list = db.get_post_place_list()
     return render_template("customer.html",
                            customer=customer,
-                           post_place_list=db.get_post_place_list()), 200
+                           order_list=order_list,
+                           post_place_list=post_place_list), 200
 
 @app.route("/customer", methods=["POST", "PUT"])
 def update_customer():
     customer = db.update_customer(request.form)
     return render_template("customer.html", customer=customer), 201
 
-## Order
+def clone_form_and_add_creation_date(form):
+    result = form.copy()
+    result["creation_date"] = datetime.now()
+    return result
+
+## Order related functions
 @app.route("/order", methods = ["POST"])
 def new_order():
-    order_id = db.create_order(request.form)
+    """
+    Creates a new order.
+    Works on the a request.form object
+    """
+    form = clone_form_and_add_creation_date(request.form)
+    order_id = db.create_order(form)
+    customer = db.customer(form["customer_id"])
+    order = db.order(order_id)
     ## TODO make new_order 201 > Location /order/<order_id>
+    return get_order(order_id)
 
+
+@app.route("/order-item/<id>", methods = ["GET"])
+def get_order_item(id):
+    order_item = db.order_item(id)
+    return render_template("order-item.html", order_item=order_item)
+
+@app.route("/order-item/<id>/delete", methods = ["POST"])
+def delete_order_item(id):
+    order_item = db.order_item(id)
+    order = db.order(order_item["order_id"])
+    db.delete_order_item(id)
+    return render_template("order.html", order=order)
 
 @app.route("/order/<id>", methods = ["GET"])
 def get_order(id):
     order = db.order(id)
     customer = db.customer(order["customer_id"])
+    order_item_list = db.order_item_list(id)
+    app.logger.debug("order_item_list=" + str(order_item_list))
+
     return render_template("order.html",
                            order=order,
                            customer=customer,
-                           product_list=db.get_product_list()), 201
+                           order_item_list=order_item_list,
+                           product_list=db.get_product_list())
+
+@app.route("/order/<id>/item-list", methods = ["POST"])
+def add_order_item(id):
+    ## TODO add_order_item make it possible to add order items
+    form = clone_form_and_add_creation_date(request.form)
+    form["order_id"] = id
+
+    ## TODO add_order_item calculate total_amount
+    order_item_id = db.add_order_item(form)
+    return get_order(id)
 
 ## Various
 @app.route("/about")
@@ -90,12 +137,6 @@ def about():
     info["mysql_version"] = db_version[0]
     return render_template("about.html", about_info=info)
 
-## Filters
-def filter_suppress_none(value):
-    if not value is None:
-        return value.decode('utf-8')
-    else:
-        return ""
 
 ## Main
 if __name__ == '__main__':
