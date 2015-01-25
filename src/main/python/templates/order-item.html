@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}
+      <h1>Varekj&oslash;p #{{ order_item["id"] }}</h1>
+{% endblock %}
+{% block content %}
+      <div class="well">
+        <a href="/order/{{ order_item["order_id"] }}">
+          Ordrenummer {{ order_item["order_id" ] | sn }}
+        </a>
+      </div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
