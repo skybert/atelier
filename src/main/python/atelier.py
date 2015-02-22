@@ -4,10 +4,10 @@ from datetime import datetime
 
 import flask
 from flask import Flask
+from flask import redirect
 from flask import render_template
 from flask import request
-
-import MySQLdb as mdb
+from flask import url_for
 
 from atelier_db import AtelierDB
 import atelier_conf
@@ -70,6 +70,12 @@ def clone_form_and_add_creation_date(form):
     return result
 
 ## Order related functions
+@app.route("/order/<id>", methods=["POST", "PUT"])
+def update_order(id):
+    ## TODO update_order make it work
+    order = db.update_order(request.form)
+    return render_template("order.html", order=order), 200
+
 @app.route("/order", methods = ["POST"])
 def new_order():
     """
@@ -78,10 +84,8 @@ def new_order():
     """
     form = clone_form_and_add_creation_date(request.form)
     order_id = db.create_order(form)
-    customer = db.customer(form["customer_id"])
-    order = db.order(order_id)
-    ## TODO make new_order 201 > Location /order/<order_id>
-    return get_order(order_id)
+
+    return redirect(url_for("get_order", id = order_id))
 
 
 @app.route("/order-item/<id>", methods = ["GET"])
@@ -92,9 +96,8 @@ def get_order_item(id):
 @app.route("/order-item/<id>/delete", methods = ["POST"])
 def delete_order_item(id):
     order_item = db.order_item(id)
-    order = db.order(order_item["order_id"])
     db.delete_order_item(id)
-    return render_template("order.html", order=order)
+    return redirect(url_for("get_order", id = order_item["order_id"]))
 
 @app.route("/order/<id>", methods = ["GET"])
 def get_order(id):
@@ -111,13 +114,12 @@ def get_order(id):
 
 @app.route("/order/<id>/item-list", methods = ["POST"])
 def add_order_item(id):
-    ## TODO add_order_item make it possible to add order items
     form = clone_form_and_add_creation_date(request.form)
     form["order_id"] = id
 
     ## TODO add_order_item calculate total_amount
     order_item_id = db.add_order_item(form)
-    return get_order(id)
+    return redirect(url_for("get_order", id = id))
 
 ## Various
 @app.route("/about")

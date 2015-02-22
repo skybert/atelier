@@ -42,7 +42,7 @@ class AtelierDB:
         con = self.get_db_connection()
         with con:
             cur = con.cursor()
-            cur.execute("delete from %s where id = %s", (table, int(id)))
+            cur.execute("delete from %s where id = %s" %(table, id))
 
     ## Returns the ID from the DB cursor
     def insert(self, query, query_values):
@@ -73,31 +73,49 @@ class AtelierDB:
         self.logger.debug(update_sql + "\n" + str(values))
         self.execute_return_one(update_sql, tuple(values))
 
+    def set_creation_date_to_now(self, form):
+        form["creation_date"] = datetime.now()
+
     ## Order
     def order(self, id):
         return self.execute_return_one("select * from customer_order where id = %s",
                                        (id))
 
     def create_order(self, request_form):
-        ## TODO create_order -> set create_date automatically
+        self.set_creation_date_to_now(request_form)
+
         update_sql, values = sql.get_sql_and_values("customer_order",
                                                     request_form)
         self.logger.debug("update_sql="+ update_sql + "\n" + str(values))
         return self.insert(update_sql, tuple(values))
 
+    def update_order(self, form):
+        update_sql, values = sql.get_sql_and_values("order", form)
+        self.logger.debug(update_sql + "\n" + str(values))
+        self.execute_return_one(update_sql, tuple(values))
+
     def order_item(self, id):
         return self.execute_return_one("select * from order_item where id = %s",
                                        (id))
+
+    def get_product_price(self, id):
+        price = self.execute_return_one("select price from product where id = %s", (id))
+        return price["price"]
+
     def delete_order_item(self, id):
+        # TODO fix delete_order_item
         return self.delete("order_item", id)
 
     def order_item_list(self, order_id):
-        return self.execute_return_list("select o.id, o.number_of_items, o.creation_date, p.name as product_name from order_item o, product p where o.order_id = %s and o.product_id = p.id",
+        return self.execute_return_list("select o.id, o.number_of_items, o.total_amount, o.creation_date, p.name as product_name, p.price as product_price from order_item o, product p where o.order_id = %s and o.product_id = p.id",
                                         (order_id))
 
     def add_order_item(self, form):
-        update_sql, values = sql.get_sql_and_values("order_item", form)
+        price = self.get_product_price(form["product_id"])
+        form["total_amount"] =  price *  int(form["number_of_items"])
 
+        update_sql, values = sql.get_sql_and_values("order_item", form)
+        self.set_creation_date_to_now(form)
         self.logger.debug("update_sql="+ update_sql + "\n" + str(values))
         return self.insert(update_sql, tuple(values))
 
