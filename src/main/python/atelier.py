@@ -43,14 +43,20 @@ def get_product_list():
     return render_template("product-list.html", products=products)
 
 @app.route("/product/<id>", methods = ["GET"])
-def product(id):
+def get_product(id):
     product = db.product(id)
     return render_template("product.html", product=product)
+
+@app.route("/product/<id>", methods = ["POST"])
+def update_product(id):
+    ## TODO update_product: implement data layer
+    product = db.update_product(request.form)
+    return redirect(url_for("get_product", id = id))
 
 ## Customer
 @app.route("/customer/<id>", methods = ["GET"])
 def get_customer(id):
-    # TODO get_customer customer not found -> 404
+    # TODO get_customer: customer not found -> 404
     customer = db.customer(id)
     order_list = db.customer_order_list(id)
     post_place_list = db.get_post_place_list()
@@ -72,7 +78,7 @@ def clone_form_and_add_creation_date(form):
 ## Order related functions
 @app.route("/order/<id>", methods=["POST", "PUT"])
 def update_order(id):
-    ## TODO update_order make it work
+    ## TODO update_order: make it work ;-)
     order = db.update_order(request.form)
     return render_template("order.html", order=order), 200
 
@@ -117,8 +123,8 @@ def add_order_item(id):
     form = clone_form_and_add_creation_date(request.form)
     form["order_id"] = id
 
-    ## TODO add_order_item calculate total_amount
-    order_item_id = db.add_order_item(form)
+    ## TODO add_order_item:  calculate total_amount on item and order
+    db.add_order_item(form)
     return redirect(url_for("get_order", id = id))
 
 ## Various

@@ -103,7 +103,6 @@ class AtelierDB:
         return price["price"]
 
     def delete_order_item(self, id):
-        # TODO fix delete_order_item
         return self.delete("order_item", id)
 
     def order_item_list(self, order_id):
