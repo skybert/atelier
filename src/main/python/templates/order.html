@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 {% block title %}
       <h1>
-        Ordre #{{ order["id"] }},
+        Ordrenummer: {{ order["id"] }},
         {{ customer["last_name"] | sn }},
         {{ customer["first_name" ] | sn }}
       </h1>
       <p>
-        Dato: {{ order["creation_date"] }}
+        Opprettet: {{ order["creation_date"] }},
+        sist oppdatert: {{ order["updated_date"] }}
       </p>
 {% endblock %}
 {% block content %}
@@ -43,25 +44,7 @@
             class="form-inline">
         <div class="form-group">
           <div class="row">
-            <div class="col-xs-3">
-              <label class="control-label" for="develivery_date">Leveringsdato:</label>
-              <input class="form-control"
-                       id="delivery_date"
-                       name="delivery_date"
-                       value="{{ order['delivery_date'] | sn }}"
-                       readonly/>
-            </div>
-            <div class="col-xs-3">
-              <label class="control-label" for="updated_date">Sist oppdatert:</label>
-              <input class="form-control"
-                       id="updated_date"
-                       name="updated_date"
-                       value="{{ order['updated_date'] | sn }}"
-                       readonly/>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-3">
+            <div class="col-md-3">
               <label class="control-label" for="total_amount">Totalt:</label>
               <div class="input-group">
                 <span class="input-group-addon">kr</span>
@@ -69,37 +52,45 @@
                        id="total_amount"
                        name="total_amount"
                        value="{{ order['total_amount'] | sn }}"
-                       readonly/>
+                       />
                 <span class="input-group-addon">,00</span>
               </div>
             </div>
-            <div class="col-xs-3">
+            <div class="col-md-3">
               <label class="control-label" for="paid_amount">Betalt:</label>
               <div class="input-group">
                 <span class="input-group-addon">kr</span>
                 <input type="text"
                        class="form-control"
+                       id="paid_amount"
+                       name="paid_amount"
                        value="{{ order['paid_amount'] | sn }}"
                        aria-label="Amount (to the nearest dollar)"/>
                 <span class="input-group-addon">,00</span>
               </div>
             </div>
-            <div class="col-xs-3">
+            <div class="col-md-3">
               <label class="control-label" for="rest_amount">Rest:</label>
               <div class="input-group">
                 <span class="input-group-addon">kr</span>
                 <input class="form-control"
-                       id="rest_amount"
-                       name="rest_amount"
-                       value="{{ order['rest_amount'] | sn }}"
+                       value="{{ order['total_amount'] - order['paid_amount'] }}"
                        readonly/>
                 <span class="input-group-addon">,00</span>
               </div>
             </div>
+            <div class="col-md-3">
+              <label class="control-label" for="develivery_date">Leveringsdato:</label>
+              <input class="form-control"
+                       id="delivery_date"
+                       name="delivery_date"
+                       value="{{ order['delivery_date'] | sn }}"
+                       readonly/>
+            </div>
           </div>
           <div class="row">
-            <div class="col-xs-3">
-              <button type="submit" class="form-control btn btn-primary">
+            <div class="col-md-3" style="margin-top: 1.5em;">
+              <button name="update_order" type="submit" class="form-control btn btn-primary">
                 Oppdater ordreinformasjon
               </button>
             </div>
@@ -128,6 +119,7 @@
             class="form-control span2"
             type="number"
             placeholder="antall"
+            value="1"
             />
           <button type="submit" class="btn btn-primary">
             Legg til vare

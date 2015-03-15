@@ -1,7 +1,7 @@
 def get_sql_and_values(table_name, form):
     values = list()
     if form.has_key("id") and form["id"] != "":
-        customer_id = form["id"]
+        id = form["id"]
         sql = "update " + table_name + " set "
     else:
         sql = "insert into " + table_name + " ("
@@ -28,7 +28,7 @@ def get_sql_and_values(table_name, form):
 
     if form.has_key("id") and form["id"] != "":
         sql += "\nwhere id = %s"
-        values.append(customer_id)
+        values.append(id)
     else:
         sql += ")"
         sql += "\nvalues ("

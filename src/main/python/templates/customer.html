@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block title %}
       <h1>Kunde</h1>
+      {% if updated %}
+      oppdatert
+      {% endif %}
 {% endblock %}
 {% block content %}
       <form action="/customer"
@@ -70,7 +73,9 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="control-label col-xs-2" for="post_code">Postnummer</label>
+          <label class="control-label col-xs-2" for="post_code">
+            Postnummer
+          </label>
           <div class="col-xs-10">
             <select class="form-control">
               {% for pp in post_place_list %}

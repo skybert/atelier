@@ -28,7 +28,7 @@ def search():
     customer_id = request.args.get("customer_id")
     if customer_id:
         app.logger.debug("customer_id=" + customer_id)
-        customers.append(db.customer(customer_id))
+        customers.append(db.get_customer(customer_id))
 
     name = request.args.get("name")
     if name:
@@ -44,21 +44,21 @@ def get_product_list():
 
 @app.route("/product/<id>", methods = ["GET"])
 def get_product(id):
-    product = db.product(id)
+    product = db.get_product(id)
     return render_template("product.html", product=product)
 
 @app.route("/product/<id>", methods = ["POST"])
 def update_product(id):
-    ## TODO update_product: implement data layer
     product = db.update_product(request.form)
     return redirect(url_for("get_product", id = id))
 
 ## Customer
 @app.route("/customer/<id>", methods = ["GET"])
-def get_customer(id):
+def get_customer(id, updated = False):
     # TODO get_customer: customer not found -> 404
-    customer = db.customer(id)
-    order_list = db.customer_order_list(id)
+    # TODO get_customer: get updated parameter in
+    customer = db.get_customer(id)
+    order_list = db.get_customer_order_list(id)
     post_place_list = db.get_post_place_list()
     return render_template("customer.html",
                            customer=customer,
@@ -67,20 +67,27 @@ def get_customer(id):
 
 @app.route("/customer", methods=["POST", "PUT"])
 def update_customer():
+    # TODO update_customer updating birth date doesn't work
     customer = db.update_customer(request.form)
-    return render_template("customer.html", customer=customer), 201
+    return redirect(url_for("get_customer", id = customer["id"], updated = True))
 
 def clone_form_and_add_creation_date(form):
     result = form.copy()
     result["creation_date"] = datetime.now()
     return result
 
+def clone_form_and_add_updated_date(form):
+    result = form.copy()
+    result["updated_date"] = datetime.now()
+    return result
+
 ## Order related functions
 @app.route("/order/<id>", methods=["POST", "PUT"])
 def update_order(id):
-    ## TODO update_order: make it work ;-)
-    order = db.update_order(request.form)
-    return render_template("order.html", order=order), 200
+    form = clone_form_and_add_updated_date(request.form)
+    form["id"] = id
+    order = db.update_order(form)
+    return redirect(url_for("get_order", id = id))
 
 @app.route("/order", methods = ["POST"])
 def new_order():
@@ -90,26 +97,41 @@ def new_order():
     """
     form = clone_form_and_add_creation_date(request.form)
     order_id = db.create_order(form)
-
     return redirect(url_for("get_order", id = order_id))
-
 
 @app.route("/order-item/<id>", methods = ["GET"])
 def get_order_item(id):
-    order_item = db.order_item(id)
-    return render_template("order-item.html", order_item=order_item)
+    order_item = db.get_order_item(id)
+    return render_template("order-item.html",
+                           order_item=order_item,
+                           product_list=db.get_product_list())
+
+@app.route("/order-item/<id>", methods = ["POST", "PUT"])
+def update_order_item(id):
+    form = request.form.copy()
+    form["id"] = id
+    db.update_order_item(form)
+    # TODO update_order_item update order item total amount
+    # TODO update_order_item update order total amount
+    return redirect(url_for("get_order_item", id=id))
 
 @app.route("/order-item/<id>/delete", methods = ["POST"])
 def delete_order_item(id):
-    order_item = db.order_item(id)
+    """
+    Deletes the order item and updates the total amount of the order.
+    """
+    order_item = db.get_order_item(id)
+    order_item_total = order_item["total_amount"]
+    order_id = order_item["order_id"]
     db.delete_order_item(id)
+    db.update_order_total(order_id, (order_item_total * -1))
     return redirect(url_for("get_order", id = order_item["order_id"]))
 
 @app.route("/order/<id>", methods = ["GET"])
 def get_order(id):
-    order = db.order(id)
-    customer = db.customer(order["customer_id"])
-    order_item_list = db.order_item_list(id)
+    order = db.get_order(id)
+    customer = db.get_customer(order["customer_id"])
+    order_item_list = db.get_order_item_list(id)
     app.logger.debug("order_item_list=" + str(order_item_list))
 
     return render_template("order.html",
@@ -123,7 +145,6 @@ def add_order_item(id):
     form = clone_form_and_add_creation_date(request.form)
     form["order_id"] = id
 
-    ## TODO add_order_item:  calculate total_amount on item and order
     db.add_order_item(form)
     return redirect(url_for("get_order", id = id))
 
