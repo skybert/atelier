@@ -4,6 +4,7 @@ from datetime import datetime
 
 import flask
 from flask import Flask
+from flask import abort
 from flask import redirect
 from flask import render_template
 from flask import request
@@ -24,7 +25,6 @@ def get_search():
 @app.route("/search/query")
 def search():
     customers = []
-
     customer_id = request.args.get("customer_id")
     if customer_id:
         app.logger.debug("customer_id=" + customer_id)
@@ -40,11 +40,15 @@ def search():
 @app.route("/product-list")
 def get_product_list():
     products = db.get_product_list()
+    if products == None:
+        abort(404)
     return render_template("product-list.html", products=products)
 
 @app.route("/product/<id>", methods = ["GET"])
 def get_product(id):
     product = db.get_product(id)
+    if product == None:
+        abort(404)
     return render_template("product.html", product=product)
 
 @app.route("/product/<id>", methods = ["POST"])
@@ -55,9 +59,11 @@ def update_product(id):
 ## Customer
 @app.route("/customer/<id>", methods = ["GET"])
 def get_customer(id, updated = False):
-    # TODO get_customer: customer not found -> 404
     # TODO get_customer: get updated parameter in
     customer = db.get_customer(id)
+    if customer == None:
+        abort(404)
+
     order_list = db.get_customer_order_list(id)
     post_place_list = db.get_post_place_list()
     return render_template("customer.html",
@@ -130,6 +136,8 @@ def delete_order_item(id):
 @app.route("/order/<id>", methods = ["GET"])
 def get_order(id):
     order = db.get_order(id)
+    if order == None:
+        abort(404)
     customer = db.get_customer(order["customer_id"])
     order_item_list = db.get_order_item_list(id)
     app.logger.debug("order_item_list=" + str(order_item_list))
@@ -166,6 +174,10 @@ def about():
     info["mysql_version"] = db_version[0]
     return render_template("about.html", about_info=info)
 
+## error handlers
+@app.errorhandler(404)
+def page_not_found(error):
+    return render_template("error/404.html"), 404
 
 ## Main
 if __name__ == '__main__':
