@@ -12,9 +12,10 @@ It's now being re-written in Python.
 
 Yes you can. We release the source code as open source under the GPLv3
 in the hope that it might be useful for others too, either as a simple
-customer & order system or as a show case of an application using Java
-servlets, iBATIS, JSPs and XHTML strict. See the [COPYING](COPYING)
-file for more information on licensing.
+customer & order system or as a show case of an application using
+Python and Flask.
+
+See the [COPYING](COPYING) file for more information on licensing.
 
 ## What do I need to run it?
 
