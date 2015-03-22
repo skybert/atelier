@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}
+      <h1>Ordreoversikt</h1>
+{% endblock %}
+{% block content %}
+
+      <form action="/report/order-overview"
+            method="get"
+            class="form-horizontal">
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="from_date">
+            Fra dato
+          </label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="from_date"
+                   name="from_date"
+                   value="{{ from_date | sn }}"
+                   type="date"
+                   placeholder="from_date"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="to_date">
+            Til dato
+          </label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="to_date"
+                   name="to_date"
+                   value="{{ to_date | sn }}"
+                   type="date"
+                   placeholder="to_date"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-offset-2 col-xs-10">
+            <button type="submit" class="btn btn-primary">
+              Få oversikt
+            </button>
+          </div>
+        </div>
+      </form>
+      <table class="table table-striped">
+        <tr>
+          <th>Kunde</th>
+          <th>Ordrenummer</th>
+          <th>Produkt</th>
+          <th>Ordre opprettet</th>
+        </tr>
+        {% for order in order_list %}
+        <tr>
+          <td>
+            <a href="/customer/{{ order['customer_id'] }}">
+              {{ order["first_name"] }}
+              {{ order["last_name"] }}
+            </a>
+          </td>
+          <td>
+            <a href="/order/{{ order["order_id"] }}">{{ order["order_id"] }}</a>
+          </td>
+          <td>
+            <a href="/product/{{ order['product_id'] }}">
+              {{ order["product_name"] }}
+            </a>
+          </td>
+          <td>
+            {{ order['creation_date'] | sn }}
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+
+
+{% endblock %}

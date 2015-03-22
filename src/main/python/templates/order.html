@@ -7,7 +7,7 @@
       </h1>
       <p>
         Opprettet: {{ order["creation_date"] }},
-        sist oppdatert: {{ order["updated_date"] }}
+        sist oppdatert: {{ order["updated_date"] | sdn }}
       </p>
 {% endblock %}
 {% block content %}

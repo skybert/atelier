@@ -1,6 +1,7 @@
 import MySQLdb as mdb
 import atelier_sql as sql
 from datetime import datetime
+from datetime import timedelta
 
 class AtelierDB:
     """Module which provides Atelier DB access.
@@ -21,8 +22,8 @@ class AtelierDB:
         con.set_character_set('utf8')
         return con
 
-    def execute_return_list(self, query, query_values):
-        self.logger.debug("execute_return_list: " + query + "\n" + str(query_values))
+    def query_list(self, query, query_values):
+        self.logger.debug("query_list: " + query + "\n" + str(query_values))
 
         con = self.get_db_connection()
         with con:
@@ -30,8 +31,8 @@ class AtelierDB:
             cur.execute(query, query_values)
             return cur.fetchall()
 
-    def execute_return_one(self, query, values):
-        self.logger.debug("execute_return_one: " + query + "\n" + str(values))
+    def query_one(self, query, values):
+        self.logger.debug("query_one: " + query + "\n" + str(values))
         con = self.get_db_connection()
         with con:
             cur = con.cursor(mdb.cursors.DictCursor)
@@ -55,19 +56,19 @@ class AtelierDB:
 
     ## Post place
     def get_post_place_list(self):
-        return self.execute_return_list("select * from post_place", None)
+        return self.query_list("select * from post_place", None)
 
     ## Customer
     def get_customer(self, id):
-        return self.execute_return_one("select * from customer where id = %s", (id))
+        return self.query_one("select * from customer where id = %s", (id))
 
     def get_customer_order_list(self, customer_id):
-        return self.execute_return_list("select * from customer_order where customer_id = %s", (customer_id))
+        return self.query_list("select * from customer_order where customer_id = %s", (customer_id))
 
     def find_customers_by_name(self, name):
         # TODO find_customers_by_name : make wildcards work with prepared statement
         query = "select * from customer where first_name like %s or last_name like %s"
-        return self.execute_return_list(query, (name, name))
+        return self.query_list(query, (name, name))
 
     def create_customer(self, form):
         insert_sql, values = sql.get_sql_and_values("customer", form)
@@ -81,7 +82,7 @@ class AtelierDB:
         """
 
         update_sql, values = sql.get_sql_and_values("customer", request_form)
-        self.execute_return_one(update_sql, tuple(values))
+        self.query_one(update_sql, tuple(values))
         return self.get_customer(request_form["id"])
 
 
@@ -90,7 +91,7 @@ class AtelierDB:
 
     ## Order
     def get_order(self, id):
-        return self.execute_return_one("select * from customer_order where id = %s",
+        return self.query_one("select * from customer_order where id = %s",
                                        (id))
 
     def create_order(self, form):
@@ -100,25 +101,36 @@ class AtelierDB:
 
     def update_order(self, form):
         update_sql, values = sql.get_sql_and_values("customer_order", form)
-        self.execute_return_one(update_sql, tuple(values))
+        self.query_one(update_sql, tuple(values))
 
     def get_order_item(self, id):
-        return self.execute_return_one("select * from order_item where id = %s",
+        return self.query_one("select * from order_item where id = %s",
                                        (id))
     def update_order_item(self, form):
         update_sql, values = sql.get_sql_and_values("order_item", form)
-        self.execute_return_one(update_sql, tuple(values))
+        self.query_one(update_sql, tuple(values))
 
     def get_product_price(self, id):
-        price = self.execute_return_one("select price from product where id = %s", (id))
+        price = self.query_one("select price from product where id = %s", (id))
         return price["price"]
 
     def delete_order_item(self, id):
         return self.delete("order_item", id)
 
     def get_order_item_list(self, order_id):
-        return self.execute_return_list("select o.id, o.number_of_items, o.total_amount, o.creation_date, p.name as product_name, p.price as product_price from order_item o, product p where o.order_id = %s and o.product_id = p.id",
-                                        (order_id))
+        query = """
+        select
+          o.creation_date,
+          o.id,
+          o.number_of_items,
+          o.total_amount,
+          p.name as product_name,
+          p.price as product_price
+        from order_item o, product p
+        where o.order_id = %s
+        and o.product_id = p.id
+        """
+        return self.query_list(query, (order_id))
 
     def add_order_item(self, form):
         order_id = form["order_id"]
@@ -136,7 +148,8 @@ class AtelierDB:
         return self.insert(update_sql, tuple(values))
 
     def update_order_total(self, id, delta):
-        old_amount = self.execute_return_one("select total_amount from customer_order where id = %s", (id))["total_amount"]
+        query = "select total_amount from customer_order where id = %s"
+        old_amount = self.query_one(query, (id))["total_amount"]
 
         if old_amount != None:
             new_amount = old_amount + delta
@@ -147,13 +160,51 @@ class AtelierDB:
         form["id"] = id
         form["total_amount"] = new_amount
         update_order_sql, values = sql.get_sql_and_values("customer_order", form)
-        return self.execute_return_one(update_order_sql, tuple(values))
+        return self.query_one(update_order_sql, tuple(values))
 
 
     ## Product
     def get_product(self, id):
-        return self.execute_return_one("select * from product where id = %s",
-                                       (id))
+        return self.query_one("select * from product where id = %s", (id))
 
     def get_product_list(self):
-        return self.execute_return_list("select p.id, p.name, p.creation_date, p.production_time, p.price, pt.name from product p, product_type pt where p.product_type_id = pt.id", None)
+        query = """
+        select p.id, p.name, p.creation_date, p.production_time, p.price, pt.name
+        from product p, product_type pt
+        where p.product_type_id = pt.id
+        """
+        return self.query_list(query, None)
+
+    ## Reports
+    def get_order_list(self, from_date, to_date, product_list=[]):
+        # Since we use less than and greater than in the dates, we
+        # adjust the input dates accordingly
+
+        # TODO: get_order_list handle from/to__date being unicode(strings)
+        if isinstance(from_date, datetime):
+            from_date = from_date - timedelta(days=1)
+        if isinstance(to_date, datetime):
+            to_date = to_date + timedelta(days=1)
+
+        ## TODO get_order_list: heed the product_list: http://stackoverflow.com/questions/589284/imploding-a-list-for-use-in-a-python-mysqldb-in-clause/589416#589416
+
+        query = """
+        select
+          c.first_name,
+          c.last_name,
+          o.creation_date,
+          o.customer_id,
+          o.id as order_id,
+          oi.id as order_item_id,
+          oi.product_id,
+          p.name as product_name
+        from customer_order o, order_item oi, product p, customer c
+        where o.id=oi.order_id
+        and p.id=oi.product_id
+        and c.id=o.customer_id
+        and o.creation_date > %s
+        and o.creation_date < %s
+        order by oi.product_id
+        """
+
+        return self.query_list(query, (from_date, to_date))

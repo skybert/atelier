@@ -1,6 +1,8 @@
 #! pyenv/bin/python
 
 from datetime import datetime
+from datetime import timedelta
+from decimal import Decimal
 
 import flask
 from flask import Flask
@@ -13,6 +15,7 @@ from flask import url_for
 from atelier_db import AtelierDB
 import atelier_conf
 from atelier_filters import filter_suppress_none
+from atelier_filters import filter_object_suppress_none
 
 app = Flask(__name__, static_url_path="/files", static_folder="files")
 
@@ -58,7 +61,6 @@ def update_product(id):
 @app.route("/customer/<id>", methods = ["GET"])
 def get_customer(id, updated = False):
     # TODO get_customer: get updated parameter in
-    # TODO get_customer doesn't return birth date
     customer = db.get_customer(id)
     if customer == None:
         abort(404)
@@ -147,9 +149,14 @@ def get_order(id):
     order = db.get_order(id)
     if order == None:
         abort(404)
+
+    if order["total_amount"] is None:
+        order["total_amount"] = Decimal(0)
+    if order["paid_amount"] is None:
+        order["paid_amount"] = Decimal(0)
+
     customer = db.get_customer(order["customer_id"])
     order_item_list = db.get_order_item_list(id)
-    app.logger.debug("order_item_list=" + str(order_item_list))
 
     return render_template("order.html",
                            order=order,
@@ -161,9 +168,27 @@ def get_order(id):
 def add_order_item(id):
     form = clone_form_and_add_creation_date(request.form)
     form["order_id"] = id
-
     db.add_order_item(form)
     return redirect(url_for("get_order", id = id))
+
+@app.route("/report/order-overview")
+def order_overview():
+    from_date = request.args.get("from_date")
+    to_date = request.args.get("to_date")
+
+    if from_date is None:
+        from_date = datetime.today() - timedelta(days=30)
+    if to_date is None:
+        to_date = datetime.today()
+
+    product_list = []
+
+    order_list = db.get_order_list(from_date, to_date, product_list)
+    return render_template("report/order-overview.html",
+                           from_date=from_date,
+                           to_date=to_date,
+                           product_list=product_list,
+                           order_list=order_list)
 
 @app.route("/about")
 def about():
@@ -188,6 +213,7 @@ def page_not_found(error):
 if __name__ == '__main__':
     conf_data = atelier_conf.read_conf_from_file()
     app.jinja_env.filters["sn"] = filter_suppress_none
+    app.jinja_env.filters["sdn"] = filter_object_suppress_none
     db = AtelierDB(
         conf_data["db"]["host"],
         conf_data["db"]["user"],
