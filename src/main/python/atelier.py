@@ -16,7 +16,6 @@ from atelier_filters import filter_suppress_none
 
 app = Flask(__name__, static_url_path="/files", static_folder="files")
 
-## Search
 @app.route("/")
 @app.route("/search")
 def get_search():
@@ -36,7 +35,6 @@ def search():
 
     return render_template("customer-list.html", customers=customers)
 
-## Product
 @app.route("/product-list")
 def get_product_list():
     products = db.get_product_list()
@@ -99,7 +97,6 @@ def clone_form_and_add_updated_date(form):
     result["updated_date"] = datetime.now()
     return result
 
-## Order related functions
 @app.route("/order/<id>", methods=["POST", "PUT"])
 def update_order(id):
     form = clone_form_and_add_updated_date(request.form)
@@ -168,10 +165,8 @@ def add_order_item(id):
     db.add_order_item(form)
     return redirect(url_for("get_order", id = id))
 
-## Various
 @app.route("/about")
 def about():
-    app.logger.debug(flask.__version__)
     info={}
     info["bootstrap-version"] = '3.3.1'
     info["flask_version"] = flask.__version__
@@ -186,12 +181,10 @@ def about():
     info["mysql_version"] = db_version[0]
     return render_template("about.html", about_info=info)
 
-## error handlers
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template("error/404.html"), 404
 
-## Main
 if __name__ == '__main__':
     conf_data = atelier_conf.read_conf_from_file()
     app.jinja_env.filters["sn"] = filter_suppress_none
