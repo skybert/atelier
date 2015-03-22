@@ -2,3 +2,4 @@ src/main/python/atelier-conf.json
 *.swp
 *.pyc
 src/main/python/pyenv
+.gitignore
