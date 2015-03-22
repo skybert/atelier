@@ -2,6 +2,7 @@
 
 (
   cd $(dirname $0)
+  cat *.md |  grep -n -i -e TODO
   find src/main/python -maxdepth 1 -name "*.py" -type f | \
       xargs grep -n -i -e TODO
 )

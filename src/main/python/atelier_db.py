@@ -69,6 +69,10 @@ class AtelierDB:
         query = "select * from customer where first_name like %s or last_name like %s"
         return self.execute_return_list(query, (name, name))
 
+    def create_customer(self, form):
+        insert_sql, values = sql.get_sql_and_values("customer", form)
+        return self.insert(insert_sql, values)
+
     def update_customer(self, request_form):
         """
         Updates the customer described in request_form and returns the

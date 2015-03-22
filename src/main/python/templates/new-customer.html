@@ -1,34 +1,18 @@
 {% extends "base.html" %}
 {% block title %}
-      <h1>Kunde</h1>
-      {% if updated %}
-      oppdatert
-      {% endif %}
+      <h1>Ny kunde</h1>
 {% endblock %}
 {% block content %}
-      <form action="/customer/{{ customer['id'] }}"
+      <form action="/customer"
             method="post"
             class="form-horizontal">
 
-        <div class="form-group">
-          <label class="control-label col-xs-2" for="id">Kundenummer</label>
-          <div class="col-xs-10">
-            <input class="form-control"
-                   id="id"
-                   name="id"
-                   value="{{ customer['id'] }}"
-                   placeholder="kundenummer"
-                   readonly/>
-          </div>
-          </div><div class="form-group">
-        </div>
         <div class="form-group">
           <label class="control-label col-xs-2" for="first_name">Fornavn</label>
           <div class="col-xs-10">
             <input class="form-control"
                    id="first_name"
                    name="first_name"
-                   value="{{ customer['first_name'] | sn }}"
                    placeholder="first_name"/>
           </div>
         </div>
@@ -38,17 +22,7 @@
             <input class="form-control"
                    id="last_name"
                    name="last_name"
-                   value="{{ customer['last_name'] | sn }}"
                    placeholder="last_name"/>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="control-label col-xs-2"
-                 for="creation_date">
-            Registrert dato
-          </label>
-          <div class="col-xs-10">
-            {{ customer["creation_date"] | sn }}
           </div>
         </div>
         <div class="form-group">
@@ -58,7 +32,6 @@
                    id="email_address"
                    name="email_address"
                    type="email"
-                   value="{{ customer['email_address'] | sn }}"
                    placeholder="email_address"/>
           </div>
         </div>
@@ -68,7 +41,6 @@
             <input class="form-control"
                    id="address"
                    name="address"
-                   value="{{ customer['address'] | sn }}"
                    placeholder="address"/>
           </div>
         </div>
@@ -97,7 +69,6 @@
                    id="home_phone"
                    name="home_phone"
                    type="number"
-                   value="{{ customer['home_phone'] }}"
                    placeholder="home_phone"/>
 
           </div>
@@ -110,7 +81,6 @@
             <input class="form-control"
                    id="mobile_phone"
                    name="mobile_phone"
-                   value="{{ customer['mobile_phone'] }}"
                    placeholder="mobile_phone"
                    type="number"
                    />
@@ -123,7 +93,6 @@
           <div class="col-xs-10">
             <input class="form-control"
                    id="work_phone" name="work_phone"
-                   value="{{ customer['work_phone'] }}"
                    type="number"
                    placeholder="work_phone"/>
 
@@ -137,7 +106,6 @@
             <input class="form-control"
                    id="birth_date"
                    name="birth_date"
-                   value="{{ customer['birth_date'] | sn }}"
                    type="date"
                    placeholder="birth_date"/>
 
@@ -146,73 +114,11 @@
         <div class="form-group">
           <div class="col-xs-offset-2 col-xs-10">
             <button type="submit" class="btn btn-primary">
-              {% if customer["id"] %}
-                Oppdater kunde
-              {% else %}
-                Opprett ny kunde
-              {% endif %}
+              Opprett ny kunde
             </button>
           </div>
         </div>
       </form>
-      {% if customer["id"] %}
-      <form action="/customer/{{ customer["id"] }}/delete"
-            method="post"
-            class="form-horizontal">
-        <div class="form-group">
-          <div class="col-xs-offset-2 col-xs-10">
-            <button type="submit" class="btn btn-danger">
-              Slett kunde
-            </button>
-          </div>
-        </div>
-      </form>
-      <form action="/order"
-            method="post"
-            style="display: inline"
-            class="form-horizontal">
-        <div class="form-group">
-          <input id="customer_id"
-                 name="customer_id"
-                 type="hidden" value="{{ customer['id'] }}"
-                 />
-        </div>
-        <div class="form-group">
-          <div class="col-xs-offset-2 col-xs-10">
-            <button type="submit" class="btn btn-success">
-              Opprett ny ordre
-            </button>
-          </div>
-        </div>
-      </form>
-      {% endif %}
-      {% if order_list | length > 1 %}
-        <h2>
-          Ordrer
-        </h2>
-        <table class="table table-hover">
-          <tr>
-            <th>
-              Ordre #
-            </th>
-            <th>
-              Opprettet
-            </th>
-          </tr>
-          {% for order in order_list %}
-          <tr>
-            <td>
-              <a href="/order/{{ order['id'] }}">
-                {{ order["id"] }}
-              </a>
-            </td>
-            <td>
-              {{ order["creation_date"] }}
-            </td>
-          </tr>
-          {% endfor %}
-        </table>
-      {% endif %}
 {% endblock %}
 
 

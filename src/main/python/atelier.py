@@ -60,6 +60,7 @@ def update_product(id):
 @app.route("/customer/<id>", methods = ["GET"])
 def get_customer(id, updated = False):
     # TODO get_customer: get updated parameter in
+    # TODO get_customer doesn't return birth date
     customer = db.get_customer(id)
     if customer == None:
         abort(404)
@@ -71,11 +72,22 @@ def get_customer(id, updated = False):
                            order_list=order_list,
                            post_place_list=post_place_list), 200
 
-@app.route("/customer", methods=["POST", "PUT"])
-def update_customer():
-    # TODO update_customer updating birth date doesn't work
-    customer = db.update_customer(request.form)
-    return redirect(url_for("get_customer", id = customer["id"], updated = True))
+@app.route("/customer", methods = ["GET"])
+def get_new_customer_form():
+    return render_template("new-customer.html",
+                           post_place_list=db.get_post_place_list()), 200
+
+@app.route("/customer", methods = ["POST"])
+def new_customer():
+    form = clone_form_and_add_creation_date(request.form)
+    id = db.create_customer(form)
+    return redirect(url_for("get_customer", id = id))
+
+
+@app.route("/customer/<id>", methods=["POST", "PUT"])
+def update_customer(id):
+    db.update_customer(request.form)
+    return redirect(url_for("get_customer", id = id, updated = True))
 
 def clone_form_and_add_creation_date(form):
     result = form.copy()
@@ -92,7 +104,7 @@ def clone_form_and_add_updated_date(form):
 def update_order(id):
     form = clone_form_and_add_updated_date(request.form)
     form["id"] = id
-    order = db.update_order(form)
+    db.update_order(form)
     return redirect(url_for("get_order", id = id))
 
 @app.route("/order", methods = ["POST"])
