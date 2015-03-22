@@ -171,7 +171,7 @@ def add_order_item(id):
     db.add_order_item(form)
     return redirect(url_for("get_order", id = id))
 
-@app.route("/report/order-overview")
+@app.route("/reports/order-overview")
 def order_overview():
     from_date = request.args.get("from_date")
     to_date = request.args.get("to_date")
@@ -184,7 +184,7 @@ def order_overview():
     product_list = []
 
     order_list = db.get_order_list(from_date, to_date, product_list)
-    return render_template("report/order-overview.html",
+    return render_template("reports/order-overview.html",
                            from_date=from_date,
                            to_date=to_date,
                            product_list=product_list,
