@@ -207,4 +207,12 @@ class AtelierDB:
         order by oi.product_id
         """
 
-        return self.query_list(query, (from_date, to_date))
+        result = self.query_list(query, (from_date, to_date))
+
+        product_count_list={}
+        for r in result:
+            key = r["product_name"]
+            product_count_list.setdefault(key, 0)
+            product_count_list[key] += 1
+
+        return result, product_count_list

@@ -183,12 +183,13 @@ def order_overview():
 
     product_list = []
 
-    order_list = db.get_order_list(from_date, to_date, product_list)
+    order_list, product_count_list = db.get_order_list(from_date, to_date, product_list)
     return render_template("reports/order-overview.html",
                            from_date=from_date,
                            to_date=to_date,
                            product_list=product_list,
-                           order_list=order_list)
+                           order_list=order_list,
+                           product_count_list=product_count_list)
 
 @app.route("/about")
 def about():

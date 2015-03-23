@@ -4,7 +4,7 @@
 {% endblock %}
 {% block content %}
 
-      <form action="/report/order-overview"
+      <form action="/reports/order-overview"
             method="get"
             class="form-horizontal">
         <div class="form-group">
@@ -41,6 +41,27 @@
           </div>
         </div>
       </form>
+      <canvas id="myChart" width="800" height="400"></canvas>
+      {{ product_count_list }}
+      <script src="/files/js/Chart.js"></script>
+      <script type="text/javascript">
+        var ctx = document.getElementById("myChart").getContext("2d");
+        var data = [
+        {% set color_code = 100 %}
+        {% for product_name, count in product_count_list.items() %}
+        {
+          value: {{ count }},
+          label: "{{ product_name }}",
+          color: "rgb({{ color_code }}, 0, 0)"
+          },
+
+        {% set color_code = color_code + 30 %}
+        {% endfor %}
+        ];
+
+        var myNewChart = new Chart(ctx).Pie(data);
+      </script>
+
       <table class="table table-striped">
         <tr>
           <th>Kunde</th>
