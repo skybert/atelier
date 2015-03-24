@@ -175,6 +175,9 @@ class AtelierDB:
         """
         return self.query_list(query, None)
 
+    def delete_product(self, id):
+        return self.delete("product", id)
+
     ## Reports
     def get_order_list(self, from_date, to_date, product_list=[]):
         # Since we use less than and greater than in the dates, we
@@ -204,7 +207,7 @@ class AtelierDB:
         and c.id=o.customer_id
         and o.creation_date > %s
         and o.creation_date < %s
-        order by oi.product_id
+        order by o.creation_date
         """
 
         result = self.query_list(query, (from_date, to_date))

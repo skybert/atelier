@@ -57,7 +57,12 @@ def update_product(id):
     product = db.update_product(request.form)
     return redirect(url_for("get_product", id = id))
 
-## Customer
+@app.route("/product/<id>/delete", methods = ["POST"])
+def delete_product(id):
+    """Deletes order only if it's not being used"""
+    # TODO delete_product only if it's not being used
+    db.delete_product(id)
+
 @app.route("/customer/<id>", methods = ["GET"])
 def get_customer(id, updated = False):
     # TODO get_customer: get updated parameter in
