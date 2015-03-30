@@ -3,6 +3,10 @@
 (
   cd $(dirname $0)
   cat *.md |  grep -n -i -e TODO
-  find src/main/python -maxdepth 1 -name "*.py" -type f | \
+  find src/main/python \
+       src/main/python/templates \
+       -maxdepth 2 \
+       -name "*.py" -o -name "*.html" \
+       -type f | \
       xargs grep -n -i -e TODO
 )
