@@ -63,8 +63,8 @@ class AtelierDB:
         return self.query_one("select * from customer where id = %s", (id))
 
     def get_customer_order_list(self, customer_id):
-        ## TODO doesn't always work, e.g.: http://localhost:5000/customer/15882
-        return self.query_list("select * from customer_order where customer_id = %s", (customer_id))
+        sql="select * from customer_order where customer_id = %s"
+        return self.query_list(sql, (customer_id))
 
     def find_customers_by_name(self, name):
         # TODO find_customers_by_name : make wildcards work with prepared statement
@@ -81,19 +81,16 @@ class AtelierDB:
         freshly updated customer entry.
 
         """
-
         update_sql, values = sql.get_sql_and_values("customer", request_form)
         self.query_one(update_sql, tuple(values))
         return self.get_customer(request_form["id"])
-
 
     def set_creation_date_to_now(self, form):
         form["creation_date"] = datetime.now()
 
     ## Order
     def get_order(self, id):
-        return self.query_one("select * from customer_order where id = %s",
-                                       (id))
+        return self.query_one("select * from customer_order where id = %s", (id))
 
     def create_order(self, form):
         self.set_creation_date_to_now(form)

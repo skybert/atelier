@@ -3,6 +3,8 @@
 from datetime import datetime
 from datetime import timedelta
 from decimal import Decimal
+from locale import LC_ALL
+from locale import setlocale
 
 import flask
 from flask import Flask
@@ -65,11 +67,9 @@ def delete_product(id):
 
 @app.route("/customer/<id>", methods = ["GET"])
 def get_customer(id, updated = False):
-    # TODO get_customer: get updated parameter in
     customer = db.get_customer(id)
     if customer == None:
         abort(404)
-
     order_list = db.get_customer_order_list(id)
     post_place_list = db.get_post_place_list()
     return render_template("customer.html",
@@ -229,6 +229,7 @@ if __name__ == '__main__':
         conf_data["db"]["db"],
         app.logger
     )
+    setlocale(LC_ALL, str(conf_data["locale"]))
     app.run(debug=True)
 
 

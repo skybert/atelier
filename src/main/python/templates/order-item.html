@@ -22,7 +22,7 @@
               {% else %}
               <option value="{{ product['id'] }}">
               {% endif %}
-                {{ product['name'] }}
+                {{ product['name'] | sn }}
               </option>
             {% endfor %}
           </select>

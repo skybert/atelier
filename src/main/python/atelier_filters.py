@@ -5,7 +5,7 @@ def filter_suppress_none(value):
         if  isinstance(value, basestring):
             return value.decode('utf-8')
         elif isinstance(value, datetime):
-            return value.strftime("%Y-%m-%d")
+            return value.strftime("%A %d %B %Y").decode('utf-8')
         else:
             return value
     else:
