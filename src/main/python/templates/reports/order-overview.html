@@ -41,8 +41,20 @@
           </div>
         </div>
       </form>
-      <canvas id="myChart" width="800" height="400"></canvas>
-      {{ product_count_list }}
+      <div class="row">
+        <div class="col-md-8">
+          <canvas id="myChart" width="800" height="400"></canvas>
+        </div>
+        <div class="col-md-4">
+          <ul>
+          {% for product_name, count in product_count_list.items() %}
+            <li>
+              {{ product_name }}: {{ count }}
+            </li>
+          {% endfor %}
+          </ul>
+        </div>
+      </div>
       <script src="/files/js/Chart.js"></script>
       <script type="text/javascript">
         var ctx = document.getElementById("myChart").getContext("2d");
@@ -52,9 +64,12 @@
         {
           value: {{ count }},
           label: "{{ product_name }}",
-          color: "rgb({{ color_code }}, 0, 0)"
-          },
-
+          color: "rgb(" +
+                    Math.floor((Math.random() * 255)) + ", " +
+                    Math.floor((Math.random() * 255)) + "," +
+                    Math.floor((Math.random() * 255)) +
+                 ")"
+        },
         {% set color_code = color_code + 30 %}
         {% endfor %}
         ];
