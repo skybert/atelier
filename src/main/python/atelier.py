@@ -180,15 +180,17 @@ def add_order_item(id):
 def order_overview():
     from_date = request.args.get("from_date")
     to_date = request.args.get("to_date")
+    selected_product_list = request.args.getlist("selected_product_list")
 
     if from_date is None:
         from_date = datetime.today() - timedelta(days=30)
     if to_date is None:
         to_date = datetime.today()
 
-    product_list = []
-
-    order_list, product_count_list = db.get_order_list(from_date, to_date, product_list)
+    product_list = db.get_product_list()
+    order_list, product_count_list = db.get_order_list(from_date,
+                                                       to_date,
+                                                       selected_product_list)
     return render_template("reports/order-overview.html",
                            from_date=from_date,
                            to_date=to_date,

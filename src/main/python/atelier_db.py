@@ -63,6 +63,7 @@ class AtelierDB:
         return self.query_one("select * from customer where id = %s", (id))
 
     def get_customer_order_list(self, customer_id):
+        ## TODO doesn't always work, e.g.: http://localhost:5000/customer/15882
         return self.query_list("select * from customer_order where customer_id = %s", (customer_id))
 
     def find_customers_by_name(self, name):
@@ -180,6 +181,10 @@ class AtelierDB:
 
     ## Reports
     def get_order_list(self, from_date, to_date, product_list=[]):
+        """
+        If :product_list  is empty, all products will be included in the report.
+        """
+
         # Since we use less than and greater than in the dates, we
         # adjust the input dates accordingly
 
@@ -189,7 +194,12 @@ class AtelierDB:
         if isinstance(to_date, datetime):
             to_date = to_date + timedelta(days=1)
 
-        ## TODO get_order_list: heed the product_list: http://stackoverflow.com/questions/589284/imploding-a-list-for-use-in-a-python-mysqldb-in-clause/589416#589416
+        if len(product_list) == 0:
+            product_list_dict = self.query_list("select id from product", None)
+            for el in product_list_dict:
+                product_list.append(el["id"])
+
+        product_in_string = ",".join(['%s'] * len(product_list))
 
         query = """
         select
@@ -207,11 +217,12 @@ class AtelierDB:
         and c.id=o.customer_id
         and o.creation_date > %s
         and o.creation_date < %s
+        and oi.product_id in (""" + product_in_string + """)
         order by o.creation_date
         """
+        result = self.query_list(query, (from_date, to_date) + tuple(product_list))
 
-        result = self.query_list(query, (from_date, to_date))
-
+        # TODO get product_count_list sorted by count
         product_count_list={}
         for r in result:
             key = r["product_name"]

@@ -15,11 +15,12 @@
       {% for product in products %}
       <tr>
         <td>{{ product["id"] }}</td>
-        <td><a href="/product/{{ product['id'] }}">{{ product["name"] }}</a></td>
+        <td><a href="/product/{{ product['id'] }}">
+          {{ product["name"] | sn}}</a></td>
         <td>{{ product["creation_date"] | sn }}</td>
         <td>{{ product["price"] }}</td>
         <td>{{ product["production_time"] }} dager</td>
-        <td>{{ product["pt.name"].decode("utf-8") }}</td>
+        <td>{{ product["pt.name"] | sn }}</td>
       </tr>
       {% endfor %}
     </table>

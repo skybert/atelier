@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}
-      <h1>Ordreoversikt</h1>
+      <h1>Ordreoversikt {{ from_date | sn }} → {{ to_date | sn }}</h1>
 {% endblock %}
 {% block content %}
 
@@ -34,6 +34,24 @@
           </div>
         </div>
         <div class="form-group">
+          <label class="control-label" for="selected_product_list">
+            Produkter
+          </label>
+          <select id="selected_product_list"
+                  name="selected_product_list"
+                  type="multiple"
+                  class="form-control"
+                  multiple
+                  >
+            <!-- TODO: add selected attribute to <option/> if it was a part of the query performed -->
+            {% for product in product_list  %}
+            <option value="{{ product['id'] }}">
+              {{ product["name"] | sn }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
           <div class="col-xs-offset-2 col-xs-10">
             <button type="submit" class="btn btn-primary">
               Få oversikt
@@ -49,7 +67,7 @@
           <ul>
           {% for product_name, count in product_count_list.items() %}
             <li>
-              {{ product_name }}: {{ count }}
+              {{ product_name | sn }}: {{ count }}
             </li>
           {% endfor %}
           </ul>
@@ -63,7 +81,7 @@
         {% for product_name, count in product_count_list.items() %}
         {
           value: {{ count }},
-          label: "{{ product_name }}",
+          label: "{{ product_name | sn }}",
           color: "rgb(" +
                     Math.floor((Math.random() * 255)) + ", " +
                     Math.floor((Math.random() * 255)) + "," +
@@ -88,8 +106,8 @@
         <tr>
           <td>
             <a href="/customer/{{ order['customer_id'] }}">
-              {{ order["first_name"] }}
-              {{ order["last_name"] }}
+              {{ order["first_name"] | sn }}
+              {{ order["last_name"] | sn }}
             </a>
           </td>
           <td>
@@ -97,7 +115,7 @@
           </td>
           <td>
             <a href="/product/{{ order['product_id'] }}">
-              {{ order["product_name"] }}
+              {{ order["product_name"] | sn }}
             </a>
           </td>
           <td>
