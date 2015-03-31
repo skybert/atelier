@@ -173,6 +173,10 @@ class AtelierDB:
         """
         return self.query_list(query, None)
 
+    def update_product(self, form):
+        update_sql, values = sql.get_sql_and_values("product", form)
+        self.query_one(update_sql, tuple(values))
+
     def delete_product(self, id):
         return self.delete("product", id)
 
