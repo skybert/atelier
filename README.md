@@ -22,6 +22,16 @@ See the [COPYING](COPYING) file for more information on licensing.
 You need a Python 2.7 runtime environment a MySQL compatible database,
 like [Percona](http://percona.com).
 
+## Upgarde notes
+
+If you're running an older version of the Atelier DB (pre 2015-03-31),
+you need to remove the `total_amount` column from the `customer_order`
+table:
+
+```
+alter table customer_order drop column total_amount;
+```
+
 Cheers,
 
 -Torstein
