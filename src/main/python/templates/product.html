@@ -27,7 +27,7 @@
             <input class="form-control"
                    id="id"
                    name="id"
-                   placeholder="produktnummer"
+                   placeholder="Registreringsdato"
                    value="{{ product["creation_date"] | sn }}"
                    readonly/>
           </div>
@@ -73,7 +73,9 @@
             Produkttype
           </label>
           <div class="col-xs-10">
-            <select class="form-control">
+            <select id="product_type_id"
+                    name="product_type_id"
+                    class="form-control">
               {% for pt in product_type_list %}
                 {% if product["product_type_id"] == pt["id"] %}
               <option value="{{ pt['id'] }}" selected>
