@@ -176,6 +176,9 @@ class AtelierDB:
     def delete_product(self, id):
         return self.delete("product", id)
 
+    def get_product_type_list(self):
+        return self.query_list("select * from product_type", None)
+
     ## Reports
     def get_order_list(self, from_date, to_date, product_list=[]):
         """

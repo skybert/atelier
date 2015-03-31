@@ -16,8 +16,9 @@ from flask import url_for
 
 from atelier_db import AtelierDB
 import atelier_conf
-from atelier_filters import filter_suppress_none
+from atelier_filters import filter_iso_date
 from atelier_filters import filter_object_suppress_none
+from atelier_filters import filter_suppress_none
 
 app = Flask(__name__, static_url_path="/files", static_folder="files")
 
@@ -52,7 +53,9 @@ def get_product(id):
     product = db.get_product(id)
     if product == None:
         abort(404)
-    return render_template("product.html", product=product)
+    return render_template("product.html",
+                           product=product,
+                           product_type_list=db.get_product_type_list())
 
 @app.route("/product/<id>", methods = ["POST"])
 def update_product(id):
@@ -222,6 +225,7 @@ if __name__ == '__main__':
     conf_data = atelier_conf.read_conf_from_file()
     app.jinja_env.filters["sn"] = filter_suppress_none
     app.jinja_env.filters["sdn"] = filter_object_suppress_none
+    app.jinja_env.filters["iso_date"] = filter_iso_date
     db = AtelierDB(
         conf_data["db"]["host"],
         conf_data["db"]["user"],
