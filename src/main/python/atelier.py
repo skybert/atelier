@@ -163,7 +163,6 @@ def delete_order_item(id):
     order_item_total = order_item["total_amount"]
     order_id = order_item["order_id"]
     db.delete_order_item(id)
-    db.update_order_total(order_id, (order_item_total * -1))
     return redirect(url_for("get_order", id = order_item["order_id"]))
 
 @app.route("/order/<id>", methods = ["GET"])

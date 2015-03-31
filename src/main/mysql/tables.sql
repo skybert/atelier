@@ -44,7 +44,6 @@ create table customer_order
  updated_date DATETIME,
  delivery_date DATETIME,
  paid_amount DECIMAL (9,2),
- total_amount DECIMAL (9,2),
  comment VARCHAR(255),
  newspaper_allowed INTEGER not null,
  marketing_allowed INTEGER not null,

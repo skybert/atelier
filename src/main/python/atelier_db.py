@@ -90,7 +90,18 @@ class AtelierDB:
 
     ## Order
     def get_order(self, id):
-        return self.query_one("select * from customer_order where id = %s", (id))
+        query = """
+        select
+          o.*,
+          sum(oi.total_amount) as total_amount
+        from
+          customer_order o,
+          order_item oi
+        where
+          o.id = oi.order_id
+          and o.id = %s
+        """
+        return self.query_one(query, (id))
 
     def create_order(self, form):
         self.set_creation_date_to_now(form)
@@ -141,7 +152,7 @@ class AtelierDB:
 
         ## IMPROVEMENT make this update excute in the same tranaction as the
         ## order item insert.
-        self.update_order_total(order_id, order_item_total)
+#        self.update_order_total(order_id, order_item_total)
 
         return self.insert(update_sql, tuple(values))
 
