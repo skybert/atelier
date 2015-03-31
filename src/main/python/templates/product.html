@@ -6,14 +6,15 @@
       <form action="/product/{{ product['id'] }}"
             method="post"
             class="form-horizontal">
-
+        {% if product["id"]: %}
         <div class="form-group">
-          <label class="control-label col-xs-2" for="id">Produktnummer</label>
+          <label class="control-label col-xs-2" for="id">
+            Produktnummer
+          </label>
           <div class="col-xs-10">
             <input class="form-control"
                    id="id"
                    name="id"
-                   placeholder="produktnummer"
                    value="{{ product['id'] }}"
                    readonly/>
           </div>
@@ -27,11 +28,11 @@
             <input class="form-control"
                    id="id"
                    name="id"
-                   placeholder="Registreringsdato"
                    value="{{ product["creation_date"] | sn }}"
                    readonly/>
           </div>
         </div>
+        {% endif %}
         <div class="form-group">
           <label class="control-label col-xs-2" for="name">Navn</label>
           <div class="col-xs-10">
@@ -39,7 +40,7 @@
                    id="name"
                    name="name"
                    value="{{ product['name'] | sn }}"
-                   placeholder="name"/>
+                   required />
           </div>
         </div>
         <div class="form-group">
@@ -50,7 +51,7 @@
                    name="price"
                    value="{{ product['price'] | sn }}"
                    type="number"
-                   placeholder="pris"/>
+                   required />
           </div>
         </div>
         <div class="form-group">
@@ -64,8 +65,8 @@
                    value="{{ product['production_time'] | sn }}"
                    type="number"
                    min="0"
-                   placeholder="Hvor lang tid det tar å levere dette"
-                   title="Hvor lang tid det tar å levere dette"/>
+                   placeholder="Hvor lang tid det tar å levere dette?"
+                   title="Hvor lang tid det tar å levere dette?"/>
           </div>
         </div>
         <div class="form-group">

@@ -48,6 +48,13 @@ def get_product_list():
         abort(404)
     return render_template("product-list.html", products=products)
 
+@app.route("/product", methods = ["GET"])
+def get_new_product_form():
+    return render_template("product.html",
+                           product={},
+                           product_type_list=db.get_product_type_list())
+
+
 @app.route("/product/<id>", methods = ["GET"])
 def get_product(id):
     product = db.get_product(id)
@@ -56,6 +63,13 @@ def get_product(id):
     return render_template("product.html",
                            product=product,
                            product_type_list=db.get_product_type_list())
+
+
+@app.route("/product", methods = ["POST"])
+@app.route("/product/", methods = ["POST"])
+def create_product():
+    id = db.create_product(request.form)
+    return redirect(url_for("get_product", id = id))
 
 @app.route("/product/<id>", methods = ["POST"])
 def update_product(id):
