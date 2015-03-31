@@ -205,15 +205,18 @@ def order_overview():
         to_date = datetime.today()
 
     product_list = db.get_product_list()
-    order_list, product_count_list = db.get_order_list(from_date,
-                                                       to_date,
-                                                       selected_product_list)
+    order_list, product_count_list, total_amount = db.get_order_list(
+        from_date,
+        to_date,
+        selected_product_list)
+
     return render_template("reports/order-overview.html",
                            from_date=from_date,
                            to_date=to_date,
                            product_list=product_list,
                            order_list=order_list,
-                           product_count_list=product_count_list)
+                           product_count_list=product_count_list,
+                           total_amount=total_amount)
 
 @app.route("/about")
 def about():

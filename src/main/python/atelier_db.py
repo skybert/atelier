@@ -230,6 +230,18 @@ class AtelierDB:
         """
         result = self.query_list(query, (from_date, to_date) + tuple(product_list))
 
+        query = """
+        select sum(oi.total_amount) as total_amount
+        from order_item oi, customer_order o, product p
+        where o.id=oi.order_id
+        and p.id=oi.product_id
+        and o.creation_date > %s
+        and o.creation_date < %s
+        and oi.product_id in (""" + product_in_string + """)
+        """
+        total_amount = self.query_list(query, (from_date, to_date) + tuple(product_list))
+
+
         # TODO get product_count_list sorted by count
         product_count_list={}
         for r in result:
@@ -237,4 +249,4 @@ class AtelierDB:
             product_count_list.setdefault(key, 0)
             product_count_list[key] += 1
 
-        return result, product_count_list
+        return result, product_count_list, total_amount
