@@ -108,7 +108,7 @@
           <select id="product_id" name="product_id" class="form-control">
             {% for product in product_list %}
               <option value="{{ product['id'] }}">
-                {{ product['name'].decode("utf-8") }}
+                {{ product['name'] | sn }}
               </option>
             {% endfor %}
           </select>
