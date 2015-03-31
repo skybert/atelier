@@ -79,9 +79,13 @@
           <div class="col-xs-10">
             <select class="form-control">
               {% for pp in post_place_list %}
+                {% if customer["post_code"] == pp["post_code"] %}
+              <option value="{{ pp['id'] }}" selected>
+                {% else %}
               <option value="{{ pp['id'] }}">
+                {% endif %}
                 {{ pp["post_code"]  }}
-                {{ pp["post_place"].decode("utf-8") }}
+                {{ pp["post_place"] | sn }}
               </option>
               {% endfor %}
             </select>
@@ -137,7 +141,7 @@
             <input class="form-control"
                    id="birth_date"
                    name="birth_date"
-                   value="{{ customer['birth_date'] | sn }}"
+                   value="{{ customer['birth_date'] | iso_date }}"
                    type="date"
                    placeholder="birth_date"/>
 
