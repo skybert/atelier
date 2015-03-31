@@ -151,7 +151,6 @@ def update_order_item(id):
     form["id"] = id
     db.update_order_item(form)
     # TODO update_order_item update order item total amount
-    # TODO update_order_item update order total amount
     return redirect(url_for("get_order_item", id=id))
 
 @app.route("/order-item/<id>/delete", methods = ["POST"])
