@@ -79,7 +79,9 @@ def update_product(id):
 @app.route("/product/<id>/delete", methods = ["POST"])
 def delete_product(id):
     """Deletes order only if it's not being used"""
-    # TODO delete_product only if it's not being used
+    # IMPROVEMENT delete_product only if it's not being used (right
+    # now, the DB constraints and Flask error handler takes care of
+    # this).
     db.delete_product(id)
 
 @app.route("/customer/<id>", methods = ["GET"])
