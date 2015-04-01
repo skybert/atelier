@@ -77,12 +77,12 @@
             Postnummer
           </label>
           <div class="col-xs-10">
-            <select class="form-control">
+            <select id="post_code" name="post_code" class="form-control">
               {% for pp in post_place_list %}
                 {% if customer["post_code"] == pp["post_code"] %}
-              <option value="{{ pp['id'] }}" selected>
+              <option value="{{ pp['post_code'] }}" selected>
                 {% else %}
-              <option value="{{ pp['id'] }}">
+              <option value="{{ pp['post_code'] }}">
                 {% endif %}
                 {{ pp["post_code"]  }}
                 {{ pp["post_place"] | sn }}
@@ -197,10 +197,13 @@
         <table class="table table-hover">
           <tr>
             <th>
-              Ordre #
+              Ordrenummer
             </th>
             <th>
               Opprettet
+            </th>
+            <th>
+              Kommentar
             </th>
           </tr>
           {% for order in order_list %}
@@ -210,9 +213,8 @@
                 {{ order["id"] }}
               </a>
             </td>
-            <td>
-              {{ order["creation_date"] }}
-            </td>
+            <td>{{ order["creation_date"] }}</td>
+            <td>{{ order["comment"] | sn }}</td>
           </tr>
           {% endfor %}
         </table>
