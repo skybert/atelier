@@ -231,25 +231,35 @@ class AtelierDB:
           oi.id as order_item_id,
           oi.product_id,
           p.name as product_name
-        from customer_order o, order_item oi, product p, customer c
-        where o.id=oi.order_id
-        and p.id=oi.product_id
-        and c.id=o.customer_id
-        and o.creation_date > %s
-        and o.creation_date < %s
-        and oi.product_id in (""" + product_in_string + """)
+        from
+          customer_order o,
+          order_item oi,
+          product p,
+          customer c
+        where
+          o.id=oi.order_id
+          and p.id=oi.product_id
+          and c.id=o.customer_id
+          and o.creation_date > %s
+          and o.creation_date < %s
+          and oi.product_id in (""" + product_in_string + """)
         order by o.creation_date
         """
         result = self.query_list(query, (from_date, to_date) + tuple(product_list))
 
         query = """
-        select sum(oi.total_amount) as total_amount
-        from order_item oi, customer_order o, product p
-        where o.id=oi.order_id
-        and p.id=oi.product_id
-        and o.creation_date > %s
-        and o.creation_date < %s
-        and oi.product_id in (""" + product_in_string + """)
+        select
+          sum(oi.total_amount) as total_amount
+        from
+          order_item oi,
+          customer_order o,
+          product p
+        where
+          o.id=oi.order_id
+          and p.id=oi.product_id
+          and o.creation_date > %s
+          and o.creation_date < %s
+          and oi.product_id in (""" + product_in_string + """)
         """
         total_amount = self.query_list(query, (from_date, to_date) + tuple(product_list))
 
