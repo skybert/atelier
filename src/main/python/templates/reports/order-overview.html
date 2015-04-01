@@ -8,27 +8,27 @@
             method="get"
             class="form-inline">
         <div class="form-group">
-          <label class="control-label col-xs-2" for="from_date">
+          <label class="control-label" for="from_date">
             Fra dato
           </label>
-          <div class="col-xs-10">
+          <div class="">
             <input class="form-control"
                    id="from_date"
                    name="from_date"
-                   value="{{ from_date | sn }}"
+                   value="{{ from_date | iso_date }}"
                    type="date"
                    placeholder="from_date"/>
           </div>
         </div>
         <div class="form-group">
-          <label class="control-label col-xs-2" for="to_date">
+          <label class="control-label" for="to_date">
             Til dato
           </label>
-          <div class="col-xs-10">
+          <div class="">
             <input class="form-control"
                    id="to_date"
                    name="to_date"
-                   value="{{ to_date | sn }}"
+                   value="{{ to_date | iso_date }}"
                    type="date"
                    placeholder="to_date"/>
           </div>
@@ -37,28 +37,32 @@
           <label class="control-label" for="selected_product_list">
             Produkter
           </label>
-          <select id="selected_product_list"
-                  name="selected_product_list"
-                  type="multiple"
-                  class="form-control"
-                  multiple
-                  >
-            <!-- TODO: add selected attribute to <option/> if it was a part of the query performed -->
+          <div>
+            <select id="selected_product_list"
+                    name="selected_product_list"
+                    type="multiple"
+                    class="form-control"
+                    multiple
+                    >
+                    <!-- TODO: add selected attribute to <option/> if it was a part of the query performed -->
             {% for product in product_list  %}
-            <option value="{{ product['id'] }}">
-              {{ product["name"] | sn }}
-            </option>
+              <option value="{{ product['id'] }}">
+                {{ product["name"] | sn }}
+              </option>
             {% endfor %}
-          </select>
+            </select>
+          </div>
         </div>
         <div class="form-group">
-          <div class="col-xs-offset-2 col-xs-10">
+          <div class="">
             <button type="submit" class="btn btn-primary">
               Få oversikt
             </button>
           </div>
         </div>
       </form>
+      <!-- TODO list the number of products that's been included in
+           the search -->
       <h2>
         Totalt {{ order_list | length }} ordre med en omsetning på kr
         <strong>{{ total_amount[0]["total_amount"] | sn }}</strong>
