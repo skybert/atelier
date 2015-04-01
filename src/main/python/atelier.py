@@ -6,7 +6,6 @@ from decimal import Decimal
 from locale import LC_ALL
 from locale import setlocale
 
-import flask
 from flask import Flask
 from flask import abort
 from flask import redirect
@@ -16,6 +15,7 @@ from flask import url_for
 
 from atelier_db import AtelierDB
 import atelier_conf
+from atelier_date import get_datetime_or_past_datetime
 from atelier_filters import filter_iso_date
 from atelier_filters import filter_object_suppress_none
 from atelier_filters import filter_suppress_none
@@ -201,14 +201,9 @@ def add_order_item(id):
 
 @app.route("/reports/order-overview")
 def order_overview():
-    from_date = request.args.get("from_date")
-    to_date = request.args.get("to_date")
+    from_date = get_datetime_or_past_datetime(request.args.get("from_date"), 30)
+    to_date = get_datetime_or_past_datetime(request.args.get("to_date"), 0)
     selected_product_list = request.args.getlist("selected_product_list")
-
-    if from_date is None:
-        from_date = datetime.today() - timedelta(days=30)
-    if to_date is None:
-        to_date = datetime.today()
 
     product_list = db.get_product_list()
     order_list, product_count_list, total_amount = db.get_order_list(
@@ -224,21 +219,22 @@ def order_overview():
                            product_count_list=product_count_list,
                            total_amount=total_amount)
 
-@app.route("/about")
-def about():
-    info={}
-    info["bootstrap-version"] = '3.3.1'
-    info["flask_version"] = flask.__version__
-    info["author"] = "Torstein Krause Johansen"
+@app.route("/reports/sessions-without-further-orders")
+def sessions_without_further_orders():
+    from_date = get_datetime_or_past_datetime(request.args.get("from_date"), 45)
+    to_date = get_datetime_or_past_datetime(request.args.get("to_date"), 14)
 
-    con = db.get_db_connection()
-    with con:
-        cur = con.cursor()
-        cur.execute("select version()")
-        db_version = cur.fetchone()
+    product_type_enlargement = 1
+    product_type_photo_session = 4
+    order_list = db.get_order_list_without_product_type(from_date,
+                                                        to_date,
+                                                        product_type_photo_session,
+                                                        product_type_enlargement)
 
-    info["mysql_version"] = db_version[0]
-    return render_template("about.html", about_info=info)
+    return render_template("reports/sessions-without-further-orders.html",
+                           from_date=from_date,
+                           to_date=to_date,
+                           order_list=order_list)
 
 @app.errorhandler(404)
 def page_not_found(error):

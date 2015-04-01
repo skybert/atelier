@@ -1,7 +1,8 @@
-import MySQLdb as mdb
-import atelier_sql as sql
 from datetime import datetime
 from datetime import timedelta
+from sets import Set
+import MySQLdb as mdb
+import atelier_sql as sql
 
 class AtelierDB:
     """Module which provides Atelier DB access.
@@ -272,3 +273,70 @@ class AtelierDB:
             product_count_list[key] += 1
 
         return result, product_count_list, total_amount
+
+    def get_order_list_without_product_type(self,
+                                            from_date,
+                                            to_date,
+                                            with_product_type_id,
+                                            without_product_type_id):
+        if isinstance(from_date, datetime):
+            from_date = from_date - timedelta(days=1)
+        if isinstance(to_date, datetime):
+            to_date = to_date + timedelta(days=1)
+
+        query = """
+        select
+          o.id as order_id,
+          oi.id as order_item_id,
+          oi.product_id,
+          pt.id as product_type_id
+        from
+          customer_order o,
+          order_item oi,
+          product p,
+          product_type pt
+        where
+          o.id = oi.order_id
+          and oi.product_id = p.id
+          and pt.id = p.product_type_id
+          and o.creation_date > %s
+          and o.creation_date < %s
+          and p.product_type_id = %s
+        """
+
+        candidate_list = self.query_list(
+            query, (from_date, to_date, with_product_type_id))
+        candidate_order_id_list = Set()
+        ok_order_id_list = Set()
+
+        for candidate in candidate_list:
+            candidate_order_id_list.add(candidate["order_id"])
+            if candidate["product_type_id"] == without_product_type_id:
+                ok_order_id_list.add(candidate["order_id"])
+
+        not_ok_order_id_list = candidate_order_id_list - ok_order_id_list
+        if len(not_ok_order_id_list) == 0:
+            return []
+
+        order_in_string = ",".join(['%s'] * len(not_ok_order_id_list))
+
+        query = """
+        select
+          c.first_name,
+          c.last_name,
+          o.id as order_id,
+          o.creation_date,
+          p.name as product_name
+        from
+          customer c,
+          customer_order o,
+          order_item oi,
+          product p
+        where
+          c.id = o.customer_id
+          and o.id = oi.order_id
+          and p.id = oi.product_id
+          and o.id in (""" + order_in_string + """)"""
+
+        return self.query_list(query, tuple(not_ok_order_id_list))
+
