@@ -314,6 +314,9 @@ class AtelierDB:
             if candidate["product_type_id"] == without_product_type_id:
                 ok_order_id_list.add(candidate["order_id"])
 
+        ## TODO includes too many orders in ont_ok_list
+        ## http://localhost:5000/reports/sessions-without-further-orders?from_date=2014-12-01&to_date=2014-12-31
+        
         not_ok_order_id_list = candidate_order_id_list - ok_order_id_list
         if len(not_ok_order_id_list) == 0:
             return []
