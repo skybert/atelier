@@ -10,17 +10,17 @@ Run the command ```what-to-do-next``` to see what to do next :-)
 - TODO CRUD order
 
 ### Reports
-- All customers that have been ordering a certain set of products
+- DONE All customers that have been ordering a certain set of products
   within a certain time span.
 
-- number of items sold per product
+- DONE number of items sold per product
 
-- compare number of items sold on a selected set of products
+- DONE compare number of items sold on a selected set of products
 
 - overview of customers who hasn't ordered anything, narrowed by
   selected dates
 
-- expiry date for viewing place after a photo session.
+- expiry date for viewing price after a photo session.
 
 - overview of photo session where the viewing price is about to expire
 
