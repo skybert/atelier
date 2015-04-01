@@ -177,6 +177,7 @@
           <th>Antall</th>
           <th>Sum</th>
           <th>Opprettet</th>
+          <th>Kommentar</th>
           <th></th>
         </tr>
         {% for order_item in order_item_list %}
@@ -193,6 +194,7 @@
           <td>{{ order_item["number_of_items"] }}</td>
           <td>kr {{ order_item["total_amount"] }}</td>
           <td>{{ order_item["creation_date"] }}</td>
+          <td>{{ order_item["comment"] | sn }}</td>
           <td>
             <form action="/order-item/{{ order_item['id'] }}/delete" method="post">
               <button type="submit" class="btn btn-danger">

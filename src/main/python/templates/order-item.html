@@ -2,17 +2,18 @@
 {% block title %}
       <h1>
         Varekjøp nummer {{ order_item["id"] }},
-        ordre nummer #{{ order_item['order_id'] }}
+        ordre nummer {{ order_item['order_id'] }}
       </h1>
 {% endblock %}
 {% block content %}
       <div class="well">
         <a href="/order/{{ order_item["order_id"] }}">
-          Tilbake til ordre #{{ order_item["order_id" ] | sn }}
+          ← Tilbake til ordre nummer {{ order_item["order_id" ] | sn }}
         </a>
       </div>
       <form action="/order-item/{{ order_item['id'] }}"
-            method="post" class="form-inline">
+            method="post"
+            class="form-horizontal">
         <div class="form-group">
           <label class="control-label" for="product_id">Produkt</label>
           <select id="product_id" name="product_id" class="form-control">
@@ -26,6 +27,8 @@
               </option>
             {% endfor %}
           </select>
+        </div>
+        <div class="form-group">
           <label class="control-label" for="number_of_items">Antall</label>
           <input
             id="number_of_items"
@@ -35,6 +38,16 @@
             placeholder="antall"
             value="{{ order_item['number_of_items'] }}"
             />
+        </div>
+        <div class="form-group">
+          <label class="control-label" for="comment">Kommentar</label>
+          <textarea
+            id="comment"
+            name="comment"
+            class="form-control"
+            >{{ order_item["comment"] | sn }}</textarea>
+        </div>
+        <div class="form-group">
           <button type="submit" class="btn btn-primary">
             Oppdater varekjøp
           </button>

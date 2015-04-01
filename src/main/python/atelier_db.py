@@ -129,15 +129,16 @@ class AtelierDB:
     def get_order_item_list(self, order_id):
         query = """
         select
-          o.creation_date,
-          o.id,
-          o.number_of_items,
-          o.total_amount,
+          oi.creation_date,
+          oi.id,
+          oi.comment,
+          oi.number_of_items,
+          oi.total_amount,
           p.name as product_name,
           p.price as product_price
-        from order_item o, product p
-        where o.order_id = %s
-        and o.product_id = p.id
+        from order_item oi, product p
+        where oi.order_id = %s
+        and oi.product_id = p.id
         """
         return self.query_list(query, (order_id))
 
