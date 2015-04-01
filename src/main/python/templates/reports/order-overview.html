@@ -60,7 +60,8 @@
         </div>
       </form>
       <h2>
-        Totalt i perioden: kr <strong>{{ total_amount[0]["total_amount"] | sn }}</strong>
+        Totalt {{ order_list | length }} ordre med en omsetning på kr
+        <strong>{{ total_amount[0]["total_amount"] | sn }}</strong>
       </h2>
       <div class="row">
         <div class="col-md-8">
