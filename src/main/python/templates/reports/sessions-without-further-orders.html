@@ -43,9 +43,7 @@
             <a href="/order/{{ order["order_id"] }}">{{ order["order_id"] }}</a>
           </td>
           <td>
-            <a href="/product/{{ order['product_id'] }}">
-              {{ order["product_name"] | sn }}
-            </a>
+            {{ order["product_name"] | sn }}
           </td>
           <td>
             {{ order['creation_date'] | sn }}
