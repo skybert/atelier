@@ -347,3 +347,17 @@ class AtelierDB:
 
         return self.query_list(query, (with_product_type_id,) + tuple(not_ok_order_id_list))
 
+    def get_order_production_time(self, order_id):
+        query = """
+        select
+          max(p.production_time) as production_time
+        from
+          customer_order o,
+          order_item oi,
+          product p
+        where
+          o.id = oi.order_id
+          and p.id = oi.product_id
+          and o.id = %s;
+        """
+        return self.query_one(query, (order_id))

@@ -17,7 +17,7 @@ Run the command ```what-to-do-next``` to see what to do next :-)
 
 - DONE compare number of items sold on a selected set of products
 
-- overview of customers who hasn't ordered anything, narrowed by
+- DONE overview of customers who hasn't ordered anything, narrowed by
   selected dates
 
 - expiry date for viewing price after a photo session.
