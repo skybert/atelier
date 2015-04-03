@@ -144,17 +144,15 @@ class AtelierDB:
         return self.query_list(query, (order_id))
 
     def add_order_item(self, form):
-        order_id = form["order_id"]
         price = self.get_product_price(form["product_id"])
         order_item_total =  price *  int(form["number_of_items"])
         form["total_amount"] = order_item_total
         update_sql, values = sql.get_sql_and_values("order_item", form)
         self.set_creation_date_to_now(form)
-        self.logger.debug("update_sql="+ update_sql + "\n" + str(values))
 
         ## IMPROVEMENT make this update excute in the same tranaction as the
         ## order item insert.
-#        self.update_order_total(order_id, order_item_total)
+        #        self.update_order_total(order_id, order_item_total)
 
         return self.insert(update_sql, tuple(values))
 
