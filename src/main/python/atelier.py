@@ -224,8 +224,8 @@ def sessions_without_further_orders():
     from_date = get_datetime_or_past_datetime(request.args.get("from_date"), 45)
     to_date = get_datetime_or_past_datetime(request.args.get("to_date"), 14)
 
-    product_type_enlargement = 1
-    product_type_photo_session = 4
+    product_type_enlargement = 1L
+    product_type_photo_session = 4L
     order_list = db.get_order_list_without_product_type(from_date,
                                                         to_date,
                                                         product_type_photo_session,

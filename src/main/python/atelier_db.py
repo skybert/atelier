@@ -279,6 +279,11 @@ class AtelierDB:
                                             to_date,
                                             with_product_type_id,
                                             without_product_type_id):
+        """
+        Returns an order list containing orders with a product of tye
+        :without_product_type_id but without any products of type
+        :without_product_type_id
+        """
         if isinstance(from_date, datetime):
             from_date = from_date - timedelta(days=1)
         if isinstance(to_date, datetime):
@@ -301,28 +306,28 @@ class AtelierDB:
           and pt.id = p.product_type_id
           and o.creation_date > %s
           and o.creation_date < %s
-          and p.product_type_id = %s
         """
 
-        candidate_list = self.query_list(
-            query, (from_date, to_date, with_product_type_id))
+        candidate_list = self.query_list(query, (from_date, to_date))
         candidate_order_id_list = Set()
         ok_order_id_list = Set()
 
         for candidate in candidate_list:
-            candidate_order_id_list.add(candidate["order_id"])
+            # only interested in orders that have a product of type
+            # without_product_type_id
+            if candidate["product_type_id"] == with_product_type_id:
+                candidate_order_id_list.add(candidate["order_id"])
+            ## If an order contains a product of type
+            ## with_product_type_id, the order is ok and should not be
+            ## included in the result
             if candidate["product_type_id"] == without_product_type_id:
                 ok_order_id_list.add(candidate["order_id"])
 
-        ## TODO includes too many orders in ont_ok_list
-        ## http://localhost:5000/reports/sessions-without-further-orders?from_date=2014-12-01&to_date=2014-12-31
-        
         not_ok_order_id_list = candidate_order_id_list - ok_order_id_list
         if len(not_ok_order_id_list) == 0:
             return []
 
         order_in_string = ",".join(['%s'] * len(not_ok_order_id_list))
-
         query = """
         select
           c.first_name,
@@ -338,8 +343,9 @@ class AtelierDB:
         where
           c.id = o.customer_id
           and o.id = oi.order_id
+          and p.product_type_id = %s
           and p.id = oi.product_id
           and o.id in (""" + order_in_string + """)"""
 
-        return self.query_list(query, tuple(not_ok_order_id_list))
+        return self.query_list(query, (with_product_type_id,) + tuple(not_ok_order_id_list))
 
