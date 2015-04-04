@@ -5,7 +5,7 @@ Run the command ```what-to-do-next``` to see what to do next :-)
 ## Milestone features
 
 ### Basic CRUD
-- TODO CRUD customer
+- DONE CRUD customer
 - DONE CRU product
 - DONE CRUD order
 - DONE CRUD order item
