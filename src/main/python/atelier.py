@@ -73,7 +73,7 @@ def create_product():
 
 @app.route("/product/<id>", methods = ["POST"])
 def update_product(id):
-    product = db.update_product(request.form)
+    db.update_product(request.form)
     return redirect(url_for("get_product", id = id))
 
 @app.route("/product/<id>/delete", methods = ["POST"])

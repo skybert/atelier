@@ -2,7 +2,7 @@
 
 (
   cd $(dirname $0)
-  cat *.md |  grep -n -i -e TODO
+  grep -n -i -e TODO *.md
   find src/main/python \
        -maxdepth 2 \
        -name "*.py" -o -name "*.html" \

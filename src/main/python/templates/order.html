@@ -50,7 +50,6 @@
               <input class="form-control"
                      value="{{ order['total_amount'] | sn }}"
                      readonly/>
-              <span class="input-group-addon">,00</span>
             </div>
           </div>
         </div>
@@ -66,7 +65,6 @@
                      name="paid_amount"
                      value="{{ order['paid_amount'] | sn }}"
                      aria-label="Amount (to the nearest dollar)"/>
-              <span class="input-group-addon">,00</span>
             </div>
           </div>
         </div>
@@ -78,7 +76,6 @@
               <input class="form-control"
                      value="{{ order['total_amount'] - order['paid_amount'] }}"
                      readonly/>
-              <span class="input-group-addon">,00</span>
             </div>
           </div>
         </div>
