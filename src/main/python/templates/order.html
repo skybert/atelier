@@ -128,7 +128,7 @@
           </div>
         </div>
         <div class="form-group">
-          <div class="col-sm-12">
+          <div class="col-sm-3">
             <button name="update_order"
                     type="submit"
                     class="form-control btn btn-primary">
@@ -137,7 +137,10 @@
           </div>
         </div>
       </form>
-
+      <button class="btn btn-danger"
+              onclick="window.location.href = '/order/{{ order['id'] }}/delete'">
+        Slett ordre
+      </button>
       <h2>
         Varer
       </h2>
@@ -166,6 +169,7 @@
           </button>
         </div>
       </form>
+
       {% if order_item_list | length > 0 %}
       <table class="table table-hover" style="margin-top: 2em;">
         <tr>
@@ -193,7 +197,7 @@
           <td>{{ order_item["creation_date"] }}</td>
           <td>{{ order_item["comment"] | sn }}</td>
           <td>
-            <form action="/order-item/{{ order_item['id'] }}/delete" method="post">
+            <form action="/order-item/{{ order_item['id'] }}/delete" method="get">
               <button type="submit" class="btn btn-danger">
                 Slett
               </button>

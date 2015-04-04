@@ -63,6 +63,23 @@ class AtelierDB:
     def get_customer(self, id):
         return self.query_one("select * from customer where id = %s", (id))
 
+    def delete_customer(self, id):
+        return self.delete("customer", id)
+
+    def get_customer_id_by_order_id(self, order_id):
+        query = """
+        select
+          c.id
+        from
+          customer c,
+          customer_order o
+        where
+          o.customer_id = c.id
+          and o.id = %s
+        """
+        result = self.query_one(query, (order_id))
+        return result["id"]
+
     def get_customer_order_list(self, customer_id):
         sql="select * from customer_order where customer_id = %s"
         return self.query_list(sql, (customer_id))
@@ -114,8 +131,8 @@ class AtelierDB:
         self.query_one(update_sql, tuple(values))
 
     def get_order_item(self, id):
-        return self.query_one("select * from order_item where id = %s",
-                                       (id))
+        return self.query_one("select * from order_item where id = %s", (id))
+
     def update_order_item(self, form):
         update_sql, values = sql.get_sql_and_values("order_item", form)
         self.query_one(update_sql, tuple(values))
@@ -126,6 +143,13 @@ class AtelierDB:
 
     def delete_order_item(self, id):
         return self.delete("order_item", id)
+
+    def delete_order(self, id):
+        con = self.get_db_connection()
+        with con:
+            cur = con.cursor()
+            cur.execute("delete from order_item where order_id = %s", (id))
+            cur.execute("delete from customer_order where id = %s", (id))
 
     def get_order_item_list(self, order_id):
         query = """

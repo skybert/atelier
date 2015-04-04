@@ -79,6 +79,8 @@ def update_product(id):
 @app.route("/product/<id>/delete", methods = ["POST"])
 def delete_product(id):
     """Deletes order only if it's not being used"""
+    # TODO delete_product add confirmation screen for
+
     # IMPROVEMENT delete_product only if it's not being used (right
     # now, the DB constraints and Flask error handler takes care of
     # this).
@@ -112,6 +114,22 @@ def new_customer():
 def update_customer(id):
     db.update_customer(request.form)
     return redirect(url_for("get_customer", id = id, updated = True))
+
+@app.route("/customer/<id>/delete", methods = ["GET"])
+def get_customer_delete_page(id):
+    customer = db.get_customer(id)
+    order_list = db.get_customer_order_list(id)
+    return render_template("delete-customer.html",
+                           customer = customer,
+                           order_list = order_list)
+
+@app.route("/customer/<id>/delete", methods = ["POST", "DELETE"])
+def delete_customer(id):
+    """
+    Deletes a customer. Only possible if there customer doesn't have any orders
+    """
+    db.delete_customer(id)
+    return render_template("search.html")
 
 def clone_form_and_add_creation_date(form):
     result = form.copy()
@@ -164,6 +182,15 @@ def update_order_item(id):
     db.update_order_item(values)
     return redirect(url_for("get_order_item", id=id))
 
+@app.route("/order-item/<id>/delete", methods = ["GET"])
+def get_order_item_delete_page(id):
+    order_item = db.get_order_item(id)
+    order = db.get_order(order_item["order_id"])
+    return render_template("delete-order-item.html",
+                           order_item = order_item,
+                           order = order)
+
+
 @app.route("/order-item/<id>/delete", methods = ["POST"])
 def delete_order_item(id):
     """
@@ -171,6 +198,7 @@ def delete_order_item(id):
     """
     order_item = db.get_order_item(id)
     order_id = order_item["order_id"]
+
     db.delete_order_item(id)
     update_delivery_date(order_id)
     return redirect(url_for("get_order", id = order_item["order_id"]))
@@ -194,6 +222,20 @@ def get_order(id):
                            customer=customer,
                            order_item_list=order_item_list,
                            product_list=db.get_product_list())
+
+@app.route("/order/<id>/delete", methods = ["GET"])
+def get_order_delete_page(id):
+    order = db.get_order(id)
+    return render_template("delete-order.html", order = order)
+
+@app.route("/order/<id>/delete", methods = ["POST", "DELETE"])
+def delete_order(id):
+    customer = db.get_customer(db.get_customer_id_by_order_id(id))
+    db.delete_order(id)
+    message = "Ordre numer " + id + " slettet"
+    return render_template("customer.html",
+                           customer = customer,
+                           message = message)
 
 def update_delivery_date(order_id):
     order = db.get_order(order_id)

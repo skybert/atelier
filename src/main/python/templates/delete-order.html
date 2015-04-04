@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}
+      <h1>
+        Slette ordre nummer {{ order["id"] }} ?
+      </h1>
+      <p>
+        Opprettet: {{ order["creation_date"] }},
+        sist oppdatert: {{ order["updated_date"] | sdn }}
+      </p>
+{% endblock %}
+{% block content %}
+<div class="row">
+<div class="col-xs-3">
+
+     <form action="/order/{{ order['id'] }}/delete" method="post">
+       <button type="submit" class="btn btn-danger">
+         Ja, slett ordre numer {{ order["id"] }}
+       </button>
+     </form>
+</div>
+<div class="col-xs-3">
+     <form action="/order/{{ order['id'] }}" method="get">
+       <button type="submit" class="btn btn-success">
+         Nei, gå tilbake til ordre {{ order["id"] }}
+       </button>
+     </form>
+</div>
+</div>
+{% endblock %}

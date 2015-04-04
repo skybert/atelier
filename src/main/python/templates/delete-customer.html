@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}
+      <h1>
+        Slette kunde nummer {{ customer["id"] }},
+        {{ customer["first_name"] }} {{ customer["last_name"] }}?
+      </h1>
+      <p>
+        Opprettet: {{ customer["creation_date"] }}
+      </p>
+{% endblock %}
+{% block content %}
+  {% if order_list | length > 0 %}
+      <p class="bg-danger">
+        Kan ikke slette kunden, da denne har {{ order_list | length }}
+        ordre registrert på seg.
+      </p>
+      <div class="row">
+        <div class="col-xs-3">
+          <form action="/customer/{{ customer['id'] }}" method="get">
+            <button type="submit" class="btn btn-default">
+              Gå tilbake til kunde {{ customer["id"] }}
+            </button>
+          </form>
+        </div>
+      </div>
+  {% else %}
+      <div class="row">
+        <div class="col-xs-3">
+          <form action="/customer/{{ customer['id'] }}/delete" method="post">
+            <button type="submit" class="btn btn-danger">
+              Ja, slett kunde numer {{ customer["id"] }}
+            </button>
+          </form>
+        </div>
+        <div class="col-xs-3">
+          <form action="/customer/{{ customer['id'] }}" method="get">
+            <button type="submit" class="btn btn-success">
+              Nei, gå tilbake til kunde {{ customer["id"] }}
+            </button>
+          </form>
+        </div>
+      </div>
+  {% endif %}
+{% endblock %}
