@@ -368,6 +368,36 @@ class AtelierDB:
 
         return self.query_list(query, (with_product_type_id,) + tuple(not_ok_order_id_list))
 
+    def get_promise_list(self, from_date, to_date):
+        if isinstance(from_date, datetime):
+            from_date = from_date - timedelta(days=1)
+        if isinstance(to_date, datetime):
+            to_date = to_date + timedelta(days=1)
+
+        query = """
+        select
+          o.id as order_id,
+          o.delivery_date,
+          c.first_name,
+          c.last_name,
+          c.id as customer_id,
+          p.name as product_name
+        from
+          customer c,
+          customer_order o,
+          order_item oi,
+          product p
+        where
+          c.id = o.customer_id
+          and o.id = oi.order_id
+          and p.id = oi.product_id
+          and o.delivery_date > %s
+          and o.delivery_date < %s
+        order by o.delivery_date asc
+        """
+
+        return self.query_list(query, (from_date, to_date))
+
     def get_order_production_time(self, order_id):
         query = """
         select

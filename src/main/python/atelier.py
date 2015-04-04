@@ -312,6 +312,17 @@ def sessions_without_further_orders():
                            to_date=to_date,
                            order_list=order_list)
 
+@app.route("/reports/promise-list")
+def get_promise_list():
+    from_date = get_datetime_or_past_datetime(request.args.get("from_date"), 0)
+    to_date = get_datetime_or_past_datetime(request.args.get("to_date"), -14)
+
+    order_list = db.get_promise_list(from_date, to_date)
+    return render_template("reports/promise-list.html",
+                           from_date = from_date,
+                           to_date = to_date,
+                           order_list = order_list)
+
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template("error/404.html", error=error), 404
