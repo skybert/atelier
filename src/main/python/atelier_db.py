@@ -167,6 +167,10 @@ class AtelierDB:
         """
         return self.query_list(query, (order_id))
 
+    def get_order_item_list_by_product_id(self, product_id):
+        query = "select * from order_item where product_id = %s"
+        return self.query_list(query, (product_id))
+
     def add_order_item(self, form):
         update_sql, values = sql.get_sql_and_values("order_item", form)
         self.set_creation_date_to_now(form)

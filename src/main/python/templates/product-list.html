@@ -3,7 +3,14 @@
     <h1>Produkter</h1>
 {% endblock %}
 {% block content %}
-    <table class="table">
+      <div style="margin-bottom: 1em">
+        <form action="/product" method="get">
+          <button type="submit" class="btn btn-primary">
+            Opprett nytt produkt
+          </button>
+        </form>
+      </div>
+      <table class="table">
       <tr>
         <th>#</th>
         <th>Navn</th>

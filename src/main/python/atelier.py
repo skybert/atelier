@@ -68,13 +68,22 @@ def get_product(id):
 @app.route("/product", methods = ["POST"])
 @app.route("/product/", methods = ["POST"])
 def create_product():
-    id = db.create_product(request.form)
+    form = clone_form_and_add_creation_date(request.form)
+    id = db.create_product(form)
     return redirect(url_for("get_product", id = id))
 
 @app.route("/product/<id>", methods = ["POST"])
 def update_product(id):
     db.update_product(request.form)
     return redirect(url_for("get_product", id = id))
+
+@app.route("/product/<id>/delete", methods = ["GET"])
+def get_product_delete_page(id):
+    product = db.get_product(id)
+    order_item_list = db.get_order_item_list_by_product_id(id)
+    return render_template("delete-product.html",
+                           product = product,
+                           order_item_list = order_item_list)
 
 @app.route("/product/<id>/delete", methods = ["POST"])
 def delete_product(id):
@@ -85,6 +94,7 @@ def delete_product(id):
     # now, the DB constraints and Flask error handler takes care of
     # this).
     db.delete_product(id)
+    return redirect(url_for("get_product_list"))
 
 @app.route("/customer/<id>", methods = ["GET"])
 def get_customer(id, updated = False):

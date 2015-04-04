@@ -65,8 +65,8 @@
                    value="{{ product['production_time'] | sn }}"
                    type="number"
                    min="0"
-                   placeholder="Hvor lang tid det tar å levere dette?"
-                   title="Hvor lang tid det tar å levere dette?"/>
+                   placeholder="Hvor mange dager tar det å levere dette?"
+                   title="Hvor mange dager tar det å levere dette?"/>
           </div>
         </div>
         <div class="form-group">
@@ -103,7 +103,7 @@
       </form>
       {% if product["id"] %}
       <form action="/product/{{ product['id'] }}/delete"
-            method="post"
+            method="get"
             class="form-horizontal">
         <div class="form-group">
           <div class="col-xs-offset-2 col-xs-10">
