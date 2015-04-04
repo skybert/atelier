@@ -144,11 +144,6 @@ class AtelierDB:
         return self.query_list(query, (order_id))
 
     def add_order_item(self, form):
-        price = self.get_product_price(form["product_id"])
-        # IMPROVEMENT the calculation of total amount should not live
-        # in the data layer
-        order_item_total =  price *  int(form["number_of_items"])
-        form["total_amount"] = order_item_total
         update_sql, values = sql.get_sql_and_values("order_item", form)
         self.set_creation_date_to_now(form)
         return self.insert(update_sql, tuple(values))

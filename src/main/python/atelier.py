@@ -155,10 +155,13 @@ def get_order_item(id):
 
 @app.route("/order-item/<id>", methods = ["POST", "PUT"])
 def update_order_item(id):
-    form = request.form.copy()
-    form["id"] = id
-    db.update_order_item(form)
-    # TODO update_order_item update order item total amount
+    values = request.form.copy()
+    values["id"] = id
+
+    price = db.get_product_price(values["product_id"])
+    values["total_amount"] =  price *  int(values["number_of_items"])
+
+    db.update_order_item(values)
     return redirect(url_for("get_order_item", id=id))
 
 @app.route("/order-item/<id>/delete", methods = ["POST"])
@@ -197,7 +200,11 @@ def update_delivery_date(order_id):
     production_time = db.get_order_production_time(order_id)["production_time"]
     # IMPROVEMENT update_delivery_date more clever base date than the
     # order's creation date
-    delivery_date = order["creation_date"] + timedelta(days = production_time)
+    if production_time is not None:
+        delivery_date = order["creation_date"] + timedelta(days = production_time)
+    else:
+        delivery_date = order["creation_date"]
+
     values = {
         "id" : order_id,
         "delivery_date" : delivery_date
@@ -206,9 +213,13 @@ def update_delivery_date(order_id):
 
 @app.route("/order/<order_id>/item-list", methods = ["POST"])
 def add_order_item(order_id):
-    form = clone_form_and_add_creation_date(request.form)
-    form["order_id"] = order_id
-    db.add_order_item(form)
+    values = clone_form_and_add_creation_date(request.form)
+    values["order_id"] = order_id
+
+    price = db.get_product_price(values["product_id"])
+    values["total_amount"] =  price *  int(values["number_of_items"])
+
+    db.add_order_item(values)
     update_delivery_date(order_id)
     return redirect(url_for("get_order", id = order_id))
 
