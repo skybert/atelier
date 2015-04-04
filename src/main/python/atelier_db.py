@@ -348,6 +348,7 @@ class AtelierDB:
         order_in_string = ",".join(['%s'] * len(not_ok_order_id_list))
         query = """
         select
+          c.id as customer_id,
           c.first_name,
           c.last_name,
           o.id as order_id,
