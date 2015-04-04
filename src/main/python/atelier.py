@@ -168,8 +168,8 @@ def delete_order_item(id):
     """
     order_item = db.get_order_item(id)
     order_id = order_item["order_id"]
-    update_delivery_date(order_id)
     db.delete_order_item(id)
+    update_delivery_date(order_id)
     return redirect(url_for("get_order", id = order_item["order_id"]))
 
 @app.route("/order/<id>", methods = ["GET"])
@@ -195,9 +195,9 @@ def get_order(id):
 def update_delivery_date(order_id):
     order = db.get_order(order_id)
     production_time = db.get_order_production_time(order_id)["production_time"]
-    ## TODO update_delivery_date add production_time to correct point
-    ## of origin (order date, order item date, order date)
-    delivery_date = order["creation_date"] + timedelta(days=production_time)
+    # IMPROVEMENT update_delivery_date more clever base date than the
+    # order's creation date
+    delivery_date = order["creation_date"] + timedelta(days = production_time)
     values = {
         "id" : order_id,
         "delivery_date" : delivery_date
@@ -209,7 +209,6 @@ def add_order_item(order_id):
     form = clone_form_and_add_creation_date(request.form)
     form["order_id"] = order_id
     db.add_order_item(form)
-    ## TODO add_order_item update delivery date
     update_delivery_date(order_id)
     return redirect(url_for("get_order", id = order_id))
 
