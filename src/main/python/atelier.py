@@ -333,6 +333,11 @@ def get_promise_list():
                            to_date = to_date,
                            order_list = order_list)
 
+@app.route("/reports/monthly-comparison")
+def get_monthly_revenue_comparison():
+    l = db.get_monthly_revenue_comparison_list()
+    return render_template("reports/monthly-comparison.html", comparison_list = l)
+
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template("error/404.html", error=error), 404

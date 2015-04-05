@@ -405,6 +405,43 @@ class AtelierDB:
 
         return self.query_list(query, (from_date, to_date))
 
+    def get_monthly_revenue_comparison_list(self):
+        """:month 01 is January, 12 is December"""
+        comparison_list=[]
+
+        for year in range(2008, datetime.today().year + 1):
+            year_entry = []
+
+            for month in range(1, 13):
+                query = """
+                select
+                sum(oi.total_amount) as total_amount
+                from
+                order_item oi,
+                customer_order o
+                where
+                o.id=oi.order_id
+                and oi.creation_date > %s
+                and oi.creation_date < %s
+                """
+                from_date = datetime(year, month, 01)
+                to_date = from_date + timedelta(days = 31)
+
+                result = self.query_one(query, (from_date, to_date))
+                entry = {
+                    "year" : year,
+                    "month" : month,
+                    "from_date" : from_date,
+                    "to_date" : to_date,
+                    "total_amount" : result["total_amount"]
+                }
+                year_entry.append(entry)
+
+            comparison_list.append(year_entry)
+
+        return comparison_list
+
+
     def get_order_production_time(self, order_id):
         query = """
         select

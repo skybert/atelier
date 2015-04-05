@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}
+      <h1>Sammenligning av månedlig omsetning</h1>
+{% endblock %}
+{% block content %}
+      <canvas id="myChart" width="1024" height="400"></canvas>
+      <script src="/files/js/Chart.js"></script>
+      <script type="text/javascript">
+        var ctx = document.getElementById("myChart").getContext("2d");
+
+        var data = {
+
+          labels: ["Januar", "Februar", "Mars", "April", "May",
+          "Juni", "July", "August", "September", "Oktober", "November",
+          "Desember" ],
+
+          datasets: [
+          {% for year_list in comparison_list %}
+            {
+              label: "{{ year_list[0]["year"] }}",
+              fillColor: "rgba(220,220,220,0.5)",
+              strokeColor: "rgba(220,220,220,0.8)",
+              highlightFill: "rgba(220,220,220,0.75)",
+              highlightStroke: "rgba(220,220,220,1)",
+              data: [
+              {% for year_month in year_list %}
+                {% if year_month["total_amount"] %}
+                {{ year_month["total_amount"] }},
+                {% endif %}
+              {% endfor %}
+              ]
+            },
+          {% endfor %}
+          ]
+        };
+
+        var myBarChart = new Chart(ctx).Bar(data);
+      </script>
+{% endblock %}
