@@ -219,6 +219,9 @@ class AtelierDB:
     def get_product_type_list(self):
         return self.query_list("select * from product_type", None)
 
+    def get_payment_type_list(self):
+        return self.query_list("select * from payment_type", None)
+
     ## Reports
     def get_order_list(self, from_date, to_date, product_list=[]):
         """

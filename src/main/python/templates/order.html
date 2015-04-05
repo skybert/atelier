@@ -80,6 +80,22 @@
           </div>
         </div>
         <div class="form-group">
+          <label class="col-sm-2 control-label" for="payment_type_id">Betalingstype</label>
+          <div class="col-sm-10">
+            <select id="payment_type_id" name="payment_type_id" class="form-control">
+              {% for payment_type in payment_type_list %}
+              {% if order["payment_type_id"] == payment_type["id"] %}
+              <option value="{{ payment_type['id'] }}" selected>
+                {% else %}
+                <option value="{{ payment_type['id'] }}">
+                  {% endif %}
+                  {{ payment_type['name'] | sn }}
+                </option>
+                {% endfor %}
+              </select>
+            </div>
+        </div>
+        <div class="form-group">
           <label class="col-sm-2 control-label">Leveringsdato</label>
           <div class="col-sm-10">
             <input class="form-control"
@@ -193,7 +209,7 @@
             kr {{ order_item["product_price"]}}
           </td>
           <td>{{ order_item["number_of_items"] }}</td>
-          <td>{{ order_item["discount"] | sn  }}</td>
+          <td>{{ order_item["discount"] | sn }}</td>
           <td>kr {{ order_item["total_amount"] }}</td>
           <td>{{ order_item["creation_date"] }}</td>
           <td>{{ order_item["comment"] | sn }}</td>
