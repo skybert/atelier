@@ -158,6 +158,7 @@ class AtelierDB:
           oi.id,
           oi.comment,
           oi.number_of_items,
+          oi.discount,
           oi.total_amount,
           p.name as product_name,
           p.price as product_price

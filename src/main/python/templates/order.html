@@ -175,6 +175,7 @@
           <th>Varekjøp #</th>
           <th>Vare</th>
           <th>Antall</th>
+          <th>Rabatt</th>
           <th>Sum</th>
           <th>Opprettet</th>
           <th>Kommentar</th>
@@ -192,6 +193,7 @@
             kr {{ order_item["product_price"]}}
           </td>
           <td>{{ order_item["number_of_items"] }}</td>
+          <td>{{ order_item["discount"] | sn  }}</td>
           <td>kr {{ order_item["total_amount"] }}</td>
           <td>{{ order_item["creation_date"] }}</td>
           <td>{{ order_item["comment"] | sn }}</td>

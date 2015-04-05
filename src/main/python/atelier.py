@@ -185,10 +185,7 @@ def get_order_item(id):
 def update_order_item(id):
     values = request.form.copy()
     values["id"] = id
-
-    price = db.get_product_price(values["product_id"])
-    values["total_amount"] =  price *  int(values["number_of_items"])
-
+    set_total_amount(values)
     db.update_order_item(values)
     return redirect(url_for("get_order_item", id=id))
 
@@ -263,14 +260,24 @@ def update_delivery_date(order_id):
     }
     db.update_order(values)
 
+def set_total_amount(values):
+    """
+    Sets the total amount based on three values present in the value
+    object: product_id, number_of_items and discount. The calee is
+    responsible for having all three values present in the value
+    object.
+
+    """
+    price = db.get_product_price(values["product_id"])
+    total =  (price *  int(values["number_of_items"]))
+    discount = Decimal(values["discount"])
+    values["total_amount"] = total - (total *  discount / 100)
+
 @app.route("/order/<order_id>/item-list", methods = ["POST"])
 def add_order_item(order_id):
     values = clone_form_and_add_creation_date(request.form)
     values["order_id"] = order_id
-
-    price = db.get_product_price(values["product_id"])
-    values["total_amount"] =  price *  int(values["number_of_items"])
-
+    set_total_amount(values)
     db.add_order_item(values)
     update_delivery_date(order_id)
     return redirect(url_for("get_order", id = order_id))
