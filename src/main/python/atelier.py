@@ -30,12 +30,15 @@ def search():
     customers = []
     customer_id = request.args.get("customer_id")
     if customer_id:
-        app.logger.debug("customer_id=" + customer_id)
         customers.append(db.get_customer(customer_id))
+
+    old_customer_id = request.args.get("old_customer_id")
+    if old_customer_id:
+        customers.extend(db.get_customer_by_old_id(old_customer_id))
 
     name = request.args.get("name")
     if name:
-        customers = db.find_customers_by_name(name)
+        customers.extend(db.find_customers_by_name(name))
 
     return render_template("customer-list.html", customers=customers)
 

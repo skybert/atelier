@@ -63,6 +63,9 @@ class AtelierDB:
     def get_customer(self, id):
         return self.query_one("select * from customer where id = %s", (id))
 
+    def get_customer_by_old_id(self, id):
+        return self.query_list("select * from customer where old_customer_id = %s", (id))
+
     def delete_customer(self, id):
         return self.delete("customer", id)
 
