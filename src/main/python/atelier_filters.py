@@ -24,5 +24,7 @@ def filter_iso_date(value):
     else:
         return ""
 
+def filter_number_of_days(value):
+    return str(value.days)
 
 

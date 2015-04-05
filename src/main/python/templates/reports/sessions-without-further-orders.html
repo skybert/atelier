@@ -3,9 +3,7 @@
         <h1>
           Fotograferinger uten forstørrelser
         </h1>
-        <p>
-          {{ from_date | sn }} → {{ to_date | sn }}
-        </p>
+        {% include "from-to-date-info.html" %}
 {% endblock %}
 {% block content %}
       <form action="/reports/sessions-without-further-orders"

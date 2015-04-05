@@ -16,9 +16,7 @@ from flask import url_for
 from atelier_db import AtelierDB
 import atelier_conf
 from atelier_date import get_datetime_or_past_datetime
-from atelier_filters import filter_iso_date
-from atelier_filters import filter_object_suppress_none
-from atelier_filters import filter_suppress_none
+from atelier_filters import *
 
 app = Flask(__name__, static_url_path="/files", static_folder="files")
 
@@ -345,6 +343,7 @@ if __name__ == '__main__':
     app.jinja_env.filters["sn"] = filter_suppress_none
     app.jinja_env.filters["sdn"] = filter_object_suppress_none
     app.jinja_env.filters["iso_date"] = filter_iso_date
+    app.jinja_env.filters["number_of_days"] = filter_number_of_days
     db = AtelierDB(
         conf_data["db"]["host"],
         conf_data["db"]["user"],

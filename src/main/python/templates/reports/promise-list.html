@@ -3,9 +3,7 @@
         <h1>
           Leveranser
         </h1>
-        <p>
-          {{ from_date | sn }} → {{ to_date | sn }}
-        </p>
+        {% include "from-to-date-info.html" %}
 {% endblock %}
 {% block content %}
       <form action="/reports/promise-list"
