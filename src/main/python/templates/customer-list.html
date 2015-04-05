@@ -19,12 +19,12 @@
         </td>
         <td>
           <a href="/customer/{{ customer["id"] }}">
-            {{ customer["first_name"].decode('utf-8') }}
+            {{ customer["first_name"] | sn }}
           </a>
         </td>
         <td>
           <a href="/customer/{{ customer["id"] }}">
-            {{ customer["last_name"].decode('utf-8') }}
+            {{ customer["last_name"] | sn }}
           </a>
         </td>
         <td>{{ customer["creation_date"] }}</td>
