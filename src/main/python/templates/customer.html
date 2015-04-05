@@ -100,7 +100,7 @@
                    id="home_phone"
                    name="home_phone"
                    type="number"
-                   value="{{ customer['home_phone'] }}"
+                   value="{{ customer['home_phone'] | sn }}"
                    placeholder="Telefon hjem"/>
 
           </div>
@@ -113,7 +113,7 @@
             <input class="form-control"
                    id="mobile_phone"
                    name="mobile_phone"
-                   value="{{ customer['mobile_phone'] }}"
+                   value="{{ customer['mobile_phone'] | sn }}"
                    placeholder="Mobil telefon"
                    type="number"
                    />
@@ -126,7 +126,7 @@
           <div class="col-xs-10">
             <input class="form-control"
                    id="work_phone" name="work_phone"
-                   value="{{ customer['work_phone'] }}"
+                   value="{{ customer['work_phone'] | sn }}"
                    type="number"
                    placeholder="Telefon jobb"/>
 
