@@ -28,7 +28,7 @@
                    id="first_name"
                    name="first_name"
                    value="{{ customer['first_name'] | sn }}"
-                   placeholder="first_name"/>
+                   placeholder="Fornavn"/>
           </div>
         </div>
         <div class="form-group">
@@ -38,7 +38,7 @@
                    id="last_name"
                    name="last_name"
                    value="{{ customer['last_name'] | sn }}"
-                   placeholder="last_name"/>
+                   placeholder="Etternavn"/>
           </div>
         </div>
         <div class="form-group">
@@ -58,7 +58,7 @@
                    name="email_address"
                    type="email"
                    value="{{ customer['email_address'] | sn }}"
-                   placeholder="email_address"/>
+                   placeholder="Epost adresse"/>
           </div>
         </div>
         <div class="form-group">
@@ -68,7 +68,7 @@
                    id="address"
                    name="address"
                    value="{{ customer['address'] | sn }}"
-                   placeholder="address"/>
+                   placeholder="Addresse"/>
           </div>
         </div>
         <div class="form-group">
@@ -101,7 +101,7 @@
                    name="home_phone"
                    type="number"
                    value="{{ customer['home_phone'] }}"
-                   placeholder="home_phone"/>
+                   placeholder="Telefon hjem"/>
 
           </div>
         </div>
@@ -114,7 +114,7 @@
                    id="mobile_phone"
                    name="mobile_phone"
                    value="{{ customer['mobile_phone'] }}"
-                   placeholder="mobile_phone"
+                   placeholder="Mobil telefon"
                    type="number"
                    />
           </div>
@@ -128,7 +128,7 @@
                    id="work_phone" name="work_phone"
                    value="{{ customer['work_phone'] }}"
                    type="number"
-                   placeholder="work_phone"/>
+                   placeholder="Telefon jobb"/>
 
           </div>
         </div>
@@ -145,7 +145,7 @@
                    name="birth_date"
                    value="{{ customer['birth_date'] | iso_date }}"
                    type="date"
-                   placeholder="birth_date"/>
+                   placeholder="Fødselsdato"/>
 
           </div>
         </div>
