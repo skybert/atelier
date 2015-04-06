@@ -48,7 +48,35 @@ alter table customer_order add internet_allowed integer not null;
   programming language itself :-)
 
 ## Installation notes
-- TBD
+- NOT finished
+
+```
+# apt-get install python-pip
+# apt-egt install python-mysqldb
+# pip install flask
+
+```
+
+Ensure you've got a valid `atelier-conf.json` file in the diretory
+where you start up atelier:
+```
+{
+    "db": {
+        "host": "localhost",
+        "user": "atelieruser",
+        "password": "foo",
+        "db" : "atelierdb"
+    },
+    "locale": "nb_NO.utf8"
+}
+```
+
+Downlaod `Chart.js`:
+```
+$ cd src/main/python/files
+$ wget https://raw.githubusercontent.com/nnnick/Chart.js/master/Chart.js
+```
+
 
 Cheers,
 
