@@ -5,7 +5,8 @@ import MySQLdb as mdb
 import atelier_sql as sql
 
 class AtelierDB:
-    """Module which provides Atelier DB access.
+    """
+    Module which provides Atelier DB access.
 
     It contains knowledge of the DB schema and maps higher level
     domain models into DB structures that match the DB schema.
@@ -46,8 +47,8 @@ class AtelierDB:
             cur = con.cursor()
             cur.execute("delete from %s where id = %s" %(table, id))
 
-    ## Returns the ID from the DB cursor
     def insert(self, query, values):
+        """Returns the ID from the DB cursor"""
         self.logger.debug("insert: " + query + "\n" + str(values))
         con = self.get_db_connection()
         with con:
@@ -88,7 +89,6 @@ class AtelierDB:
         return self.query_list(sql, (customer_id))
 
     def find_customers_by_name(self, name):
-        # TODO find_customers_by_name : make wildcards work with prepared statement
         query = "select * from customer where first_name like %s or last_name like %s"
         return self.query_list(query, (name, name))
 
@@ -100,7 +100,6 @@ class AtelierDB:
         """
         Updates the customer described in request_form and returns the
         freshly updated customer entry.
-
         """
         update_sql, values = sql.get_sql_and_values("customer", request_form)
         self.query_one(update_sql, tuple(values))
@@ -195,7 +194,6 @@ class AtelierDB:
         update_order_sql, values = sql.get_sql_and_values("customer_order", form)
         return self.query_one(update_order_sql, tuple(values))
 
-
     ## Product
     def get_product(self, id):
         return self.query_one("select * from product where id = %s", (id))
@@ -233,8 +231,6 @@ class AtelierDB:
 
         # Since we use less than and greater than in the dates, we
         # adjust the input dates accordingly
-
-        # TODO: get_order_list handle from/to__date being unicode(strings)
         if isinstance(from_date, datetime):
             from_date = from_date - timedelta(days=1)
         if isinstance(to_date, datetime):
