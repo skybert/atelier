@@ -223,6 +223,9 @@ class AtelierDB:
     def get_payment_type_list(self):
         return self.query_list("select * from payment_type", None)
 
+    def get_order_status_list(self):
+        return self.query_list("select * from order_status", None)
+
     ## Reports
     def get_order_list(self, from_date, to_date, product_list=[]):
         """
@@ -295,18 +298,11 @@ class AtelierDB:
 
         return result, product_count_list, total_amount
 
-    ## TODO check if the customer has any order item with
-    ## with_product_type_id (not the order)
     def get_order_list_without_product_type(self,
                                             from_date,
                                             to_date,
                                             with_product_type_id,
                                             without_product_type_id):
-        """
-        Returns an order list containing orders with a product of tye
-        :without_product_type_id but without any products of type
-        :without_product_type_id
-        """
         if isinstance(from_date, datetime):
             from_date = from_date - timedelta(days=1)
         if isinstance(to_date, datetime):
@@ -315,6 +311,7 @@ class AtelierDB:
         query = """
         select
           o.id as order_id,
+          o.customer_id,
           oi.id as order_item_id,
           oi.product_id,
           pt.id as product_type_id
@@ -332,25 +329,25 @@ class AtelierDB:
         """
 
         candidate_list = self.query_list(query, (from_date, to_date))
-        candidate_order_id_list = Set()
-        ok_order_id_list = Set()
+        candidate_customer_id_list = Set()
+        ok_customer_id_list = Set()
 
         for candidate in candidate_list:
             # only interested in orders that have a product of type
             # without_product_type_id
             if candidate["product_type_id"] == with_product_type_id:
-                candidate_order_id_list.add(candidate["order_id"])
+                candidate_customer_id_list.add(candidate["customer_id"])
             ## If an order contains a product of type
             ## with_product_type_id, the order is ok and should not be
             ## included in the result
             if candidate["product_type_id"] == without_product_type_id:
-                ok_order_id_list.add(candidate["order_id"])
+                ok_customer_id_list.add(candidate["customer_id"])
 
-        not_ok_order_id_list = candidate_order_id_list - ok_order_id_list
-        if len(not_ok_order_id_list) == 0:
+        not_ok_customer_id_list = candidate_customer_id_list - ok_customer_id_list
+        if len(not_ok_customer_id_list) == 0:
             return []
 
-        order_in_string = ",".join(['%s'] * len(not_ok_order_id_list))
+        customer_in_string = ",".join(['%s'] * len(not_ok_customer_id_list))
         query = """
         select
           c.id as customer_id,
@@ -369,9 +366,9 @@ class AtelierDB:
           and o.id = oi.order_id
           and p.product_type_id = %s
           and p.id = oi.product_id
-          and o.id in (""" + order_in_string + """)"""
+          and o.customer_id in (""" + customer_in_string + """)"""
 
-        return self.query_list(query, (with_product_type_id,) + tuple(not_ok_order_id_list))
+        return self.query_list(query, (with_product_type_id,) + tuple(not_ok_customer_id_list))
 
     def get_promise_list(self, from_date, to_date):
         if isinstance(from_date, datetime):
