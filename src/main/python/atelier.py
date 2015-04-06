@@ -65,7 +65,6 @@ def get_product(id):
                            product=product,
                            product_type_list=db.get_product_type_list())
 
-
 @app.route("/product", methods = ["POST"])
 @app.route("/product/", methods = ["POST"])
 def create_product():
@@ -86,6 +85,7 @@ def get_product_delete_page(id):
                            product = product,
                            order_item_list = order_item_list)
 
+@app.route("/product/<id>", methods = ["DELETE"])
 @app.route("/product/<id>/delete", methods = ["POST"])
 def delete_product(id):
     """Deletes order only if it's not being used"""
@@ -134,7 +134,8 @@ def get_customer_delete_page(id):
                            customer = customer,
                            order_list = order_list)
 
-@app.route("/customer/<id>/delete", methods = ["POST", "DELETE"])
+@app.route("/customer/<id>", methods = ["DELETE"])
+@app.route("/customer/<id>/delete", methods = ["POST"])
 def delete_customer(id):
     """
     Deletes a customer. Only possible if there customer doesn't have any orders
@@ -198,7 +199,7 @@ def get_order_item_delete_page(id):
                            order_item = order_item,
                            order = order)
 
-
+@app.route("/order-item/<id>", methods = ["DELETE"])
 @app.route("/order-item/<id>/delete", methods = ["POST"])
 def delete_order_item(id):
     """
@@ -238,7 +239,8 @@ def get_order_delete_page(id):
     order = db.get_order(id)
     return render_template("delete-order.html", order = order)
 
-@app.route("/order/<id>/delete", methods = ["POST", "DELETE"])
+@app.route("/order/<id>", methods = ["DELETE"])
+@app.route("/order/<id>/delete", methods = ["POST"])
 def delete_order(id):
     customer = db.get_customer(db.get_customer_id_by_order_id(id))
     db.delete_order(id)
@@ -361,6 +363,4 @@ if __name__ == '__main__':
     )
     setlocale(LC_ALL, str(conf_data["locale"]))
     app.run(debug=True)
-
-
 
