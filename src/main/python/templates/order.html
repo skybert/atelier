@@ -24,6 +24,7 @@
           <div class="col-sm-3">Mobil: {{ customer["mobile_phone"] | sn }}</div>
           <div class="col-sm-3">Telefon: {{ customer["home_phone"] | sn }}</div>
           <div class="col-sm-3">Arbeid: {{ customer["work_phone"] | sn }}</div>
+          <!-- TODO: add order status -->
         </div>
         <div class="row">
           <div class="col-sm-3">
@@ -123,6 +124,7 @@
                    />
           </div>
         </div>
+        <!-- TODO add internet_allowed -->
         <div class="form-group">
           <label class="col-sm-2 control-label">
             Kan brukes i markedsføring
@@ -185,6 +187,15 @@
             type="number"
             placeholder="antall"
             value="1"
+            />
+          <label class="control-label" for="number_of_items">Rabatt</label>
+          <input
+            id="discount"
+            name="discount"
+            class="form-control"
+            type="number"
+            placeholder="Rabatt"
+            value="0"
             />
           <button type="submit" class="btn btn-primary">
             Legg til vare
