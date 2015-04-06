@@ -24,7 +24,6 @@
           <div class="col-sm-3">Mobil: {{ customer["mobile_phone"] | sn }}</div>
           <div class="col-sm-3">Telefon: {{ customer["home_phone"] | sn }}</div>
           <div class="col-sm-3">Arbeid: {{ customer["work_phone"] | sn }}</div>
-          <!-- TODO: add order status -->
         </div>
         <div class="row">
           <div class="col-sm-3">
@@ -103,6 +102,22 @@
           </div>
         </div>
         <div class="form-group">
+          <label class="col-sm-2 control-label" for="order_status_id">Status</label>
+          <div class="col-sm-10">
+            <select id="order_status_id" name="order_status_id" class="form-control">
+              {% for order_status in order_status_list %}
+                {% if order["order_status_id"] == order_status["id"] %}
+              <option value="{{ order_status['id'] }}" selected>
+                {% else %}
+              <option value="{{ order_status['id'] }}">
+                {% endif %}
+                {{ order_status['name'] | sn }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
           <label class="col-sm-2 control-label">Leveringsdato</label>
           <div class="col-sm-10">
             <input class="form-control"
@@ -153,7 +168,6 @@
                    />
           </div>
         </div>
-        <!-- TODO add status? -->
         <div class="form-group">
           <label class="col-sm-2 control-label">Kommentar</label>
           <div class="col-sm-10">

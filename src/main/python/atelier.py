@@ -226,13 +226,15 @@ def get_order(id):
     customer = db.get_customer(order["customer_id"])
     order_item_list = db.get_order_item_list(id)
     payment_type_list = db.get_payment_type_list()
+    order_status_list = db.get_order_status_list()
 
     return render_template("order.html",
                            order = order,
                            customer = customer,
                            order_item_list = order_item_list,
                            product_list = db.get_product_list(),
-                           payment_type_list = payment_type_list)
+                           payment_type_list = payment_type_list,
+                           order_status_list = order_status_list)
 
 @app.route("/order/<id>/delete", methods = ["GET"])
 def get_order_delete_page(id):
