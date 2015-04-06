@@ -295,6 +295,8 @@ class AtelierDB:
 
         return result, product_count_list, total_amount
 
+    ## TODO check if the customer has any order item with
+    ## with_product_type_id (not the order)
     def get_order_list_without_product_type(self,
                                             from_date,
                                             to_date,
