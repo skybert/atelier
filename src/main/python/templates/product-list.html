@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block title %}
+    <h1>Produkter</h1>
+{% endblock %}
+{% block content %}
+      <div style="margin-bottom: 1em">
+        <form action="/product" method="get">
+          <button type="submit" class="btn btn-primary">
+            Opprett nytt produkt
+          </button>
+        </form>
+      </div>
+      <table class="table">
+      <tr>
+        <th>#</th>
+        <th>Navn</th>
+        <th>Opprettet</th>
+        <th>Pris</th>
+        <th>Tid</th>
+        <th>Produkt type</th>
+      </tr>
+      {% for product in products %}
+      <tr>
+        <td>{{ product["id"] }}</td>
+        <td><a href="/product/{{ product['id'] }}">
+          {{ product["name"] | sn}}</a></td>
+        <td>{{ product["creation_date"] | sn }}</td>
+        <td>{{ product["price"] }}</td>
+        <td>{{ product["production_time"] }} dager</td>
+        <td>{{ product["pt.name"] | sn }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+{% endblock %}
+

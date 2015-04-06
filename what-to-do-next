@@ -1,0 +1,11 @@
+#! /usr/bin/env bash
+
+(
+  cd $(dirname $0)
+  grep -n -i -e TODO *.md
+  find src/main/python \
+       -maxdepth 2 \
+       -name "*.py" -o -name "*.html" \
+       -type f | \
+      xargs grep -n -i -e TODO
+)

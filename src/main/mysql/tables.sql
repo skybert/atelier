@@ -44,7 +44,6 @@ create table customer_order
  updated_date DATETIME,
  delivery_date DATETIME,
  paid_amount DECIMAL (9,2),
- total_amount DECIMAL (9,2),
  comment VARCHAR(255),
  newspaper_allowed INTEGER not null,
  marketing_allowed INTEGER not null,
@@ -117,7 +116,7 @@ create table post_place
  id INTEGER AUTO_INCREMENT,
  post_code VARCHAR(40) not null,
  post_place VARCHAR(40) not null,
- constraint pk_payment_type primary key(id),
+ constraint pk_post_place primary key(id),
  constraint unique_post_code unique(post_code)
 ) ENGINE=InnoDB;
 

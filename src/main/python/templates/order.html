@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+{% block title %}
+      <h1>
+        Ordrenummer: {{ order["id"] }},
+        {{ customer["last_name"] | sn }},
+        {{ customer["first_name" ] | sn }}
+      </h1>
+      <p>
+        Opprettet: {{ order["creation_date"] }}
+        {% if order["updated_date"] %}
+        — sist oppdatert: {{ order["updated_date"] | sdn }}
+        {% endif %}
+      </p>
+{% endblock %}
+{% block content %}
+      <div class="well">
+        <div class="row">
+          <div class="col-sm-3">
+            Kundenummer:
+            <a href="/customer/{{ customer["id"] }}">
+              {{ customer["id"] }}
+            </a>
+          </div>
+          <div class="col-sm-3">Mobil: {{ customer["mobile_phone"] | sn }}</div>
+          <div class="col-sm-3">Telefon: {{ customer["home_phone"] | sn }}</div>
+          <div class="col-sm-3">Arbeid: {{ customer["work_phone"] | sn }}</div>
+        </div>
+        <div class="row">
+          <div class="col-sm-3">
+            Navn:
+            <a href="/customer/{{ customer["id"] }}">
+              {{ customer["first_name" ] | sn }}
+              {{ customer["last_name"] | sn }}
+            </a>
+          </div>
+          <div class="col-sm-3">
+            Adresse: {{ customer["address"] | sn }}, {{ customer["post_code"] | sn }}
+          </div>
+          <div class="col-sm-3">Født: {{ customer["birth_date"] | sn }}</div>
+          <div class="col-sm-3">
+            Epost:
+            <a href="mailto:{{customer["email_address"] | sn }}">
+              {{ customer["email_address"] | sn }}
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <form action="/order/{{ order['id'] }}"
+            method="post"
+            class="form-horizontal">
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Totalt</label>
+          <div class="col-sm-10">
+            <div class="input-group">
+              <span class="input-group-addon">kr</span>
+              <input class="form-control"
+                     value="{{ order['total_amount'] | sn }}"
+                     readonly/>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label" for="paid_amount">Betalt</label>
+          <div class="col-sm-10">
+            <div class="input-group">
+              <span class="input-group-addon">kr</span>
+              <input type="text"
+                     class="form-control"
+                     id="paid_amount"
+                     name="paid_amount"
+                     value="{{ order['paid_amount'] | sn }}"
+                     aria-label="Amount (to the nearest dollar)"/>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label" for="rest_amount">Rest</label>
+          <div class="col-sm-10">
+            <div class="input-group">
+              <span class="input-group-addon">kr</span>
+              <input class="form-control"
+                     value="{{ order['total_amount'] - order['paid_amount'] }}"
+                     readonly/>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label" for="payment_type_id">Betalingstype</label>
+          <div class="col-sm-10">
+            <select id="payment_type_id" name="payment_type_id" class="form-control">
+              {% for payment_type in payment_type_list %}
+                {% if order["payment_type_id"] == payment_type["id"] %}
+              <option value="{{ payment_type['id'] }}" selected>
+                {% else %}
+              <option value="{{ payment_type['id'] }}">
+                {% endif %}
+                {{ payment_type['name'] | sn }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label" for="order_status_id">Status</label>
+          <div class="col-sm-10">
+            <select id="order_status_id" name="order_status_id" class="form-control">
+              {% for order_status in order_status_list %}
+                {% if order["order_status_id"] == order_status["id"] %}
+              <option value="{{ order_status['id'] }}" selected>
+                {% else %}
+              <option value="{{ order_status['id'] }}">
+                {% endif %}
+                {{ order_status['name'] | sn }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Leveringsdato</label>
+          <div class="col-sm-10">
+            <input class="form-control"
+                   value="{{ order['delivery_date'] | sn }}"
+                   readonly/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Kan brukes i avis</label>
+          <div class="col-sm-1">
+            <input id="newspaper_allowed"
+                   name="newspaper_allowed"
+                   type="checkbox"
+                   value="1"
+                   {% if order["newspaper_allowed"] %}
+                   checked
+                   {% endif %}
+                   />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">
+            Kan brukes i markedsføring
+          </label>
+          <div class="col-sm-1">
+            <input id="marketing_allowed"
+                   name="marketing_allowed"
+                   type="checkbox"
+                   value="1"
+                   {% if order["marketing_allowed"] %}
+                   checked
+                   {% endif %}
+                   />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">
+            Kan brukes på internett
+          </label>
+          <div class="col-sm-1">
+            <input id="internet_allowed"
+                   name="internet_allowed"
+                   type="checkbox"
+                   value="1"
+                   {% if order["internet_allowed"] %}
+                   checked
+                   {% endif %}
+                   />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Kommentar</label>
+          <div class="col-sm-10">
+            <textarea id="comment"
+                      name="comment"
+                      class="form-control"
+                      rows="3"
+                      >{{ order['comment'] | sn }}</textarea>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-3">
+            <button name="update_order"
+                    type="submit"
+                    class="form-control btn btn-primary">
+              Oppdater ordreinformasjon
+            </button>
+          </div>
+        </div>
+      </form>
+      <button class="btn btn-danger"
+              onclick="window.location.href = '/order/{{ order['id'] }}/delete'">
+        Slett ordre
+      </button>
+      <h2>
+        Varer
+      </h2>
+      <form action="/order/{{ order['id'] }}/item-list"
+            method="post" class="form-inline">
+        <div class="form-group">
+          <label class="control-label" for="product_id">Produkt</label>
+          <select id="product_id" name="product_id" class="form-control">
+            {% for product in product_list %}
+              <option value="{{ product['id'] }}">
+                {{ product['name'] | sn }}
+              </option>
+            {% endfor %}
+          </select>
+          <label class="control-label" for="number_of_items">Antall</label>
+          <input
+            id="number_of_items"
+            name="number_of_items"
+            class="form-control span2"
+            type="number"
+            placeholder="antall"
+            value="1"
+            />
+          <label class="control-label" for="number_of_items">Rabatt</label>
+          <input
+            id="discount"
+            name="discount"
+            class="form-control"
+            type="number"
+            placeholder="Rabatt"
+            value="0"
+            />
+          <button type="submit" class="btn btn-primary">
+            Legg til vare
+          </button>
+        </div>
+      </form>
+
+      {% if order_item_list | length > 0 %}
+      <table class="table table-hover" style="margin-top: 2em;">
+        <tr>
+          <th>Varekjøp #</th>
+          <th>Vare</th>
+          <th>Antall</th>
+          <th>Rabatt</th>
+          <th>Sum</th>
+          <th>Opprettet</th>
+          <th>Kommentar</th>
+          <th></th>
+        </tr>
+        {% for order_item in order_item_list %}
+        <tr>
+          <td>
+            <a href="/order-item/{{ order_item['id'] }}">
+              {{ order_item["id"] }}
+            </a>
+          </td>
+          <td>
+            {{ order_item["product_name"] | sn }},
+            kr {{ order_item["product_price"]}}
+          </td>
+          <td>{{ order_item["number_of_items"] }}</td>
+          <td>{{ order_item["discount"] | sn }}</td>
+          <td>kr {{ order_item["total_amount"] }}</td>
+          <td>{{ order_item["creation_date"] }}</td>
+          <td>{{ order_item["comment"] | sn }}</td>
+          <td>
+            <form action="/order-item/{{ order_item['id'] }}/delete" method="get">
+              <button type="submit" class="btn btn-danger">
+                Slett
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% endif %}
+{% endblock %}
+

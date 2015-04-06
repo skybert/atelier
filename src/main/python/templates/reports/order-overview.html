@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+{% block title %}
+      <h1>Ordreoversikt</h1>
+      {% include "from-to-date-info.html" %}
+{% endblock %}
+{% block content %}
+
+      <form action="/reports/order-overview"
+            method="get"
+            class="form-inline">
+        {% include "inline-from-date.html" %}
+        {% include "inline-to-date.html" %}
+        <div class="form-group">
+          <label class="control-label" for="selected_product_list">
+            Produkter
+          </label>
+          <div>
+            <select id="selected_product_list"
+                    name="selected_product_list"
+                    type="multiple"
+                    class="form-control"
+                    multiple
+                    >
+                    <!-- TODO: add selected attribute to <option/> if it was a part of the query performed -->
+            {% for product in product_list  %}
+              <option value="{{ product['id'] }}">
+                {{ product["name"] | sn }}
+              </option>
+            {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="">
+            <button type="submit" class="btn btn-primary">
+              Få oversikt
+            </button>
+          </div>
+        </div>
+      </form>
+      <!-- TODO list the number of products that's been included in
+           the search -->
+      <h2>
+        Totalt {{ order_list | length }} ordre med en omsetning på kr
+        <strong>{{ total_amount[0]["total_amount"] | sn }}</strong>
+      </h2>
+      <div class="row">
+        <div class="col-md-8">
+          <canvas id="myChart" width="800" height="400"></canvas>
+        </div>
+        <div class="col-md-4">
+          <ul>
+          {% for product_name, count in product_count_list.items() %}
+            <li>
+              {{ product_name | sn }}: {{ count }}
+            </li>
+          {% endfor %}
+          </ul>
+        </div>
+      </div>
+      <script src="/files/js/Chart.js"></script>
+      <script type="text/javascript">
+        var ctx = document.getElementById("myChart").getContext("2d");
+        var data = [
+        {% set color_code = 100 %}
+        {% for product_name, count in product_count_list.items() %}
+        {
+          value: {{ count }},
+          label: "{{ product_name | sn }}",
+          color: "rgb(" +
+                    Math.floor((Math.random() * 255)) + ", " +
+                    Math.floor((Math.random() * 255)) + "," +
+                    Math.floor((Math.random() * 255)) +
+                 ")"
+        },
+        {% set color_code = color_code + 30 %}
+        {% endfor %}
+        ];
+
+        var myNewChart = new Chart(ctx).Pie(data);
+      </script>
+
+      <table class="table table-striped">
+        <tr>
+          <th>Kunde</th>
+          <th>Ordrenummer</th>
+          <th>Produkt</th>
+          <th>Ordre opprettet</th>
+        </tr>
+        {% for order in order_list %}
+        <tr>
+          <td>
+            <a href="/customer/{{ order['customer_id'] }}">
+              {{ order["first_name"] | sn }}
+              {{ order["last_name"] | sn }}
+            </a>
+          </td>
+          <td>
+            <a href="/order/{{ order["order_id"] }}">{{ order["order_id"] }}</a>
+          </td>
+          <td>
+            <a href="/product/{{ order['product_id'] }}">
+              {{ order["product_name"] | sn }}
+            </a>
+          </td>
+          <td>
+            {{ order['creation_date'] | sn }}
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+
+
+{% endblock %}

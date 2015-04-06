@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}
+        <h1>
+          Fotograferinger uten forstørrelser
+        </h1>
+        {% include "from-to-date-info.html" %}
+{% endblock %}
+{% block content %}
+      <form action="/reports/sessions-without-further-orders"
+            method="get"
+            class="form-inline">
+        {% include "inline-from-date.html" %}
+        {% include "inline-to-date.html" %}
+        <div class="form-group">
+          <div class="">
+            <button type="submit" class="btn btn-primary">
+              Få oversikt
+            </button>
+          </div>
+        </div>
+      </form>
+      <h2>
+        Totalt {{ order_list | length }} ordre</strong>
+      </h2>
+      <table class="table table-striped">
+        <tr>
+          <th>Kunde</th>
+          <th>Ordrenummer</th>
+          <th>Produkt</th>
+          <th>Ordre opprettet</th>
+        </tr>
+        {% for order in order_list %}
+        <tr>
+          <td>
+            <a href="/customer/{{ order['customer_id'] }}">
+              {{ order["first_name"] | sn }}
+              {{ order["last_name"] | sn }}
+            </a>
+          </td>
+          <td>
+            <a href="/order/{{ order["order_id"] }}">{{ order["order_id"] }}</a>
+          </td>
+          <td>
+            {{ order["product_name"] | sn }}
+          </td>
+          <td>
+            {{ order['creation_date'] | sn }}
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+{% endblock %}
