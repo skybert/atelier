@@ -113,12 +113,18 @@ class AtelierDB:
         query = """
         select
           o.*,
-          sum(oi.total_amount) as total_amount
+          sum(oi.total_amount) as total_amount,
+          os.name as order_status,
+          pt.name as payment_type
         from
           customer_order o,
-          order_item oi
+          order_item oi,
+          order_status os,
+          payment_type pt
         where
           o.id = oi.order_id
+          and os.id = o.order_status_id
+          and pt.id = o.payment_type_id
           and o.id = %s
         """
         return self.query_one(query, (id))

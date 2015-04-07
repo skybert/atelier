@@ -188,6 +188,10 @@
           </div>
         </div>
       </form>
+      <button class="btn btn-default"
+              onclick="window.location.href = '/print/order/{{ order['id'] }}'">
+        Skriv ut ordre
+      </button>
       <button class="btn btn-danger"
               onclick="window.location.href = '/order/{{ order['id'] }}/delete'">
         Slett ordre

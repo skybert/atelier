@@ -236,6 +236,31 @@ def get_order(id):
                            payment_type_list = payment_type_list,
                            order_status_list = order_status_list)
 
+@app.route("/print/order/<id>", methods = ["GET"])
+def get_printable_order(id):
+    order = db.get_order(id)
+    if order == None:
+        abort(404)
+
+    if order["total_amount"] is None:
+        order["total_amount"] = Decimal(0)
+    if order["paid_amount"] is None:
+        order["paid_amount"] = Decimal(0)
+
+    customer = db.get_customer(order["customer_id"])
+    order_item_list = db.get_order_item_list(id)
+    payment_type_list = db.get_payment_type_list()
+    order_status_list = db.get_order_status_list()
+
+    return render_template("print-order.html",
+                           order = order,
+                           customer = customer,
+                           order_item_list = order_item_list,
+                           product_list = db.get_product_list(),
+                           payment_type_list = payment_type_list,
+                           order_status_list = order_status_list)
+
+
 @app.route("/order/<id>/delete", methods = ["GET"])
 def get_order_delete_page(id):
     order = db.get_order(id)
@@ -356,6 +381,8 @@ if __name__ == '__main__':
     app.jinja_env.filters["sdn"] = filter_object_suppress_none
     app.jinja_env.filters["iso_date"] = filter_iso_date
     app.jinja_env.filters["number_of_days"] = filter_number_of_days
+    app.jinja_env.filters["boolean_to_yes_no"] = filter_boolean_to_yes_no
+    app.jinja_env.filters["compact_norwegian_date"] = filter_compact_norwegian_date
     db = AtelierDB(
         conf_data["db"]["host"],
         conf_data["db"]["user"],
