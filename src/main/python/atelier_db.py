@@ -53,6 +53,8 @@ class AtelierDB:
         con = self.get_db_connection()
         with con:
             cur = con.cursor(mdb.cursors.DictCursor)
+            ## TODO atelier_db.py:56: Warning: Field 'internet_allowed'
+            ## doesn't have a default value
             cur.execute(query, values)
             return cur.lastrowid
 
