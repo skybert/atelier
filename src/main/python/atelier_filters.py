@@ -28,3 +28,14 @@ def filter_number_of_days(value):
     return str(value.days)
 
 
+def filter_boolean_to_yes_no(value):
+    if value:
+        return "Ja"
+    else:
+        return "Nei"
+
+def filter_compact_norwegian_date(value):
+    if isinstance(value, datetime):
+        return value.strftime("%d.%m.%Y")
+    else:
+        return value
