@@ -71,7 +71,7 @@ where you start up atelier:
 }
 ```
 
-Downlaod `Chart.js`:
+Download `Chart.js`:
 ```
 $ cd src/main/python/files
 $ wget https://raw.githubusercontent.com/nnnick/Chart.js/master/Chart.js
