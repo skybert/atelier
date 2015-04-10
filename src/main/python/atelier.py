@@ -12,7 +12,7 @@ from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
-
+from reverse_proxied import ReverseProxied
 from atelier_db import AtelierDB
 import atelier_conf
 from atelier_date import get_datetime_or_past_datetime
@@ -391,5 +391,6 @@ if __name__ == '__main__':
         app.logger
     )
     setlocale(LC_ALL, str(conf_data["locale"]))
+    app.wsgi_app = ReverseProxied(app.wsgi_app)
     app.run(debug=True)
 
