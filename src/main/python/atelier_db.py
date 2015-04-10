@@ -208,9 +208,18 @@ class AtelierDB:
 
     def get_product_list(self):
         query = """
-        select p.id, p.name, p.creation_date, p.production_time, p.price, pt.name
-        from product p, product_type pt
-        where p.product_type_id = pt.id
+        select
+          p.id,
+          p.name,
+          p.creation_date,
+          p.production_time,
+          p.price, pt.name
+        from
+          product p,
+          product_type pt
+        where
+          p.product_type_id = pt.id
+        order by p.name
         """
         return self.query_list(query, None)
 

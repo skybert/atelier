@@ -206,7 +206,7 @@
           <select id="product_id" name="product_id" class="form-control">
             {% for product in product_list %}
               <option value="{{ product['id'] }}">
-                {{ product['name'] | sn }}
+                {{ product['name'] | sn }}, kr {{ product["price"] | sn }}
               </option>
             {% endfor %}
           </select>
