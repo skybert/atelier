@@ -5,6 +5,9 @@ from datetime import timedelta
 from decimal import Decimal
 from locale import LC_ALL
 from locale import setlocale
+from logging import FileHandler
+from logging import Formatter
+import logging
 
 from flask import Flask
 from flask import abort
@@ -12,11 +15,12 @@ from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
-from reverse_proxied import ReverseProxied
-from atelier_db import AtelierDB
-import atelier_conf
+
 from atelier_date import get_datetime_or_past_datetime
+from atelier_db import AtelierDB
 from atelier_filters import *
+from reverse_proxied import ReverseProxied
+import atelier_conf
 
 app = Flask(__name__, static_url_path="/files", static_folder="files")
 
@@ -392,5 +396,18 @@ if __name__ == '__main__':
     )
     setlocale(LC_ALL, str(conf_data["locale"]))
     app.wsgi_app = ReverseProxied(app.wsgi_app)
-    app.run(debug=True)
+
+    if not app.debug:
+        file_handler = FileHandler("atelier.log")
+        file_handler.setLevel(logging.DEBUG)
+        file_handler.setFormatter(Formatter(
+            '%(asctime)s %(levelname)s: %(message)s '
+            '[in %(pathname)s:%(lineno)d]'
+        ))
+        app.logger.addHandler(file_handler)
+
+    # TODO make debug mode configurable
+    app.run(debug=False)
+
+
 
