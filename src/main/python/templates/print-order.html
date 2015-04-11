@@ -487,6 +487,11 @@
             </tr>
           </table>
         </div>
+        {% if order["comment"] %}
+        <p>
+          <strong>Kommentar:</strong> {{ order["comment"] }}
+        </p>
+        {% endif %}
         <div id="order-item-list">
           <table id="order-item-table">
             <tr>
