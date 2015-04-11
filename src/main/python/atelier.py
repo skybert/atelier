@@ -1,4 +1,4 @@
-#! pyenv/bin/python
+#! /usr/bin/env python
 
 from datetime import datetime
 from datetime import timedelta
