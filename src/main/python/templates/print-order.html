@@ -489,7 +489,7 @@
         </div>
         {% if order["comment"] %}
         <p>
-          <strong>Kommentar:</strong> {{ order["comment"] }}
+          <strong>Kommentar:</strong> {{ order["comment"] | sn }}
         </p>
         {% endif %}
         <div id="order-item-list">
