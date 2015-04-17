@@ -504,7 +504,7 @@
             </tr>
             {% for order_item in order_item_list %}
             <tr>
-              <td>{{ order_item["product_name"] }}</td>
+              <td>{{ order_item["product_name"] | sn }}</td>
               <td>{{ order_item["number_of_items"] }}</td>
               <td class="right">{{ order_item["product_price"] }}</td>
               <td class="right">{{ order_item["discount"] }}</td>
