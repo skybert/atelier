@@ -6,8 +6,6 @@
   <head>
     <meta name="author" content="Torstein Krause Johansen"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <link rel="stylesheet" type="text/css" href="/style/skybert.css"
-          />
     <style type="text/css">
       body
       {
@@ -504,7 +502,7 @@
             </tr>
             {% for order_item in order_item_list %}
             <tr>
-              <td>{{ order_item["product_name"] }}</td>
+              <td>{{ order_item["product_name"] | sn }}</td>
               <td>{{ order_item["number_of_items"] }}</td>
               <td class="right">{{ order_item["product_price"] }}</td>
               <td class="right">{{ order_item["discount"] }}</td>
