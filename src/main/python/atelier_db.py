@@ -95,8 +95,31 @@ class AtelierDB:
         return self.query_list(sql, (customer_id))
 
     def find_customers_by_name(self, name):
-        query = "select * from customer where first_name like %s or last_name like %s"
-        return self.query_list(query, (name, name))
+        """
+        Search customers by name after the following rules: if :name
+        contains only one word, customers are search by this name both
+        in first and last names. If :name consists of more than one
+        word, the last word is interpreted as last name and the other
+        words are considered to be first names.
+
+        """
+        words = name.strip().split(" ")
+
+        if len(words) == 1:
+            query = "select * from customer where first_name like %s or last_name like %s"
+            return self.query_list(query, (words[0], words[0]))
+        elif len(words) > 1:
+            query = "select * from customer where first_name like %s and last_name like %s"
+            first_name = ""
+            for fn in words[0 : len(words) - 1]:
+                first_name += fn + " "
+
+            first_name = first_name.strip()
+            last_name = words[ len(words) - 1]
+
+            return self.query_list(query, (first_name, last_name))
+
+        return []
 
     def create_customer(self, form):
         insert_sql, values = sql.get_sql_and_values("customer", form)
