@@ -19,10 +19,12 @@ def filter_object_suppress_none(value):
 
 
 def filter_iso_date(value):
-    if not value is None and isinstance(value, datetime):
+    if value is None:
+        return ""
+    if isinstance(value, datetime) and value.year > 1900:
         return value.strftime("%Y-%m-%d")
     else:
-        return ""
+        return value
 
 def filter_number_of_days(value):
     return str(value.days)
