@@ -107,7 +107,8 @@ class AtelierDB:
 
         if len(words) == 1:
             query = "select * from customer where first_name like %s or last_name like %s"
-            return self.query_list(query, (words[0], words[0]))
+            return self.query_list(query, ('%' + words[0] + '%',
+                                           '%' + words[0] + '%'))
         elif len(words) > 1:
             query = "select * from customer where first_name like %s and last_name like %s"
             first_name = ""
@@ -117,7 +118,8 @@ class AtelierDB:
             first_name = first_name.strip()
             last_name = words[ len(words) - 1]
 
-            return self.query_list(query, (first_name, last_name))
+            return self.query_list(query, ('%' + first_name + '%',
+                                           '%' + last_name + '%'))
 
         return []
 
