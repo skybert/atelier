@@ -51,17 +51,6 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="control-label col-xs-2" for="email_address">Epost</label>
-          <div class="col-xs-10">
-            <input class="form-control"
-                   id="email_address"
-                   name="email_address"
-                   type="email"
-                   value="{{ customer['email_address'] | sn }}"
-                   placeholder="Epost adresse"/>
-          </div>
-        </div>
-        <div class="form-group">
           <label class="control-label col-xs-2" for="address">Adresse</label>
           <div class="col-xs-10">
             <input class="form-control"
@@ -147,6 +136,17 @@
                    type="date"
                    placeholder="Fødselsdato"/>
 
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="email_address">Epost</label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="email_address"
+                   name="email_address"
+                   type="email"
+                   value="{{ customer['email_address'] | sn }}"
+                   placeholder="Epost adresse"/>
           </div>
         </div>
         <div class="form-group">

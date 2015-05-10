@@ -26,16 +26,6 @@
           </div>
         </div>
         <div class="form-group">
-          <label class="control-label col-xs-2" for="email_address">Epost</label>
-          <div class="col-xs-10">
-            <input class="form-control"
-                   id="email_address"
-                   name="email_address"
-                   type="email"
-                   placeholder="Epost adresse"/>
-          </div>
-        </div>
-        <div class="form-group">
           <label class="control-label col-xs-2" for="address">Adresse</label>
           <div class="col-xs-10">
             <input class="form-control"
@@ -49,9 +39,9 @@
             Postnummer
           </label>
           <div class="col-xs-10">
-            <select class="form-control">
+            <select id="post_code" name="post_code" class="form-control">
               {% for pp in post_place_list %}
-              <option value="{{ pp['id'] }}">
+              <option value="{{ pp['post_code'] }}">
                 {{ pp["post_code"]  }}
                 {{ pp["post_place"].decode("utf-8") }}
               </option>
@@ -109,6 +99,16 @@
                    type="date"
                    placeholder="Fødselsdato"/>
 
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="email_address">Epost</label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="email_address"
+                   name="email_address"
+                   type="email"
+                   placeholder="Epost adresse"/>
           </div>
         </div>
         <div class="form-group">

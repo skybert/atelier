@@ -21,7 +21,7 @@
       td
       {
       vertical-align: top;
-      padding: 0.1em;
+      padding: 0.4em;
       }
 
       td.right
@@ -510,9 +510,7 @@
                 {{ order_item["total_amount"] }}
               </td>
               <td>
-                <pre>
-                  {{ order_item["comment"] | sn }}
-                </pre>
+                {{ order_item["comment"] | sn }}
               </td>
             </tr>
             {% endfor %}
