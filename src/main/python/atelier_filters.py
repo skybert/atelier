@@ -37,7 +37,9 @@ def filter_boolean_to_yes_no(value):
         return "Nei"
 
 def filter_compact_norwegian_date(value):
-    if isinstance(value, datetime):
+    if value is None:
+        return ""
+    elif isinstance(value, datetime):
         return value.strftime("%d.%m.%Y")
     else:
         return value
