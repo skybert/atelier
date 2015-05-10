@@ -45,7 +45,121 @@
           </div>
         </div>
       </div>
-
+      <h2>
+        Varelinjer
+      </h2>
+      <form action="/order/{{ order['id'] }}/item-list"
+            method="post"
+            class="form-horizontal">
+        <div class="form-group">
+          <label class="control-label
+                        col-sm-2"
+                 for="product_id">
+            Produkt
+          </label>
+          <div class="col-sm-10">
+            <select id="product_id"
+                    name="product_id"
+                    class="form-control">
+              {% for product in product_list %}
+              <option value="{{ product['id'] }}">
+                {{ product['name'] | sn }}, kr {{ product["price"] | sn }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label
+                        col-sm-2"
+                 for="number_of_items">
+            Antall
+          </label>
+          <div class="col-sm-10">
+            <input
+              id="number_of_items"
+              name="number_of_items"
+              class="form-control"
+              type="number"
+              placeholder="antall"
+              value="1"
+              />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label
+                        col-sm-2"
+                 for="discount">
+            Rabatt
+          </label>
+          <div class="col-sm-10">
+            <input
+              id="discount"
+              name="discount"
+              class="form-control"
+              type="number"
+              placeholder="Rabatt"
+              value="0"
+              />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-sm-2"
+                 for="comment">Kommentar</label>
+          <div class="col-sm-10">
+            <input id="comment" name="comment" class="form-control"
+                   placeholder="kommentar"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary col-sm-offset-1">
+            Legg til vare
+          </button>
+        </div>
+      </form>
+      {% if order_item_list | length > 0 %}
+      <table class="table table-hover" style="margin-top: 2em;">
+        <tr>
+          <th>Varelinje #</th>
+          <th>Vare</th>
+          <th>Antall</th>
+          <th>Rabatt</th>
+          <th>Sum</th>
+          <th>Opprettet</th>
+          <th>Kommentar</th>
+          <th></th>
+        </tr>
+        {% for order_item in order_item_list %}
+        <tr>
+          <td>
+            <a href="/order-item/{{ order_item['id'] }}">
+              {{ order_item["id"] }}
+            </a>
+          </td>
+          <td>
+            {{ order_item["product_name"] | sn }},
+            kr {{ order_item["product_price"]}}
+          </td>
+          <td>{{ order_item["number_of_items"] }}</td>
+          <td>{{ order_item["discount"] | sn }}</td>
+          <td>kr {{ order_item["total_amount"] }}</td>
+          <td>{{ order_item["creation_date"] }}</td>
+          <td>{{ order_item["comment"] | sn }}</td>
+          <td>
+            <form action="/order-item/{{ order_item['id'] }}/delete" method="get">
+              <button type="submit" class="btn btn-danger">
+                Slett
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% endif %}
+      <hr/>
+      <h2>
+        Ordredetaljer
+      </h2>
       <form action="/order/{{ order['id'] }}"
             method="post"
             class="form-horizontal">
@@ -196,82 +310,5 @@
               onclick="window.location.href = '/order/{{ order['id'] }}/delete'">
         Slett ordre
       </button>
-      <h2>
-        Varer
-      </h2>
-      <form action="/order/{{ order['id'] }}/item-list"
-            method="post" class="form-inline">
-        <div class="form-group">
-          <label class="control-label" for="product_id">Produkt</label>
-          <select id="product_id" name="product_id" class="form-control">
-            {% for product in product_list %}
-              <option value="{{ product['id'] }}">
-                {{ product['name'] | sn }}, kr {{ product["price"] | sn }}
-              </option>
-            {% endfor %}
-          </select>
-          <label class="control-label" for="number_of_items">Antall</label>
-          <input
-            id="number_of_items"
-            name="number_of_items"
-            class="form-control span2"
-            type="number"
-            placeholder="antall"
-            value="1"
-            />
-          <label class="control-label" for="number_of_items">Rabatt</label>
-          <input
-            id="discount"
-            name="discount"
-            class="form-control"
-            type="number"
-            placeholder="Rabatt"
-            value="0"
-            />
-          <button type="submit" class="btn btn-primary">
-            Legg til vare
-          </button>
-        </div>
-      </form>
-
-      {% if order_item_list | length > 0 %}
-      <table class="table table-hover" style="margin-top: 2em;">
-        <tr>
-          <th>Varekjøp #</th>
-          <th>Vare</th>
-          <th>Antall</th>
-          <th>Rabatt</th>
-          <th>Sum</th>
-          <th>Opprettet</th>
-          <th>Kommentar</th>
-          <th></th>
-        </tr>
-        {% for order_item in order_item_list %}
-        <tr>
-          <td>
-            <a href="/order-item/{{ order_item['id'] }}">
-              {{ order_item["id"] }}
-            </a>
-          </td>
-          <td>
-            {{ order_item["product_name"] | sn }},
-            kr {{ order_item["product_price"]}}
-          </td>
-          <td>{{ order_item["number_of_items"] }}</td>
-          <td>{{ order_item["discount"] | sn }}</td>
-          <td>kr {{ order_item["total_amount"] }}</td>
-          <td>{{ order_item["creation_date"] }}</td>
-          <td>{{ order_item["comment"] | sn }}</td>
-          <td>
-            <form action="/order-item/{{ order_item['id'] }}/delete" method="get">
-              <button type="submit" class="btn btn-danger">
-                Slett
-              </button>
-            </form>
-          </td>
-        </tr>
-        {% endfor %}
-      </table>
-      {% endif %}
 {% endblock %}
 
