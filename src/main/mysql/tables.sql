@@ -13,6 +13,9 @@ create table customer
  birth_date DATETIME,
  old_customer_id VARCHAR(255),
  old_archive_id VARCHAR(255),
+ internet_allowed INTEGER not null,
+ newspaper_allowed INTEGER not null,
+ marketing_allowed INTEGER not null,
  constraint pk_customer primary key(id)
 ) ENGINE=InnoDB;
 
@@ -45,8 +48,6 @@ create table customer_order
  delivery_date DATETIME,
  paid_amount DECIMAL (9,2),
  comment VARCHAR(255),
- newspaper_allowed INTEGER not null,
- marketing_allowed INTEGER not null,
  constraint pk_order primary key(id)
 ) ENGINE=InnoDB;
 

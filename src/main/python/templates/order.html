@@ -44,6 +44,17 @@
             </a>
           </div>
         </div>
+        <div class="row">
+          <div class="col-sm-3">
+            Brukes i avis: {{ customer["newspaper_allowed" ] | boolean_to_yes_no }}
+          </div>
+          <div class="col-sm-3">
+            Brukes i markedsføring: {{ customer["marketing_allowed" ] | boolean_to_yes_no }}
+          </div>
+          <div class="col-sm-3">
+            Brukes på internett: {{ customer["internet_allowed" ] | boolean_to_yes_no }}
+          </div>
+        </div>
       </div>
       <h2>
         Varelinjer
@@ -99,6 +110,21 @@
               class="form-control"
               type="number"
               placeholder="Rabatt"
+              value="0"
+              />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-sm-2" for="discount">
+            Overstyr totalpris
+          </label>
+          <div class="col-sm-10">
+            <input
+              id="total_amount"
+              name="total_amount"
+              class="form-control"
+              type="number"
+              placeholder="Overstyr totalpris"
               value="0"
               />
           </div>
@@ -237,49 +263,6 @@
             <input class="form-control"
                    value="{{ order['delivery_date'] | sn }}"
                    readonly/>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-2 control-label">Kan brukes i avis</label>
-          <div class="col-sm-1">
-            <input id="newspaper_allowed"
-                   name="newspaper_allowed"
-                   type="checkbox"
-                   value="1"
-                   {% if order["newspaper_allowed"] %}
-                   checked
-                   {% endif %}
-                   />
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-2 control-label">
-            Kan brukes i markedsføring
-          </label>
-          <div class="col-sm-1">
-            <input id="marketing_allowed"
-                   name="marketing_allowed"
-                   type="checkbox"
-                   value="1"
-                   {% if order["marketing_allowed"] %}
-                   checked
-                   {% endif %}
-                   />
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="col-sm-2 control-label">
-            Kan brukes på internett
-          </label>
-          <div class="col-sm-1">
-            <input id="internet_allowed"
-                   name="internet_allowed"
-                   type="checkbox"
-                   value="1"
-                   {% if order["internet_allowed"] %}
-                   checked
-                   {% endif %}
-                   />
           </div>
         </div>
         <div class="form-group">
