@@ -2,6 +2,9 @@
 ## What to do next?
 Run the command ```what-to-do-next``` to see what to do next :-)
 
+## Products
+- TODO edit product to be invisible in drop down list
+
 ## Search
 - TODO search by order ID
 - TODO search by legacy order ID
