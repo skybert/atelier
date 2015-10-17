@@ -15,3 +15,10 @@ alter table customer_order add internet_allowed integer not null;
 update customer_order set payment_type_id = 1 where payment_type_id is null;
 update customer_order set order_status_id = 1 where order_status_id is null;
 ```
+
+## Upgrade to 2.4
+
+```
+alter table customer add updated_date datetime null;
+```
+
