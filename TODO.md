@@ -3,7 +3,6 @@
 Run the command ```what-to-do-next``` to see what to do next :-)
 
 ## Registration
-- TODO move marketing questions from the order to the customer
 - TODO make order item price overridable at registration time
 - TODO easier to add item to existing order (without scrolling all the
   way down)
