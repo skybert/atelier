@@ -1,6 +1,4 @@
 # Installation notes
-- NOT finished
-
 
 ## OS & python packages
 
@@ -37,7 +35,7 @@ where you start up atelier:
 }
 ```
 
-Download `Chart.js`:
+## Download `Chart.js`
 ```
 $ mkdir src/main/python/files/js
 $ cd src/main/python/files/js
