@@ -36,36 +36,9 @@ like [Percona](http://percona.com).
 - And last, but not least, [Python](http://python.org) for the
   programming language itself :-)
 
-## Installation notes
-- NOT finished
+## Installation
 
-```
-# apt-get install python-pip
-# apt-egt install python-mysqldb
-# pip install flask
-
-```
-
-Ensure you've got a valid `atelier-conf.json` file in the diretory
-where you start up atelier:
-```
-{
-    "db": {
-        "host": "localhost",
-        "user": "atelieruser",
-        "password": "foo",
-        "db" : "atelierdb"
-    },
-    "locale": "nb_NO.utf8"
-}
-```
-
-Download `Chart.js`:
-```
-$ cd src/main/python/files
-$ wget https://raw.githubusercontent.com/nnnick/Chart.js/master/Chart.js
-```
-
+See the [INSTALL.md] for installation instructions.
 
 Cheers,
 
