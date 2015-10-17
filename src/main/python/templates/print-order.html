@@ -447,7 +447,9 @@
                 Adresse:
                 {{ customer["address"] | sn }}<br/>
                 Postnr:
-                {{ customer["post_code"] | sn }}
+                {{ customer["post_code"] | sn }}<br/>
+                Epost:
+                {{ customer["email_address"] | sn }}
               </td>
               <td>
                 Telefon: {{ customer["home_phone"] | sn }}

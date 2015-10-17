@@ -318,7 +318,9 @@ def set_total_amount(values):
 def add_order_item(order_id):
     values = clone_form_and_add_creation_date(request.form)
     values["order_id"] = order_id
-    set_total_amount(values)
+    if int(values["total_amount"]) == 0:
+        set_total_amount(values)
+
     db.add_order_item(values)
     update_delivery_date(order_id)
     return redirect(url_for("get_order", id = order_id))
