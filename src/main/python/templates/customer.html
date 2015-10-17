@@ -1,5 +1,25 @@
 {% extends "base.html" %}
 {% block title %}
+      <div style="margin-bottom: 1em; float: right;">
+        <form action="/order"
+              method="post">
+          <input id="customer_id"
+                 name="customer_id"
+                 type="hidden" value="{{ customer['id'] }}"
+                 />
+          <input id="payment_type_id"
+                 name="payment_type_id"
+                 type="hidden" value="1"
+                 />
+          <input id="order_status_id"
+                 name="order_status_id"
+                 type="hidden" value="1"
+                 />
+          <button type="submit" class="btn btn-primary">
+            Opprett ny ordre
+          </button>
+        </form>
+      </div>
       <h1>Kunde</h1>
       {% if updated %}
       oppdatert
