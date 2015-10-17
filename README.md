@@ -38,7 +38,7 @@ like [Percona](http://percona.com).
 
 ## Installation
 
-See the [INSTALL.md] for installation instructions.
+See the [INSTALL.md](INSTALL.md) for installation instructions.
 
 Cheers,
 
