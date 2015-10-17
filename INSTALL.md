@@ -39,7 +39,8 @@ where you start up atelier:
 
 Download `Chart.js`:
 ```
-$ cd src/main/python/files
+$ mkdir src/main/python/files/js
+$ cd src/main/python/files/js
 $ wget https://raw.githubusercontent.com/nnnick/Chart.js/master/Chart.js
 ```
 

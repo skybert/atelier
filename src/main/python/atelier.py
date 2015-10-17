@@ -127,7 +127,17 @@ def new_customer():
 
 @app.route("/customer/<id>", methods=["POST", "PUT"])
 def update_customer(id):
-    db.update_customer(request.form)
+    form = clone_form_and_add_updated_date(request.form)
+    form["id"] = id
+
+    if len(form.getlist("marketing_allowed")) == 0:
+        form["marketing_allowed"] = 0
+    if len(form.getlist("newspaper_allowed")) == 0:
+        form["newspaper_allowed"] = 0
+    if len(form.getlist("internet_allowed")) == 0:
+        form["internet_allowed"] = 0
+
+    db.update_customer(form)
     return redirect(url_for("get_customer", id = id, updated = True))
 
 @app.route("/customer/<id>/delete", methods = ["GET"])
@@ -161,11 +171,6 @@ def clone_form_and_add_updated_date(form):
 def update_order(id):
     form = clone_form_and_add_updated_date(request.form)
     form["id"] = id
-
-    if len(form.getlist("marketing_allowed")) == 0:
-        form["marketing_allowed"] = 0
-    if len(form.getlist("newspaper_allowed")) == 0:
-        form["newspaper_allowed"] = 0
 
     db.update_order(form)
     return redirect(url_for("get_order", id = id))

@@ -470,13 +470,13 @@
                 Status: {{ order["order_status"] | sn }}
                 <br/>
                 Kan brukes i avis:
-                {{ order["newspaper_allowed" ] | boolean_to_yes_no }}
+                {{ customer["newspaper_allowed" ] | boolean_to_yes_no }}
                 <br/>
                 Kan brukes i markedsf&oslash;ring:
-                {{ order["marketing_allowed" ] | boolean_to_yes_no }}
+                {{ customer["marketing_allowed" ] | boolean_to_yes_no }}
                 <br/>
                 Kan brukes i på internett:
-                {{ order["internet_allowed" ] | boolean_to_yes_no }}
+                {{ customer["internet_allowed" ] | boolean_to_yes_no }}
                 <br/>
                 Betalingstype: {{ order["payment_type"] }}
                 <br/>
