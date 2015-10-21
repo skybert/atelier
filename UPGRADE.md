@@ -3,6 +3,9 @@
 ## Upgrade to 2.4
 ```
 alter table customer add updated_date datetime null;
+alter table customer add newspaper_allowed integer not null;
+alter table customer add marketing_allowed integer not null;
+alter table customer add internet_allowed integer not null;
 ```
 
 ## Upgrade from 2.0.x to 2.1.x
