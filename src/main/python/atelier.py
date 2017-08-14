@@ -401,11 +401,17 @@ if __name__ == '__main__':
         conf_data["db"]["db"],
         app.logger
     )
+
+    if "log_dir" in conf_data:
+        log_dir = conf_data["log_dir"]
+    else:
+        log_dir = "/var/log/studio-s"
+    
     setlocale(LC_ALL, str(conf_data["locale"]))
     app.wsgi_app = ReverseProxied(app.wsgi_app)
 
     if not app.debug:
-        file_handler = FileHandler("atelier.log")
+        file_handler = FileHandler(log_dir + "/" + "atelier.log")
         file_handler.setLevel(logging.DEBUG)
         file_handler.setFormatter(Formatter(
             '%(asctime)s %(levelname)s: %(message)s '
