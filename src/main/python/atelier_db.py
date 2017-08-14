@@ -68,10 +68,10 @@ class AtelierDB:
 
     ## Customer
     def get_customer(self, id):
-        return self.query_one("select * from customer where id = %s", (id))
+        return self.query_one("select * from customer where id = %s", (id,))
 
     def get_customer_by_old_id(self, id):
-        return self.query_list("select * from customer where old_customer_id = %s", (id))
+        return self.query_list("select * from customer where old_customer_id = %s", (id,))
 
     def delete_customer(self, id):
         return self.delete("customer", id)
@@ -87,12 +87,12 @@ class AtelierDB:
           o.customer_id = c.id
           and o.id = %s
         """
-        result = self.query_one(query, (order_id))
+        result = self.query_one(query, (order_id,))
         return result["id"]
 
     def get_customer_order_list(self, customer_id):
         sql="select * from customer_order where customer_id = %s"
-        return self.query_list(sql, (customer_id))
+        return self.query_list(sql, (customer_id,))
 
     def find_customers_by_name(self, name):
         """
@@ -158,7 +158,7 @@ class AtelierDB:
           and pt.id = o.payment_type_id
           and o.id = %s
         """
-        return self.query_one(query, (id))
+        return self.query_one(query, (id,))
 
     def create_order(self, form):
         self.set_creation_date_to_now(form)
@@ -170,14 +170,14 @@ class AtelierDB:
         self.query_one(update_sql, tuple(values))
 
     def get_order_item(self, id):
-        return self.query_one("select * from order_item where id = %s", (id))
+        return self.query_one("select * from order_item where id = %s", (id,))
 
     def update_order_item(self, form):
         update_sql, values = sql.get_sql_and_values("order_item", form)
         self.query_one(update_sql, tuple(values))
 
     def get_product_price(self, id):
-        price = self.query_one("select price from product where id = %s", (id))
+        price = self.query_one("select price from product where id = %s", (id,))
         return price["price"]
 
     def delete_order_item(self, id):
@@ -187,8 +187,8 @@ class AtelierDB:
         con = self.get_db_connection()
         with con:
             cur = con.cursor()
-            cur.execute("delete from order_item where order_id = %s", (id))
-            cur.execute("delete from customer_order where id = %s", (id))
+            cur.execute("delete from order_item where order_id = %s", (id,))
+            cur.execute("delete from customer_order where id = %s", (id,))
 
     def get_order_item_list(self, order_id):
         query = """
@@ -205,11 +205,11 @@ class AtelierDB:
         where oi.order_id = %s
         and oi.product_id = p.id
         """
-        return self.query_list(query, (order_id))
+        return self.query_list(query, (order_id,))
 
     def get_order_item_list_by_product_id(self, product_id):
         query = "select * from order_item where product_id = %s"
-        return self.query_list(query, (product_id))
+        return self.query_list(query, (product_id,))
 
     def add_order_item(self, form):
         update_sql, values = sql.get_sql_and_values("order_item", form)
@@ -218,7 +218,7 @@ class AtelierDB:
 
     def update_order_total(self, id, delta):
         query = "select total_amount from customer_order where id = %s"
-        old_amount = self.query_one(query, (id))["total_amount"]
+        old_amount = self.query_one(query, (id,))["total_amount"]
 
         if old_amount != None:
             new_amount = old_amount + delta
@@ -233,7 +233,7 @@ class AtelierDB:
 
     ## Product
     def get_product(self, id):
-        return self.query_one("select * from product where id = %s", (id))
+        return self.query_one("select * from product where id = %s", (id,))
 
     def get_product_list(self):
         query = """
@@ -496,4 +496,4 @@ class AtelierDB:
           and p.id = oi.product_id
           and o.id = %s;
         """
-        return self.query_one(query, (order_id))
+        return self.query_one(query, (order_id,))
