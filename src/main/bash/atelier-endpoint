@@ -1,0 +1,55 @@
+#! /usr/bin/env bash
+
+WAS_HERE=/var/lib/atelier.initialised
+atelier_home=/opt/atelier
+db_root_password=foo
+
+create_conf_file() {
+  local conf_file=$HOME/atelier-conf.json
+  cat > "${conf_file}" <<EOF
+{
+    "db": {
+        "host": "db",
+        "user": "atelierdbuser",
+        "password": "atelierdbpassword",
+        "db" : "atelierdb"
+    },
+    "locale": "nb_NO.utf8"
+}
+EOF
+}
+
+
+create_db() {
+  # tkj hack
+
+  echo "Waiting for db ..."
+  for el in 1 2 3 4 5; do
+    mysql -h db -u root -p${db_root_password} -e 'show databases' &>/dev/null || {
+      sleep 1
+    }
+  done
+
+  mysql -h db -u root -p${db_root_password} -e 'show databases' |
+    grep -q "atelierdb"
+
+  if [ $? -gt 0 ]; then
+    mysql -h db -u root -p${db_root_password} <<EOF
+create database atelierdb character set utf8 collate utf8_general_ci;
+grant all on atelierdb.* to atelieruser@'%' identified by 'atelierpassword';
+grant all on atelierdb.* to atelieruser@'localhost' identified by 'atelierpassword';
+EOF
+  fi
+}
+
+
+main() {
+  if [ ! -e "${WAS_HERE}" ]; then
+    create_conf_file
+    create_db
+    touch "${WAS_HERE}"
+  fi
+
+}
+
+main "$@"
