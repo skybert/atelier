@@ -4,6 +4,8 @@ WAS_HERE=/var/lib/atelier.initialised
 atelier_home=/opt/atelier
 db_root_password=foo
 db_schema=foodb
+db_user=foouser
+db_password=foopassword
 
 create_conf_file() {
   local conf_file=/etc/atelier-conf.json
@@ -11,8 +13,8 @@ create_conf_file() {
 {
   "db": {
     "host": "db",
-    "user": "atelierdbuser",
-    "password": "atelierdbpassword",
+    "user": "${db_user}",
+    "password": "${db_password}",
     "db" : "${db_schema}"
   },
   "locale": "nb_NO.utf8",
@@ -37,8 +39,8 @@ create_db() {
   if [ $? -gt 0 ]; then
     mysql -h db -u root -p${db_root_password} <<EOF
 create database ${db_schema} character set utf8 collate utf8_general_ci;
-grant all on ${db_schema}.* to atelieruser@'%' identified by 'atelierpassword';
-grant all on ${db_schema}.* to atelieruser@'localhost' identified by 'atelierpassword';
+grant all on ${db_schema}.* to ${db_user}@'%' identified by '${db_password}';
+grant all on ${db_schema}.* to ${db_user}@'localhost' identified by '${db_password}';
 EOF
     local file=/var/spool/atelier/create-new-db.sql
     if [ -r "${file}" ]; then

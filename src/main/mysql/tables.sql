@@ -13,9 +13,9 @@ create table customer
  birth_date DATETIME,
  old_customer_id VARCHAR(255),
  old_archive_id VARCHAR(255),
- internet_allowed INTEGER not null,
- newspaper_allowed INTEGER not null,
- marketing_allowed INTEGER not null,
+ internet_allowed INTEGER not null default 0,
+ newspaper_allowed INTEGER not null default 0,
+ marketing_allowed INTEGER not null default 0,
  constraint pk_customer primary key(id)
 ) ENGINE=InnoDB;
 
@@ -57,7 +57,8 @@ create table invoice
  order_id INTEGER,
  creation_date DATETIME,
  due_date DATETIME,
- tax_included INTEGER not null,
+ tax_included INTEGER not null default 0,
+ invoice_paid INTEGER not null default 0,
  constraint pk_order primary key(id)
 ) ENGINE=InnoDB;
 
