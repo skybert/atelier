@@ -420,7 +420,7 @@ if __name__ == '__main__':
         app.logger.addHandler(file_handler)
 
     # TODO make debug mode configurable
-    app.run(debug=False)
-
-
-
+    app.run(
+        host='0.0.0.0',
+        debug=False
+    )

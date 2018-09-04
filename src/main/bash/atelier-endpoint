@@ -1,47 +1,61 @@
-#! /usr/bin/env bash
+#! /bin/bash -x
 
 WAS_HERE=/var/lib/atelier.initialised
 atelier_home=/opt/atelier
 db_root_password=foo
+db_schema=foodb
 
 create_conf_file() {
-  local conf_file=$HOME/atelier-conf.json
+  local conf_file=/etc/atelier-conf.json
   cat > "${conf_file}" <<EOF
 {
-    "db": {
-        "host": "db",
-        "user": "atelierdbuser",
-        "password": "atelierdbpassword",
-        "db" : "atelierdb"
-    },
-    "locale": "nb_NO.utf8"
+  "db": {
+    "host": "db",
+    "user": "atelierdbuser",
+    "password": "atelierdbpassword",
+    "db" : "${db_schema}"
+  },
+  "locale": "nb_NO.utf8",
+  "log_dir": "/var/log"
 }
 EOF
 }
-
 
 create_db() {
   # tkj hack
 
   echo "Waiting for db ..."
   for el in 1 2 3 4 5; do
-    mysql -h db -u root -p${db_root_password} -e 'show databases' &>/dev/null || {
-      sleep 1
+    mysql -h db -u root -p${db_root_password} -e 'show databases' || {
+      sleep 3
     }
   done
 
   mysql -h db -u root -p${db_root_password} -e 'show databases' |
-    grep -q "atelierdb"
+    grep -q "${db_schema}"
 
   if [ $? -gt 0 ]; then
     mysql -h db -u root -p${db_root_password} <<EOF
-create database atelierdb character set utf8 collate utf8_general_ci;
-grant all on atelierdb.* to atelieruser@'%' identified by 'atelierpassword';
-grant all on atelierdb.* to atelieruser@'localhost' identified by 'atelierpassword';
+create database ${db_schema} character set utf8 collate utf8_general_ci;
+grant all on ${db_schema}.* to atelieruser@'%' identified by 'atelierpassword';
+grant all on ${db_schema}.* to atelieruser@'localhost' identified by 'atelierpassword';
 EOF
+    local file=/var/spool/atelier/create-new-db.sql
+    if [ -r "${file}" ]; then
+      (
+        cd $(dirname "${file}") || exit 1
+        mysql -h db -u root -p${db_root_password} ${db_schema} < "${file}"
+      )
+    fi
   fi
 }
 
+start_atelier_in_fg() {
+  (
+    cd "${atelier_home}" || exit 1a
+    python atelier.py
+  )
+}
 
 main() {
   if [ ! -e "${WAS_HERE}" ]; then
@@ -50,6 +64,7 @@ main() {
     touch "${WAS_HERE}"
   fi
 
+  start_atelier_in_fg
 }
 
 main "$@"
