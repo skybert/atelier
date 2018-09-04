@@ -325,6 +325,31 @@ def add_order_item(order_id):
     update_delivery_date(order_id)
     return redirect(url_for("get_order", id = order_id))
 
+@app.route("/invoice/<id>", methods = ["GET"])
+def get_invoice(id):
+    pass
+
+@app.route("/invoice", methods = ["GET"])
+def create_invoice_request():
+    pass
+
+@app.route("/invoice", methods = ["POST"])
+def create_invoice():
+    pass
+
+@app.route("/reports/invoice-overview")
+def invoice_overview():
+    from_date = get_datetime_or_past_datetime(
+        request.args.get("from_date"), 30)
+    to_date = get_datetime_or_past_datetime(
+        request.args.get("to_date"), 0)
+
+    return render_template(
+        "reports/invoice-overview.html",
+        from_date=from_date,
+        to_date=to_date
+    )
+
 @app.route("/reports/order-overview")
 def order_overview():
     from_date = get_datetime_or_past_datetime(request.args.get("from_date"), 30)
@@ -422,5 +447,5 @@ if __name__ == '__main__':
     # TODO make debug mode configurable
     app.run(
         host='0.0.0.0',
-        debug=False
+        debug=True
     )
