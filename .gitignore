@@ -1,6 +1,7 @@
 *.pyc
 *.swp
 .gitignore
+TAGS
 src/main/python/atelier-conf.json
 src/main/python/atelier.log
 src/main/python/pyenv
