@@ -272,6 +272,21 @@ class AtelierDB:
     def get_order_status_list(self):
         return self.query_list("select * from order_status", None)
 
+    ## Invoice
+    def get_invoice(self, id):
+        return self.query_one("select * from invoice where id = %s", (id,))
+
+    def delete_invoice(self, id):
+        return self.delete("invoice", id)
+
+    def create_invoice(self, form):
+        insert_sql, values = sql.get_sql_and_values("invoice", form)
+        return self.insert(insert_sql, values)
+
+    def update_invoice(self, form):
+        update_sql, values = sql.get_sql_and_values("invoice", form)
+        self.query_one(update_sql, tuple(values))
+
     ## Reports
     def get_order_list(self, from_date, to_date, product_list=[]):
         """

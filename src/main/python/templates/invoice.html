@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}
+      <h1>Faktura</h1>
+{% endblock %}
+{% block content %}
+      <form action="/invoice/{{ invoice['id'] }}"
+            method="post"
+            class="form-horizontal">
+        {% if invoice["id"]: %}
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="id">
+            Fakturanummer
+          </label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="id"
+                   name="id"
+                   value="{{ invoice['id'] }}"
+                   readonly/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2"
+                 for="creation_date">
+            Registrert
+          </label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="id"
+                   name="id"
+                   value="{{ invoice["creation_date"] | sn }}"
+                   readonly/>
+          </div>
+        </div>
+        {% endif %}
+        <div class="form-group">
+          <label class="col-sm-2 control-label">Ordrenummer</label>
+          <div class="col-sm-10">
+            <input
+              id="order_id"
+              name="order_id"
+              class="form-control"
+              value="{{ order['id'] | sn }}"
+              readonly
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="name">
+            Betalt
+          </label>
+          <div class="col-xs-10">
+            <input
+              id="paid"
+              name="paid"
+              type="checkbox"
+              value="1"
+              {% if invoice["paid"] %}
+              checked
+              {% endif %}
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-xs-offset-2 col-xs-10">
+            <button type="submit" class="btn btn-primary">
+              {% if invoice["id"] %}
+                Oppdater faktura
+              {% else %}
+                Opprett ny faktura
+              {% endif %}
+            </button>
+          </div>
+        </div>
+      </form>
+      {% if invoice["id"] %}
+      <form action="/invoice/{{ invoice['id'] }}/delete"
+            method="get"
+            class="form-horizontal">
+        <div class="form-group">
+          <div class="col-xs-offset-2 col-xs-10">
+            <button type="submit" class="btn btn-danger">
+              Slett faktura
+            </button>
+          </div>
+        </div>
+      </form>
+      {% endif %}
+{% endblock %}

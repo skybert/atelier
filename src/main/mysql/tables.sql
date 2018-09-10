@@ -56,9 +56,10 @@ create table invoice
  id INTEGER AUTO_INCREMENT,
  order_id INTEGER,
  creation_date DATETIME,
+ updated_date DATETIME,
  due_date DATETIME,
  tax_included INTEGER not null default 0,
- invoice_paid INTEGER not null default 0,
+ paid INTEGER not null default 0,
  constraint pk_order primary key(id)
 ) ENGINE=InnoDB;
 

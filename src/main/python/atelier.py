@@ -327,15 +327,63 @@ def add_order_item(order_id):
 
 @app.route("/invoice/<id>", methods = ["GET"])
 def get_invoice(id):
-    pass
+    invoice = db.get_invoice(id)
+    if invoice == None:
+        abort(404)
+    order = db.get_order(invoice["order_id"])
+    order_item_list = db.get_order_item_list(id)
+    return render_template(
+        "invoice.html",
+        invoice=invoice,
+        order=order,
+        order_item_list=order_item_list
+    )
 
-@app.route("/invoice", methods = ["GET"])
-def create_invoice_request():
-    pass
+@app.route("/invoice/of/<order_id>", methods = ["GET"])
+def create_invoice_request(order_id):
+    order = db.get_order(order_id)
+    return render_template(
+        "invoice.html",
+        invoice={},
+        order=order
+    )
 
 @app.route("/invoice", methods = ["POST"])
+@app.route("/invoice/", methods = ["POST"])
 def create_invoice():
-    pass
+    form = clone_form_and_add_creation_date(request.form)
+    id = db.create_invoice(form)
+    return redirect(url_for("get_invoice", id = id))
+
+@app.route("/invoice/<id>", methods=["POST", "PUT"])
+def update_invoice(id):
+    form = clone_form_and_add_updated_date(request.form)
+    form["id"] = id
+
+    if len(form.getlist("paid")) == 0:
+        form["paid"] = 0
+    if len(form.getlist("tax_included")) == 0:
+        form["tax_included"] = 0
+
+    db.update_invoice(form)
+    return redirect(url_for("get_invoice", id = id, updated = True))
+
+@app.route("/invoice/<id>/delete", methods = ["GET"])
+def get_invoice_delete_page(id):
+    invoice = db.get_invoice(id)
+    return render_template("delete-invoice.html", invoice = invoice)
+
+@app.route("/invoice/<id>", methods = ["DELETE"])
+@app.route("/invoice/<id>/delete", methods = ["POST"])
+def delete_invoice(id):
+    invoice = db.get_invoice(id)
+    order = db.get_order(invoice["order_id"])
+    db.delete_invoice(id)
+    message = "Faktura med numer " + id + " slettet"
+    return render_template(
+        "order.html",
+        order = order
+    )
 
 @app.route("/reports/invoice-overview")
 def invoice_overview():

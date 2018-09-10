@@ -8,5 +8,5 @@ $ docker-compose up --build
 
 ```sql
 alter table invoice 
-      add column invoice_paid INTEGER not null;
+      add column paid INTEGER not null;
 ```
