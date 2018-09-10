@@ -3,10 +3,18 @@ version: '3.3'
 volumes:
   var-lib-mysql:
 
+networks:
+  atelier-net:
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
+
 services:
   db:
     image: mariadb:latest
     restart: always
+    networks:
+      atelier-net:
     environment:
       - MYSQL_DATABASE=atelierdb
       - MYSQL_ROOT_PASSWORD=foo
@@ -20,3 +28,10 @@ services:
       - 5000:5000
     depends_on:
       - db
+    networks:
+      atelier-net:
+        # Setting a static IP on the atelier container so that I can
+        # use a reverse proxy on the host OS to route traffic (I don't
+        # want to use a containerised web server as the mother machine
+        # servers several things on :80/:443).
+        ipv4_address: 172.18.0.200
