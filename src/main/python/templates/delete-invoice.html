@@ -1,12 +1,18 @@
 {% extends "base.html" %}
 {% block title %}
       <h1>
-        Slette faktura nummer {{ invoice["id"] }},
-        "{{ invoice["name"] }}"?
+        Slette faktura nummer {{ invoice["id"] }} ?
       </h1>
-      <p>
-        Opprettet: {{ invoice["creation_date"] | sn }}
-      </p>
+      <ul>
+        <li>
+          Opprettet: {{ invoice["creation_date"] | sn }}
+        </li>
+        <li>
+          <a href="/order/{{ invoice["order_id"] }}">
+            Ordrenummer: {{ invoice["order_id"] | sn }}
+          </a>
+        </li>
+      </ul>
 {% endblock %}
 {% block content %}
       <div class="row">

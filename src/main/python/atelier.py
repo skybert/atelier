@@ -378,11 +378,13 @@ def get_invoice_delete_page(id):
 def delete_invoice(id):
     invoice = db.get_invoice(id)
     order = db.get_order(invoice["order_id"])
+    order = db.get_customer(order["customer_id"])
     db.delete_invoice(id)
     message = "Faktura med numer " + id + " slettet"
     return render_template(
         "order.html",
-        order = order
+        order = order,
+        customer = customer
     )
 
 @app.route("/reports/invoice-overview")
@@ -391,11 +393,13 @@ def invoice_overview():
         request.args.get("from_date"), 30)
     to_date = get_datetime_or_past_datetime(
         request.args.get("to_date"), 0)
-
+    invoice_list, total_amount = db.get_invoice_list(from_date, to_date)
     return render_template(
         "reports/invoice-overview.html",
         from_date=from_date,
-        to_date=to_date
+        to_date=to_date,
+        invoice_list=invoice_list,
+        total_amount=total_amount
     )
 
 @app.route("/reports/order-overview")

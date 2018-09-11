@@ -288,6 +288,55 @@ class AtelierDB:
         self.query_one(update_sql, tuple(values))
 
     ## Reports
+    def get_invoice_list(self, from_date, to_date):
+        print("from_date=" + str(from_date) + " to_date=" + str(to_date))
+
+        # Since we use less than and greater than in the dates, we
+        # adjust the input dates accordingly
+        if isinstance(from_date, datetime):
+            from_date = from_date - timedelta(days=1)
+        if isinstance(to_date, datetime):
+            to_date = to_date + timedelta(days=1)
+
+        query = """
+        select
+          c.first_name,
+          c.last_name,
+          i.id,
+          i.order_id,
+          i.creation_date,
+          i.paid,
+          i.due_date
+        from
+          invoice i,
+          customer c,
+          customer_order o
+        where
+          i.order_id = o.id
+        and
+          c.id = o.customer_id
+        and
+          i.creation_date > %s
+        and
+          i.creation_date < %s
+        """
+        result = self.query_list(query, (from_date, to_date))
+        # query = """
+        # select
+        #   sum(oi.total_amount) as total_amount
+        # from
+        #   order_item oi,
+        #   customer_order o,
+        # where
+        #   o.id=oi.order_id
+        # and
+        #   o.id = %s
+        # """
+        # total_amount = self.query_list(query, ())
+        total_amount = 0
+
+        return result, total_amount
+
     def get_order_list(self, from_date, to_date, product_list=[]):
         """
         If :product_list  is empty, all products will be included in the report.

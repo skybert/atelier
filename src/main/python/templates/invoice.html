@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 {% block title %}
-      <h1>Faktura</h1>
-{% endblock %}
+      <h1>
+        Faktura av
+        <a href="/order/{{ invoice['order_id'] }}">
+          ordre nummer {{ invoice['order_id'] | sn }}
+        </a>
+      </h1>
+      {% endblock %}
 {% block content %}
       <form action="/invoice/{{ invoice['id'] }}"
             method="post"
@@ -34,14 +39,16 @@
         </div>
         {% endif %}
         <div class="form-group">
-          <label class="col-sm-2 control-label">Ordrenummer</label>
-          <div class="col-sm-10">
-            <input
-              id="order_id"
-              name="order_id"
-              class="form-control"
-              value="{{ order['id'] | sn }}"
-              readonly
+          <label class="control-label col-xs-2" for="due_date">
+            Forfallsdato
+          </label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="due_date"
+                   name="due_date"
+                   value="{{ invoice['due_date'] | iso_date }}"
+                   type="date"
+                   placeholder="Forfallsdato"
             />
           </div>
         </div>
@@ -61,6 +68,33 @@
             />
           </div>
         </div>
+        {% if order_item_list | length > 0 %}
+        <table class="table table-hover" style="margin-top: 2em;">
+          <tr>
+            <th>Varelinje #</th>
+            <th>Vare</th>
+            <th>Antall</th>
+            <th>Sum</th>
+            <th>Opprettet</th>
+          </tr>
+          {% for order_item in order_item_list %}
+          <tr>
+            <td>
+              <a href="/order-item/{{ order_item['id'] }}">
+                {{ order_item["id"] }}
+              </a>
+            </td>
+            <td>
+              {{ order_item["product_name"] | sn }},
+              kr {{ order_item["product_price"]}}
+            </td>
+            <td>{{ order_item["number_of_items"] }}</td>
+            <td>kr {{ order_item["total_amount"] }}</td>
+            <td>{{ order_item["creation_date"] }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+        {% endif %}
         <div class="form-group">
           <div class="col-xs-offset-2 col-xs-10">
             <button type="submit" class="btn btn-primary">
