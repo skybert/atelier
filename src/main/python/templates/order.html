@@ -295,10 +295,15 @@
               onclick="window.location.href = '/order/{{ order['id'] }}/delete'">
         Slett ordre
       </button>
+      {% if invoice_id_list | length > 0 %}
+      <a href="/invoice/{{ invoice_id_list[0].id }}">
+        Faktura nummer {{ invoice_id_list[0].id }}
+      </a>
+      {% else %}
       <button
         class="btn btn-default"
         onclick="window.location.href = '/invoice/of/{{ order['id'] }}'">
         Lag faktura
       </button>
+      {% endif %}
 {% endblock %}
-

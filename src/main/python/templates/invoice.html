@@ -1,9 +1,17 @@
 {% extends "base.html" %}
 {% block title %}
+<p>
+  <code>
+{{ invoice }}
+  </code>
+  <code>
+{{ order_item_list }}
+  </code>
+</p>
       <h1>
         Faktura av
-        <a href="/order/{{ invoice['order_id'] }}">
-          ordre nummer {{ invoice['order_id'] | sn }}
+        <a href="/order/{{ order['id'] }}">
+          ordre nummer {{ order['id'] | sn }}
         </a>
       </h1>
       {% endblock %}
@@ -38,6 +46,20 @@
           </div>
         </div>
         {% endif %}
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="order_id">
+            Ordrenummer
+          </label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="order_id"
+                   name="order_id"
+                   value="{{ order['id'] | sn }}"
+                   placeholder="Ordrenummer"
+                   readonly
+            />
+          </div>
+        </div>
         <div class="form-group">
           <label class="control-label col-xs-2" for="due_date">
             Forfallsdato

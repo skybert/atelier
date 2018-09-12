@@ -276,6 +276,17 @@ class AtelierDB:
     def get_invoice(self, id):
         return self.query_one("select * from invoice where id = %s", (id,))
 
+    def get_invoice_id_list_by_order_id(self, order_id):
+        query = """
+        select
+          id
+        from
+          invoice
+        where
+          order_id = %s
+        """
+        return self.query_list(query, (order_id))
+
     def delete_invoice(self, id):
         return self.delete("invoice", id)
 
@@ -289,8 +300,6 @@ class AtelierDB:
 
     ## Reports
     def get_invoice_list(self, from_date, to_date):
-        print("from_date=" + str(from_date) + " to_date=" + str(to_date))
-
         # Since we use less than and greater than in the dates, we
         # adjust the input dates accordingly
         if isinstance(from_date, datetime):

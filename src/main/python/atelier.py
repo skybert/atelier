@@ -236,14 +236,18 @@ def get_order(id):
     order_item_list = db.get_order_item_list(id)
     payment_type_list = db.get_payment_type_list()
     order_status_list = db.get_order_status_list()
+    invoice_id_list = db.get_invoice_id_list_by_order_id(id)
 
-    return render_template("order.html",
-                           order = order,
-                           customer = customer,
-                           order_item_list = order_item_list,
-                           product_list = db.get_product_list(),
-                           payment_type_list = payment_type_list,
-                           order_status_list = order_status_list)
+    return render_template(
+        "order.html",
+        order = order,
+        customer = customer,
+        order_item_list = order_item_list,
+        product_list = db.get_product_list(),
+        payment_type_list = payment_type_list,
+        order_status_list = order_status_list,
+        invoice_id_list = invoice_id_list
+    )
 
 @app.route("/print/order/<id>", methods = ["GET"])
 def get_printable_order(id):
@@ -331,21 +335,23 @@ def get_invoice(id):
     if invoice == None:
         abort(404)
     order = db.get_order(invoice["order_id"])
-    order_item_list = db.get_order_item_list(id)
+    order_item_list = db.get_order_item_list(order["id"])
     return render_template(
         "invoice.html",
-        invoice=invoice,
-        order=order,
-        order_item_list=order_item_list
+        invoice = invoice,
+        order = order,
+        order_item_list = order_item_list
     )
 
 @app.route("/invoice/of/<order_id>", methods = ["GET"])
 def create_invoice_request(order_id):
     order = db.get_order(order_id)
+    order_item_list = db.get_order_item_list(order["id"])
     return render_template(
         "invoice.html",
-        invoice={},
-        order=order
+        invoice = {},
+        order = order,
+        order_item_list = order_item_list
     )
 
 @app.route("/invoice", methods = ["POST"])
@@ -378,14 +384,11 @@ def get_invoice_delete_page(id):
 def delete_invoice(id):
     invoice = db.get_invoice(id)
     order = db.get_order(invoice["order_id"])
-    order = db.get_customer(order["customer_id"])
+    customer = db.get_customer(order["customer_id"])
     db.delete_invoice(id)
     message = "Faktura med numer " + id + " slettet"
-    return render_template(
-        "order.html",
-        order = order,
-        customer = customer
-    )
+
+    return redirect(url_for("get_order", id = order["id"]))
 
 @app.route("/reports/invoice-overview")
 def invoice_overview():
