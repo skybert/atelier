@@ -1,48 +1,30 @@
 {% extends "base.html" %}
 {% block title %}
-<p>
-  <code>
-{{ invoice }}
-  </code>
-  <code>
-{{ order_item_list }}
-  </code>
-</p>
+      {% if invoice["id"]: %}
+      <h1>
+        Faktura nummer {{ invoice["id"] }}
+      </h1>
+      {% else %}
       <h1>
         Faktura av
         <a href="/order/{{ order['id'] }}">
           ordre nummer {{ order['id'] | sn }}
         </a>
       </h1>
-      {% endblock %}
+      {% endif %}
+{% endblock %}
 {% block content %}
       <form action="/invoice/{{ invoice['id'] }}"
             method="post"
             class="form-horizontal">
         {% if invoice["id"]: %}
         <div class="form-group">
-          <label class="control-label col-xs-2" for="id">
-            Fakturanummer
-          </label>
-          <div class="col-xs-10">
-            <input class="form-control"
-                   id="id"
-                   name="id"
-                   value="{{ invoice['id'] }}"
-                   readonly/>
-          </div>
-        </div>
-        <div class="form-group">
           <label class="control-label col-xs-2"
                  for="creation_date">
             Registrert
           </label>
           <div class="col-xs-10">
-            <input class="form-control"
-                   id="id"
-                   name="id"
-                   value="{{ invoice["creation_date"] | sn }}"
-                   readonly/>
+            {{ invoice["creation_date"] | sn }}
           </div>
         </div>
         {% endif %}
@@ -51,13 +33,7 @@
             Ordrenummer
           </label>
           <div class="col-xs-10">
-            <input class="form-control"
-                   id="order_id"
-                   name="order_id"
-                   value="{{ order['id'] | sn }}"
-                   placeholder="Ordrenummer"
-                   readonly
-            />
+            <a href="/order/{{ order["id"] | sn }}">{{ order["id"] }}</a>
           </div>
         </div>
         <div class="form-group">
@@ -93,28 +69,43 @@
         {% if order_item_list | length > 0 %}
         <table class="table table-hover" style="margin-top: 2em;">
           <tr>
-            <th>Varelinje #</th>
+            <th>Artikkel #</th>
             <th>Vare</th>
             <th>Antall</th>
+            <th>Pris per stk inkl mva</th>
+            <th>Rabatt</th>
             <th>Sum</th>
-            <th>Opprettet</th>
           </tr>
           {% for order_item in order_item_list %}
           <tr>
             <td>
-              <a href="/order-item/{{ order_item['id'] }}">
-                {{ order_item["id"] }}
+              <a href="/product/{{ order_item['product_id'] }}">
+                {{ order_item["product_id"] }}
               </a>
             </td>
-            <td>
-              {{ order_item["product_name"] | sn }},
-              kr {{ order_item["product_price"]}}
-            </td>
+            <td>{{ order_item["product_name"] | sn }}</td>
             <td>{{ order_item["number_of_items"] }}</td>
-            <td>kr {{ order_item["total_amount"] }}</td>
-            <td>{{ order_item["creation_date"] }}</td>
+            <td>{{ order_item["product_price"]}} kr</td>
+            <td>{{ order_item["discount"] }} %</td>
+            <td>{{ order_item["total_amount"] }} kr</td>
           </tr>
           {% endfor %}
+          <tr>
+            <td colspan="6">
+              <hr/>
+            </td>
+          </tr>
+          <tr>
+            <th colspan="5">Beløp ekslusiv mva:</th>
+            <td>{{ "%.2f"|format(sum_exclusive_tax) }} kr</td>
+          </tr>
+          <tr>
+            <th colspan="5">Mva 25%:</th>
+            <td>{{ "%.2f"|format(total_tax) }} kr</td>
+          </tr>
+          <tr>
+            <th colspan="5">Beløp inklusiv mva:</th><td>{{ total_amount }} kr</td>
+          </tr>
         </table>
         {% endif %}
         <div class="form-group">

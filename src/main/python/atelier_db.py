@@ -199,6 +199,7 @@ class AtelierDB:
           oi.number_of_items,
           oi.discount,
           oi.total_amount,
+          p.id as product_id,
           p.name as product_name,
           p.price as product_price
         from order_item oi, product p

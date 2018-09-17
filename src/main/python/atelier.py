@@ -336,17 +336,28 @@ def get_invoice(id):
         abort(404)
     order = db.get_order(invoice["order_id"])
     order_item_list = db.get_order_item_list(order["id"])
+
+    total_amount = Decimal(0)
+    for order_item in order_item_list:
+      total_amount += order_item["total_amount"]
+    total_tax = total_amount * Decimal(0.25)
+    sum_exclusive_tax = total_amount - total_tax
+
     return render_template(
         "invoice.html",
         invoice = invoice,
         order = order,
-        order_item_list = order_item_list
+        order_item_list = order_item_list,
+        sum_exclusive_tax = sum_exclusive_tax,
+        total_amount = total_amount,
+        total_tax = total_tax
     )
 
 @app.route("/invoice/of/<order_id>", methods = ["GET"])
 def create_invoice_request(order_id):
     order = db.get_order(order_id)
     order_item_list = db.get_order_item_list(order["id"])
+
     return render_template(
         "invoice.html",
         invoice = {},
