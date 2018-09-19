@@ -33,7 +33,14 @@
             Ordrenummer
           </label>
           <div class="col-xs-10">
-            <a href="/order/{{ order["id"] | sn }}">{{ order["id"] }}</a>
+            <input
+              class="form-control"
+              id="order_id"
+              name="order_id"
+              value="{{ order['id'] | sn }}"
+              placeholder="Ordrenummer"
+              readonly
+            />
           </div>
         </div>
         <div class="form-group">
@@ -97,14 +104,23 @@
           </tr>
           <tr>
             <th colspan="5">Beløp ekslusiv mva:</th>
-            <td>{{ "%.2f"|format(sum_exclusive_tax) }} kr</td>
+            <td>
+              {% if sum_exclusive_tax %}
+              {{ "%.2f"|format(sum_exclusive_tax) }} kr
+              {% endif %}
+            </td>
           </tr>
           <tr>
             <th colspan="5">Mva 25%:</th>
-            <td>{{ "%.2f"|format(total_tax) }} kr</td>
+            <td>
+              {% if total_tax %}
+              {{ "%.2f"|format(total_tax) }} kr
+              {% endif %}
+            </td>
           </tr>
           <tr>
-            <th colspan="5">Beløp inklusiv mva:</th><td>{{ total_amount }} kr</td>
+            <th colspan="5">Beløp inklusiv mva:</th>
+            <td>{{ total_amount }} kr</td>
           </tr>
         </table>
         {% endif %}

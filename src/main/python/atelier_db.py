@@ -310,6 +310,7 @@ class AtelierDB:
 
         query = """
         select
+          c.id as customer_id,
           c.first_name,
           c.last_name,
           i.id,

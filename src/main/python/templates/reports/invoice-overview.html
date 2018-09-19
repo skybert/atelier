@@ -4,7 +4,6 @@
       {% include "from-to-date-info.html" %}
 {% endblock %}
 {% block content %}
-
       <form action="/reports/invoice-overview"
             method="get"
             class="form-inline">
@@ -18,11 +17,8 @@
           </div>
         </div>
       </form>
-      <!-- TODO list the number of products that's been included in
-           the search -->
       <h2>
         Totalt {{ invoice_list | length }} fakturaer med en omsetning på kr
-        <strong>{{ total_amount[0]["total_amount"] | sn }}</strong>
       </h2>
       <table class="table table-striped">
         <tr>

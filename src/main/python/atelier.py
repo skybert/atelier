@@ -410,10 +410,10 @@ def invoice_overview():
     invoice_list, total_amount = db.get_invoice_list(from_date, to_date)
     return render_template(
         "reports/invoice-overview.html",
-        from_date=from_date,
-        to_date=to_date,
-        invoice_list=invoice_list,
-        total_amount=total_amount
+        from_date = from_date,
+        to_date = to_date,
+        invoice_list = invoice_list,
+        total_amount = total_amount
     )
 
 @app.route("/reports/order-overview")
