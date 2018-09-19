@@ -40,6 +40,11 @@ alter table invoice
       foreign key(order_id)
       references customer_order(id);
 
+alter table invoice
+      add constraint fk_invoice_customer
+      foreign key(customer_id)
+      references customer(id);
+
 -- order_comment
 alter table order_comment
       add constraint fk_comment_user

@@ -14,6 +14,7 @@
       {% endif %}
 {% endblock %}
 {% block content %}
+      {% include "inline-customer-info.html" %}
       <form action="/invoice/{{ invoice['id'] }}"
             method="post"
             class="form-horizontal">
@@ -40,6 +41,12 @@
               value="{{ order['id'] | sn }}"
               placeholder="Ordrenummer"
               readonly
+            />
+            <input
+              type="hidden"
+              id="customer_id"
+              name="customer_id"
+              value="{{ order['customer_id'] | sn }}
             />
           </div>
         </div>

@@ -55,6 +55,7 @@ create table invoice
 (
  id INTEGER AUTO_INCREMENT,
  order_id INTEGER,
+ customer_id INTEGER,
  creation_date DATETIME,
  updated_date DATETIME,
  due_date DATETIME,

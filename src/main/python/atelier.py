@@ -335,6 +335,7 @@ def get_invoice(id):
     if invoice == None:
         abort(404)
     order = db.get_order(invoice["order_id"])
+    customer = db.get_customer(invoice["customer_id"])
     order_item_list = db.get_order_item_list(order["id"])
 
     total_amount = Decimal(0)
@@ -347,6 +348,7 @@ def get_invoice(id):
         "invoice.html",
         invoice = invoice,
         order = order,
+        customer = customer,
         order_item_list = order_item_list,
         sum_exclusive_tax = sum_exclusive_tax,
         total_amount = total_amount,
@@ -356,12 +358,14 @@ def get_invoice(id):
 @app.route("/invoice/of/<order_id>", methods = ["GET"])
 def create_invoice_request(order_id):
     order = db.get_order(order_id)
+    customer = db.get_customer(order["customer_id"])
     order_item_list = db.get_order_item_list(order["id"])
 
     return render_template(
         "invoice.html",
         invoice = {},
         order = order,
+        customer = customer,
         order_item_list = order_item_list
     )
 
