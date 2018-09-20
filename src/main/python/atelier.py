@@ -249,6 +249,24 @@ def get_order(id):
         invoice_id_list = invoice_id_list
     )
 
+@app.route("/print/invoice/<id>", methods = ["GET"])
+def get_printable_invoice(id):
+    invoice = db.get_invoice(id)
+    if invoice == None:
+        abort(404)
+
+    order = db.get_order(invoice["order_id"])
+    customer = db.get_customer(invoice["customer_id"])
+    order_item_list = db.get_order_item_list(order["id"])
+
+    return render_template(
+        "print-invoice.html",
+        invoice = invoice,
+        customer = customer,
+        order = order,
+        order_item_list = order_item_list
+    )
+
 @app.route("/print/order/<id>", methods = ["GET"])
 def get_printable_order(id):
     order = db.get_order(id)

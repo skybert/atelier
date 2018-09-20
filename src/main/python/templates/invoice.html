@@ -156,5 +156,10 @@
           </div>
         </div>
       </form>
+      <button
+        class="btn btn-default"
+        onclick="window.location.href = '/print/invoice/{{ invoice['id'] }}'">
+        Skriv ut faktura
+      </button>
       {% endif %}
 {% endblock %}

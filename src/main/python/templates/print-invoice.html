@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC
+          "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
+>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="author" content="Torstein Krause Johansen"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <style type="text/css">
+     body {
+       font-family: monospace;
+     }
+     table {
+       width: 100%;
+     }
+     th {
+       text-align: left;
+     }
+    </style>
+    <title>
+      Faktura nummer {{ invoice["id"] }}
+    </title>
+  </head>
+  <body>
+    <h1>Faktura nummer {{ invoice["id"] }}</h1>
+    <pre>
+Kundenummer: {{ customer["id"] }}
+{{ customer["first_name"] }} {{ customer["last_name" ] }}
+{{ customer["address"] | sn }}
+{{ customer["post_code"] }}
+    </pre>
+
+    <table>
+      <tr>
+        <th>Artikkel #</th>
+        <th>Vare</th>
+        <th>Antall</th>
+        <th>Pris per stk inkl mva</th>
+        <th>Rabatt</th>
+        <th>Sum</th>
+      </tr>
+      {% for order_item in order_item_list %}
+      <tr>
+        <td>
+          {{ order_item["product_id"] }}
+        </td>
+        <td>
+          {{ order_item["product_name"] | sn }}
+        </td>
+        <td>
+          {{ order_item["number_of_items"] }}
+        </td>
+        <td>
+          {{ order_item["product_price"]}} kr
+        </td>
+        <td>
+          {{ order_item["discount"] }} %
+        </td>
+        <td>
+          {{ order_item["total_amount"] }}  kr
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>

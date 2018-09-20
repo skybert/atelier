@@ -4,6 +4,7 @@ create table customer
  first_name VARCHAR(200) ,
  last_name VARCHAR(200) ,
  creation_date DATETIME,
+ updated_date DATETIME,
  email_address VARCHAR(60) ,
  address VARCHAR(255) ,
  post_code VARCHAR(255) ,
