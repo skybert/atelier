@@ -300,7 +300,7 @@ class AtelierDB:
         self.query_one(update_sql, tuple(values))
 
     ## Reports
-    def get_invoice_list(self, from_date, to_date):
+    def get_invoice_list(self, from_date, to_date, paid):
         # Since we use less than and greater than in the dates, we
         # adjust the input dates accordingly
         if isinstance(from_date, datetime):
@@ -331,21 +331,16 @@ class AtelierDB:
         and
           i.creation_date < %s
         """
-        result = self.query_list(query, (from_date, to_date))
-        # query = """
-        # select
-        #   sum(oi.total_amount) as total_amount
-        # from
-        #   order_item oi,
-        #   customer_order o,
-        # where
-        #   o.id=oi.order_id
-        # and
-        #   o.id = %s
-        # """
-        # total_amount = self.query_list(query, ())
-        total_amount = 0
 
+        if paid == '0' or paid == '1':
+            query += " and i.paid = %s"
+            result = self.query_list(query, (from_date, to_date, paid))
+        else:
+            result = self.query_list(query, (from_date, to_date))
+
+        # TODO calculate total_amount here, perhaps also total excl,
+        # TOOD as well as tax?
+        total_amount = 0
         return result, total_amount
 
     def get_order_list(self, from_date, to_date, product_list=[]):

@@ -34,19 +34,20 @@
             Ordrenummer
           </label>
           <div class="col-xs-10">
+            <a href="/order/{{ order['id'] | sn }}">{{ order["id"] }}</a>
             <input
               class="form-control"
               id="order_id"
               name="order_id"
               value="{{ order['id'] | sn }}"
-              placeholder="Ordrenummer"
               readonly
+              type="hidden"
             />
             <input
               type="hidden"
               id="customer_id"
               name="customer_id"
-              value="{{ order['customer_id'] | sn }}
+              value="{{ order['customer_id'] | sn }}"
             />
           </div>
         </div>

@@ -411,7 +411,13 @@ def invoice_overview():
         request.args.get("from_date"), 30)
     to_date = get_datetime_or_past_datetime(
         request.args.get("to_date"), 0)
-    invoice_list, total_amount = db.get_invoice_list(from_date, to_date)
+    paid = request.args.get("paid")
+
+    invoice_list, total_amount = db.get_invoice_list(
+        from_date,
+        to_date,
+        paid
+    )
     return render_template(
         "reports/invoice-overview.html",
         from_date = from_date,
@@ -489,13 +495,6 @@ if __name__ == '__main__':
     app.jinja_env.filters["number_of_days"] = filter_number_of_days
     app.jinja_env.filters["boolean_to_yes_no"] = filter_boolean_to_yes_no
     app.jinja_env.filters["compact_norwegian_date"] = filter_compact_norwegian_date
-    db = AtelierDB(
-        conf_data["db"]["host"],
-        conf_data["db"]["user"],
-        conf_data["db"]["password"],
-        conf_data["db"]["db"],
-        app.logger
-    )
 
     if "log_dir" in conf_data:
         log_dir = conf_data["log_dir"]
@@ -505,14 +504,21 @@ if __name__ == '__main__':
     setlocale(LC_ALL, str(conf_data["locale"]))
     app.wsgi_app = ReverseProxied(app.wsgi_app)
 
-    if not app.debug:
-        file_handler = FileHandler(log_dir + "/" + "atelier.log")
-        file_handler.setLevel(logging.DEBUG)
-        file_handler.setFormatter(Formatter(
-            '%(asctime)s %(levelname)s: %(message)s '
-            '[in %(pathname)s:%(lineno)d]'
-        ))
-        app.logger.addHandler(file_handler)
+    file_handler = FileHandler(log_dir + "/" + "atelier.log")
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(Formatter(
+        '%(asctime)s %(levelname)s: %(message)s '
+        '[in %(pathname)s:%(lineno)d]'
+    ))
+    app.logger.addHandler(file_handler)
+
+    db = AtelierDB(
+        conf_data["db"]["host"],
+        conf_data["db"]["user"],
+        conf_data["db"]["password"],
+        conf_data["db"]["db"],
+        app.logger
+    )
 
     # TODO make debug mode configurable
     app.run(

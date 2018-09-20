@@ -9,6 +9,7 @@
             class="form-inline">
         {% include "inline-from-date.html" %}
         {% include "inline-to-date.html" %}
+        {% include "inline-paid-or-not.html" %}
         <div class="form-group">
           <div class="">
             <button type="submit" class="btn btn-primary">
@@ -44,6 +45,9 @@
           </td>
           <td>
             {{ invoice['due_date'] | sn }}
+          </td>
+          <td>
+            {{ invoice['paid'] | boolean_to_yes_no }}
           </td>
         </tr>
         {% endfor %}
