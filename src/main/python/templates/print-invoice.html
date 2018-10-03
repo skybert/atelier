@@ -16,20 +16,44 @@
      th {
        text-align: left;
      }
+     td {
+       vertical-align: top;
+     }
+     .center {
+       text-align: center;
+     }
     </style>
     <title>
-      Faktura nummer {{ invoice["id"] }}
+      Studio S A/S ~ Fakturanummer {{ invoice["id"] }}
     </title>
   </head>
   <body>
-    <h1>Faktura nummer {{ invoice["id"] }}</h1>
-    <pre>
-Kundenummer: {{ customer["id"] }}
-{{ customer["first_name"] }} {{ customer["last_name" ] }}
-{{ customer["address"] | sn }}
-{{ customer["post_code"] }}
-    </pre>
-
+    <h1 class="center">Faktura fra Studio S A/S </h1>
+    <table>
+      <tr>
+        <td>
+          <h2>Faturaadresse</h2>
+          Kundenummer: {{ customer["id"] }}<br/>
+          {{ customer["first_name"] }} {{ customer["last_name" ] }}<br/>
+          {{ customer["address"] | sn }}<br/>
+          {{ customer["post_code"] }} {{ customer["post_place"] }}<br/>
+        </td>
+        <td>
+          <h2>Studio S A/S</h2>
+          Torget 2, 1707 Sarpsborg<br/>
+          Telefon: 69 15 57 60<br/>
+          Web: www.studio-s.no<br/>
+          Bankgiro:9486 05 31555<br/>
+          Foretaksnummer: 935 350 794<br/>
+          <br/>
+          Ordrenummer: {{ invoice["order_id"] }}<br/>
+          Fakturanummer: {{ invoice["id"] }}<br/>
+          Fakturadato: {{ invoice["creation_date"] | compact_norwegian_date }}<br/>
+          Forfallsdato: {{ invoice["due_date"] | compact_norwegian_date }}<br/>
+        </td>
+      </tr>
+    </table>
+    <hr/>
     <table>
       <tr>
         <th>Artikkel #</th>
@@ -61,6 +85,43 @@ Kundenummer: {{ customer["id"] }}
         </td>
       </tr>
       {% endfor %}
+      <tr>
+        <td colspan="6">
+          <hr/>
+        </td>
+      </tr>
+      <tr>
+        <th colspan="5">Beløp ekslusiv mva:</th>
+        <td>
+          {% if sum_exclusive_tax %}
+          {{ "%.2f"|format(sum_exclusive_tax) }} kr
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <th colspan="5">Mva 25%:</th>
+        <td>
+          {% if total_tax %}
+          {{ "%.2f"|format(total_tax) }} kr
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="6">
+          <hr/>
+        </td>
+      </tr>
+      <tr>
+        <th colspan="5">Beløp inklusiv mva:</th>
+        <td>{{ total_amount }} kr</td>
+      </tr>
     </table>
+    <hr/>
+    <p class="center">
+      Copyright &copy;
+      Studio S, Fotografmester Terje S. Johansen A/S ❧
+      Foretaksnummer: 935 350 794 ❧
+      Kontonummer: 9486 05 31555
+    </p>
   </body>
 </html>

@@ -66,6 +66,11 @@ class AtelierDB:
     def get_post_place_list(self):
         return self.query_list("select * from post_place", None)
 
+    def get_post_place(self, post_code):
+        return self.query_one(
+            "select post_place from post_place where post_code = %s",
+            (post_code,))
+
     ## Customer
     def get_customer(self, id):
         return self.query_one("select * from customer where id = %s", (id,))

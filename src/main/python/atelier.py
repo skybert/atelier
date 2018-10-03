@@ -251,21 +251,7 @@ def get_order(id):
 
 @app.route("/print/invoice/<id>", methods = ["GET"])
 def get_printable_invoice(id):
-    invoice = db.get_invoice(id)
-    if invoice == None:
-        abort(404)
-
-    order = db.get_order(invoice["order_id"])
-    customer = db.get_customer(invoice["customer_id"])
-    order_item_list = db.get_order_item_list(order["id"])
-
-    return render_template(
-        "print-invoice.html",
-        invoice = invoice,
-        customer = customer,
-        order = order,
-        order_item_list = order_item_list
-    )
+    return get_invoice(id, "print-invoice.html")
 
 @app.route("/print/order/<id>", methods = ["GET"])
 def get_printable_order(id):
@@ -348,12 +334,14 @@ def add_order_item(order_id):
     return redirect(url_for("get_order", id = order_id))
 
 @app.route("/invoice/<id>", methods = ["GET"])
-def get_invoice(id):
+def get_invoice(id, html_template="invoice.html"):
     invoice = db.get_invoice(id)
     if invoice == None:
         abort(404)
     order = db.get_order(invoice["order_id"])
     customer = db.get_customer(invoice["customer_id"])
+    customer["post_place"] = db.get_post_place(
+        customer["post_code"])["post_place"]
     order_item_list = db.get_order_item_list(order["id"])
 
     total_amount = Decimal(0)
@@ -363,7 +351,7 @@ def get_invoice(id):
     sum_exclusive_tax = total_amount - total_tax
 
     return render_template(
-        "invoice.html",
+        html_template,
         invoice = invoice,
         order = order,
         customer = customer,
