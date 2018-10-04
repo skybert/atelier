@@ -429,7 +429,7 @@ def invoice_overview():
         from_date = from_date,
         to_date = to_date,
         invoice_list = invoice_list,
-        total_amount = total_amount
+        total_amount = total_amount["total_amount"]
     )
 
 @app.route("/reports/order-overview")

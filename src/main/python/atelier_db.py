@@ -336,16 +336,33 @@ class AtelierDB:
         and
           i.creation_date < %s
         """
+        total_amount_query = """
+        select
+          sum(oi.total_amount) as total_amount
+        from
+          order_item oi,
+          invoice i
+        where
+          oi.order_id = i.order_id
+        and
+          i.creation_date > %s
+        and
+          i.creation_date < %s
+        """
 
         if paid == '0' or paid == '1':
             query += " and i.paid = %s"
+            total_amount_query += " and i.paid = %s"
             result = self.query_list(query, (from_date, to_date, paid))
+            total_amount = self.query_one(
+                total_amount_query,
+                (from_date, to_date, paid)
+            )
         else:
             result = self.query_list(query, (from_date, to_date))
+            total_amount = self.query_one(
+                total_amount_query, (from_date, to_date))
 
-        # TODO calculate total_amount here, perhaps also total excl,
-        # TOOD as well as tax?
-        total_amount = 0
         return result, total_amount
 
     def get_order_list(self, from_date, to_date, product_list=[]):

@@ -37,19 +37,19 @@
           {{ customer["first_name"] }} {{ customer["last_name" ] }}<br/>
           {{ customer["address"] | sn }}<br/>
           {{ customer["post_code"] }} {{ customer["post_place"] }}<br/>
+          <br/>
+          Ordrenummer: {{ invoice["order_id"] }}<br/>
+          Fakturanummer: {{ invoice["id"] }}<br/>
+          Fakturadato: {{ invoice["creation_date"] | compact_norwegian_date }}<br/>
+          Forfallsdato: {{ invoice["due_date"] | compact_norwegian_date }}<br/>
         </td>
         <td>
           <h2>Studio S A/S</h2>
           Torget 2, 1707 Sarpsborg<br/>
           Telefon: 69 15 57 60<br/>
           Web: www.studio-s.no<br/>
-          Bankgiro:9486 05 31555<br/>
+          Bankgiro: 9486 05 31555<br/>
           Foretaksnummer: 935 350 794<br/>
-          <br/>
-          Ordrenummer: {{ invoice["order_id"] }}<br/>
-          Fakturanummer: {{ invoice["id"] }}<br/>
-          Fakturadato: {{ invoice["creation_date"] | compact_norwegian_date }}<br/>
-          Forfallsdato: {{ invoice["due_date"] | compact_norwegian_date }}<br/>
         </td>
       </tr>
     </table>
