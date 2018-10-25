@@ -4,6 +4,30 @@
       {% include "from-to-date-info.html" %}
 {% endblock %}
 {% block content %}
+      <script type="text/javascript">
+       function showInvoicePrintOverview() {
+         fromDate = document.getElementById("from_date").value;
+         toDate = document.getElementById("to_date").value;
+
+         let paid = 0;
+         paidList = document.getElementsByName("paid");
+         for (let i = 0; i < paidList.length; i++) {
+           if (paidList[i].checked) {
+             paid = paidList[i].value;
+           }
+         }
+
+         let base_url = window.location.href.split("/")[0];
+         let url = base_url
+                 + "/print/invoice-overview"
+                 + "?from_date=" + fromDate
+                 + "&to_date=" + toDate
+                 + "&paid=" + paid;
+
+         window.location.replace(url);
+         alert(url);
+       }
+      </script>
       <form action="/reports/invoice-overview"
             method="get"
             class="form-inline">
@@ -14,6 +38,11 @@
           <div class="">
             <button type="submit" class="btn btn-primary">
               Få oversikt
+            </button>
+            <button
+              onclick="showInvoicePrintOverview(); return;"
+              class="btn btn-primary">
+              Skriv ut oversikt
             </button>
           </div>
         </div>

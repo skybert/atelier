@@ -1,8 +1,10 @@
 from datetime import datetime
 from datetime import timedelta
+from decimal import Decimal
 from sets import Set
 import MySQLdb as mdb
 import atelier_sql as sql
+
 
 class AtelierDB:
     """
@@ -362,6 +364,22 @@ class AtelierDB:
             result = self.query_list(query, (from_date, to_date))
             total_amount = self.query_one(
                 total_amount_query, (from_date, to_date))
+
+
+        total_amount_query = """
+            select
+              sum(oi.total_amount) as total_amount
+            from
+              order_item oi,
+              invoice i
+            where
+              oi.order_id = i.order_id
+            and
+              i.id = %s
+        """
+        for invoice in result:
+            total_amount = self.query_one(total_amount_query, (invoice["id"],))
+            invoice["total_amount"] = float(total_amount["total_amount"])
 
         return result, total_amount
 

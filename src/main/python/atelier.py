@@ -253,6 +253,10 @@ def get_order(id):
 def get_printable_invoice(id):
     return get_invoice(id, "print-invoice.html")
 
+@app.route("/print/invoice-overview")
+def get_printable_invoice_overview():
+    return invoice_overview("print-invoice-overview.html")
+
 @app.route("/print/order/<id>", methods = ["GET"])
 def get_printable_order(id):
     order = db.get_order(id)
@@ -412,7 +416,7 @@ def delete_invoice(id):
     return redirect(url_for("get_order", id = order["id"]))
 
 @app.route("/reports/invoice-overview")
-def invoice_overview():
+def invoice_overview(html_template="reports/invoice-overview.html"):
     from_date = get_datetime_or_past_datetime(
         request.args.get("from_date"), 30)
     to_date = get_datetime_or_past_datetime(
@@ -425,7 +429,7 @@ def invoice_overview():
         paid
     )
     return render_template(
-        "reports/invoice-overview.html",
+        html_template,
         from_date = from_date,
         to_date = to_date,
         invoice_list = invoice_list,

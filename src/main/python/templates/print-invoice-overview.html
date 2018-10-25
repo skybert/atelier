@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC
+          "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
+>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="author" content="Torstein Krause Johansen"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <style type="text/css">
+     body {
+       font-family: monospace;
+     }
+     table {
+       width: 100%;
+     }
+     th {
+       text-align: left;
+     }
+     td {
+       vertical-align: top;
+     }
+     .center {
+       text-align: center;
+     }
+     .right {
+       text-align: right;
+     }
+    </style>
+    <title>
+      Studio S A/S ~ Fakturajournal ~
+      {{ from_date | compact_norwegian_date }} →
+      {{ to_date | compact_norwegian_date }}
+    </title>
+  </head>
+  <body>
+    <h1 class="center">
+      Studio S A/S ~ Fakturajournal
+    </h1>
+    <h2>
+      Fakturaer {{ from_date | compact_norwegian_date }} →
+      {{ to_date | compact_norwegian_date }}
+    </h2>
+    <table>
+      <tr>
+        <th>Faktura</th>
+        <th>Navn</th>
+        <th>Pris eksl. mva.</th>
+        <th>Pris inkl. mva</th>
+        <th>Forfallsato</th>
+        <th>Betalt</th>
+        <th>Fakturadato</th>
+      </tr>
+      {% for invoice in invoice_list %}
+      <tr>
+        <td>{{ invoice["id"] }}</td>
+        <td>
+          {{ invoice["first_name"] | sn }}
+          {{ invoice["last_name"] | sn }}
+        </td>
+        <td>
+          {{
+          invoice["total_amount"] -
+          ((invoice["total_amount"] * 25) / 100) |
+          round(precision=2)
+          }} kr
+        </td>
+        <td>
+          {{
+          invoice["total_amount"] |
+          round(precision=2)
+          }} kr
+        <td>
+          {{ invoice["due_date"] | compact_norwegian_date }}
+        </td>
+        <td>
+          {{ invoice['paid'] | boolean_to_yes_no }}
+        </td>
+        <td>
+          {{ invoice["creation_date"] | compact_norwegian_date }}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    <h2>
+      Totalt fakturert mellom
+      {{ from_date | compact_norwegian_date }} og
+      {{ to_date | compact_norwegian_date }}
+    </h2>
+    <table>
+      <tr>
+
+      </tr>
+      <tr>
+        <th>Ekslusiv mva</th>
+        <td>
+          {{
+          (total_amount -
+          ((total_amount * 25) / 100)) |
+          round(precision=2)
+          }} kr
+        </td>
+      </tr>
+      <tr>
+        <th>Inklusiv mva</th>
+        <td>
+          {{
+          total_amount |
+          round(precision=2)
+          }} kr
+        </td>
+      </tr>
+      <tr>
+        <th>Mva denne perioden</th>
+        <td>
+          {{
+          ((total_amount * 25) / 100) |
+          round(precision=2)
+          }} kr
+        </td>
+      </tr>
+    </table>
+    <hr/>
+    <p class="center">
+      Copyright &copy;
+      Studio S, Fotografmester Terje S. Johansen A/S ❧
+      Foretaksnummer: 935 350 794 ❧
+      Kontonummer: 9486 05 31555
+    </p>
+  </body>
+</html>

@@ -1,0 +1,18 @@
+
+
+src_dir=$HOME/src/atelier
+
+main() {
+  file_list="
+    ${src_dir}/src/main/python/templates/
+    ${src_dir}/src/main/python/atelier.py
+    ${src_dir}/src/main/python/atelier_db.py
+  "
+
+  for f in ${file_list}; do
+    docker cp ${f} atelier_atelier_1:/opt/atelier
+  done
+
+}
+
+main "$@"

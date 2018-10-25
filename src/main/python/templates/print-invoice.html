@@ -59,9 +59,10 @@
         <th>Artikkel #</th>
         <th>Vare</th>
         <th>Antall</th>
-        <th>Pris per stk inkl mva</th>
+        <th>Enhetspris</th>
         <th>Rabatt</th>
-        <th>Sum</th>
+        <th>Totalt eks. mva</th>
+        <th>Totalt inkl. mva</th>
       </tr>
       {% for order_item in order_item_list %}
       <tr>
@@ -75,10 +76,21 @@
           {{ order_item["number_of_items"] }}
         </td>
         <td>
-          {{ order_item["product_price"]}} kr
+          {{
+            (order_item["product_price"] -
+            ((order_item["product_price"] * 25) / 100)) |
+            round(precision=2)
+          }} kr
         </td>
         <td>
           {{ order_item["discount"] }} %
+        </td>
+        <td>
+          {{
+            (order_item["total_amount"] -
+            ((order_item["total_amount"] * 25) / 100)) |
+            round(precision=2)
+          }} kr
         </td>
         <td>
           {{ order_item["total_amount"] }}  kr
@@ -86,12 +98,12 @@
       </tr>
       {% endfor %}
       <tr>
-        <td colspan="6">
+        <td colspan="7">
           <hr/>
         </td>
       </tr>
       <tr>
-        <th colspan="5">Beløp ekslusiv mva:</th>
+        <th colspan="6">Beløp ekslusiv mva:</th>
         <td>
           {% if sum_exclusive_tax %}
           {{ "%.2f"|format(sum_exclusive_tax) }} kr
@@ -99,7 +111,7 @@
         </td>
       </tr>
       <tr>
-        <th colspan="5">Mva 25%:</th>
+        <th colspan="6">Mva 25%:</th>
         <td>
           {% if total_tax %}
           {{ "%.2f"|format(total_tax) }} kr
@@ -107,12 +119,12 @@
         </td>
       </tr>
       <tr>
-        <td colspan="6">
+        <td colspan="7">
           <hr/>
         </td>
       </tr>
       <tr>
-        <th colspan="5">Beløp inklusiv mva:</th>
+        <th colspan="6">Beløp inklusiv mva:</th>
         <td>{{ total_amount }} kr</td>
       </tr>
     </table>
