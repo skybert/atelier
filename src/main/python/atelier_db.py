@@ -1,8 +1,10 @@
 from datetime import datetime
 from datetime import timedelta
+from decimal import Decimal
 from sets import Set
 import MySQLdb as mdb
 import atelier_sql as sql
+
 
 class AtelierDB:
     """
@@ -65,6 +67,11 @@ class AtelierDB:
     ## Post place
     def get_post_place_list(self):
         return self.query_list("select * from post_place", None)
+
+    def get_post_place(self, post_code):
+        return self.query_one(
+            "select post_place from post_place where post_code = %s",
+            (post_code,))
 
     ## Customer
     def get_customer(self, id):
@@ -199,6 +206,7 @@ class AtelierDB:
           oi.number_of_items,
           oi.discount,
           oi.total_amount,
+          p.id as product_id,
           p.name as product_name,
           p.price as product_price
         from order_item oi, product p
@@ -272,7 +280,109 @@ class AtelierDB:
     def get_order_status_list(self):
         return self.query_list("select * from order_status", None)
 
+    ## Invoice
+    def get_invoice(self, id):
+        return self.query_one("select * from invoice where id = %s", (id,))
+
+    def get_invoice_id_list_by_order_id(self, order_id):
+        query = """
+        select
+          id
+        from
+          invoice
+        where
+          order_id = %s
+        """
+        return self.query_list(query, (order_id))
+
+    def delete_invoice(self, id):
+        return self.delete("invoice", id)
+
+    def create_invoice(self, form):
+        insert_sql, values = sql.get_sql_and_values("invoice", form)
+        return self.insert(insert_sql, values)
+
+    def update_invoice(self, form):
+        update_sql, values = sql.get_sql_and_values("invoice", form)
+        self.query_one(update_sql, tuple(values))
+
     ## Reports
+    def get_invoice_list(self, from_date, to_date, paid):
+        # Since we use less than and greater than in the dates, we
+        # adjust the input dates accordingly
+        if isinstance(from_date, datetime):
+            from_date = from_date - timedelta(days=1)
+        if isinstance(to_date, datetime):
+            to_date = to_date + timedelta(days=1)
+
+        query = """
+        select
+          c.id as customer_id,
+          c.first_name,
+          c.last_name,
+          i.id,
+          i.order_id,
+          i.creation_date,
+          i.paid,
+          i.due_date
+        from
+          invoice i,
+          customer c,
+          customer_order o
+        where
+          i.order_id = o.id
+        and
+          c.id = o.customer_id
+        and
+          i.creation_date > %s
+        and
+          i.creation_date < %s
+        """
+        total_amount_query = """
+        select
+          sum(oi.total_amount) as total_amount
+        from
+          order_item oi,
+          invoice i
+        where
+          oi.order_id = i.order_id
+        and
+          i.creation_date > %s
+        and
+          i.creation_date < %s
+        """
+
+        if paid == '0' or paid == '1':
+            query += " and i.paid = %s"
+            total_amount_query += " and i.paid = %s"
+            result = self.query_list(query, (from_date, to_date, paid))
+            total_amount = self.query_one(
+                total_amount_query,
+                (from_date, to_date, paid)
+            )
+        else:
+            result = self.query_list(query, (from_date, to_date))
+            total_amount = self.query_one(
+                total_amount_query, (from_date, to_date))
+
+
+        total_amount_query = """
+            select
+              sum(oi.total_amount) as total_amount
+            from
+              order_item oi,
+              invoice i
+            where
+              oi.order_id = i.order_id
+            and
+              i.id = %s
+        """
+        for invoice in result:
+            total_amount = self.query_one(total_amount_query, (invoice["id"],))
+            invoice["total_amount"] = float(total_amount["total_amount"])
+
+        return result, total_amount
+
     def get_order_list(self, from_date, to_date, product_list=[]):
         """
         If :product_list  is empty, all products will be included in the report.

@@ -1,44 +1,23 @@
 # Installation notes
 
-## OS & python packages
+Check out <a href="https://github.com/skybert/atelier/releases">the
+version you want</a> (or use `develop` to get the latest development
+code) and start it as a Docker container:
 
 ```
-# apt-get install mariadb-server mariadb-client
-# apt-get install python-pip
-# apt-get install python-mysqldb
-# pip install flask
+$ git clone https://github.com/skybert/atelier.git
+$ cd atelier
+$ git checkout <tag>
+$ docker-compose up --build
 ```
 
-## Database
+If you wish to install it without Docker, just follow the steps in the
+<a href="Dockerfile">Dockerfile</a> for the project, including the
+endpoint script which bootstraps the database on a fresh system.
 
+## Upgrade to 3.0
+
+```sql
+alter table invoice 
+      add column paid INTEGER not null;
 ```
-mysql> create database foodb character set utf8 collate utf8_general_ci;
-mysql> grant all on foodb.* to foouser@'%' identified by 'foopassword';
-mysql> grant all on foodb.* to foouser@'localhost' identified by 'foopassword';
-
-```
-
-## Configuration file
-
-Ensure you've got a valid `atelier-conf.json` file in the diretory
-where you start up atelier:
-
-```
-{
-    "db": {
-        "host": "localhost",
-        "user": "foouser",
-        "password": "foopassword",
-        "db" : "foodb"
-    },
-    "locale": "nb_NO.utf8"
-}
-```
-
-## Download `Chart.js`
-```
-$ mkdir src/main/python/files/js
-$ cd src/main/python/files/js
-$ wget https://raw.githubusercontent.com/nnnick/Chart.js/master/Chart.js
-```
-

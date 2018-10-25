@@ -1,7 +1,7 @@
 import json
 import sys
 
-default_conf_file = "atelier-conf.json"
+default_conf_file = "/etc/atelier-conf.json"
 
 def read_conf_from_file():
     conf_data = ""

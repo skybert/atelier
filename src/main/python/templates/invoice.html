@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block title %}
+      {% if invoice["id"]: %}
+      <h1>
+        Faktura nummer {{ invoice["id"] }}
+      </h1>
+      {% else %}
+      <h1>
+        Faktura av
+        <a href="/order/{{ order['id'] }}">
+          ordre nummer {{ order['id'] | sn }}
+        </a>
+      </h1>
+      {% endif %}
+{% endblock %}
+{% block content %}
+      {% include "inline-customer-info.html" %}
+      <form action="/invoice/{{ invoice['id'] }}"
+            method="post"
+            class="form-horizontal">
+        {% if invoice["id"]: %}
+        <div class="form-group">
+          <label class="control-label col-xs-2"
+                 for="creation_date">
+            Registrert
+          </label>
+          <div class="col-xs-10">
+            {{ invoice["creation_date"] | sn }}
+          </div>
+        </div>
+        {% endif %}
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="order_id">
+            Ordrenummer
+          </label>
+          <div class="col-xs-10">
+            <a href="/order/{{ order['id'] | sn }}">{{ order["id"] }}</a>
+            <input
+              class="form-control"
+              id="order_id"
+              name="order_id"
+              value="{{ order['id'] | sn }}"
+              readonly
+              type="hidden"
+            />
+            <input
+              type="hidden"
+              id="customer_id"
+              name="customer_id"
+              value="{{ order['customer_id'] | sn }}"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="due_date">
+            Forfallsdato
+          </label>
+          <div class="col-xs-10">
+            <input class="form-control"
+                   id="due_date"
+                   name="due_date"
+                   value="{{ invoice['due_date'] | iso_date }}"
+                   type="date"
+                   placeholder="Forfallsdato"
+            />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="control-label col-xs-2" for="name">
+            Betalt
+          </label>
+          <div class="col-xs-10">
+            <input
+              id="paid"
+              name="paid"
+              type="checkbox"
+              value="1"
+              {% if invoice["paid"] %}
+              checked
+              {% endif %}
+            />
+          </div>
+        </div>
+        {% if order_item_list | length > 0 %}
+        <table class="table table-hover" style="margin-top: 2em;">
+          <tr>
+            <th>Artikkel #</th>
+            <th>Vare</th>
+            <th>Antall</th>
+            <th>Pris per stk inkl mva</th>
+            <th>Rabatt</th>
+            <th>Sum</th>
+          </tr>
+          {% for order_item in order_item_list %}
+          <tr>
+            <td>
+              <a href="/product/{{ order_item['product_id'] }}">
+                {{ order_item["product_id"] }}
+              </a>
+            </td>
+            <td>{{ order_item["product_name"] | sn }}</td>
+            <td>{{ order_item["number_of_items"] }}</td>
+            <td>{{ order_item["product_price"]}} kr</td>
+            <td>{{ order_item["discount"] }} %</td>
+            <td>{{ order_item["total_amount"] }} kr</td>
+          </tr>
+          {% endfor %}
+          <tr>
+            <td colspan="6">
+              <hr/>
+            </td>
+          </tr>
+          <tr>
+            <th colspan="5">Beløp ekslusiv mva:</th>
+            <td>
+              {% if sum_exclusive_tax %}
+              {{ "%.2f"|format(sum_exclusive_tax) }} kr
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <th colspan="5">Mva 25%:</th>
+            <td>
+              {% if total_tax %}
+              {{ "%.2f"|format(total_tax) }} kr
+              {% endif %}
+            </td>
+          </tr>
+          <tr>
+            <th colspan="5">Beløp inklusiv mva:</th>
+            <td>{{ total_amount }} kr</td>
+          </tr>
+        </table>
+        {% endif %}
+        <div class="form-group">
+          <div class="col-xs-offset-2 col-xs-10">
+            <button type="submit" class="btn btn-primary">
+              {% if invoice["id"] %}
+                Oppdater faktura
+              {% else %}
+                Opprett ny faktura
+              {% endif %}
+            </button>
+          </div>
+        </div>
+      </form>
+      {% if invoice["id"] %}
+      <form action="/invoice/{{ invoice['id'] }}/delete"
+            method="get"
+            class="form-horizontal">
+        <div class="form-group">
+          <div class="col-xs-offset-2 col-xs-10">
+            <button type="submit" class="btn btn-danger">
+              Slett faktura
+            </button>
+          </div>
+        </div>
+      </form>
+      <button
+        class="btn btn-default"
+        onclick="window.location.href = '/print/invoice/{{ invoice['id'] }}'">
+        Skriv ut faktura
+      </button>
+      {% endif %}
+{% endblock %}

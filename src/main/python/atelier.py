@@ -236,14 +236,26 @@ def get_order(id):
     order_item_list = db.get_order_item_list(id)
     payment_type_list = db.get_payment_type_list()
     order_status_list = db.get_order_status_list()
+    invoice_id_list = db.get_invoice_id_list_by_order_id(id)
 
-    return render_template("order.html",
-                           order = order,
-                           customer = customer,
-                           order_item_list = order_item_list,
-                           product_list = db.get_product_list(),
-                           payment_type_list = payment_type_list,
-                           order_status_list = order_status_list)
+    return render_template(
+        "order.html",
+        order = order,
+        customer = customer,
+        order_item_list = order_item_list,
+        product_list = db.get_product_list(),
+        payment_type_list = payment_type_list,
+        order_status_list = order_status_list,
+        invoice_id_list = invoice_id_list
+    )
+
+@app.route("/print/invoice/<id>", methods = ["GET"])
+def get_printable_invoice(id):
+    return get_invoice(id, "print-invoice.html")
+
+@app.route("/print/invoice-overview")
+def get_printable_invoice_overview():
+    return invoice_overview("print-invoice-overview.html")
 
 @app.route("/print/order/<id>", methods = ["GET"])
 def get_printable_order(id):
@@ -325,6 +337,105 @@ def add_order_item(order_id):
     update_delivery_date(order_id)
     return redirect(url_for("get_order", id = order_id))
 
+@app.route("/invoice/<id>", methods = ["GET"])
+def get_invoice(id, html_template="invoice.html"):
+    invoice = db.get_invoice(id)
+    if invoice == None:
+        abort(404)
+    order = db.get_order(invoice["order_id"])
+    customer = db.get_customer(invoice["customer_id"])
+    customer["post_place"] = db.get_post_place(
+        customer["post_code"])["post_place"]
+    order_item_list = db.get_order_item_list(order["id"])
+
+    total_amount = Decimal(0)
+    for order_item in order_item_list:
+      total_amount += order_item["total_amount"]
+    total_tax = total_amount * Decimal(0.25)
+    sum_exclusive_tax = total_amount - total_tax
+
+    return render_template(
+        html_template,
+        invoice = invoice,
+        order = order,
+        customer = customer,
+        order_item_list = order_item_list,
+        sum_exclusive_tax = sum_exclusive_tax,
+        total_amount = total_amount,
+        total_tax = total_tax
+    )
+
+@app.route("/invoice/of/<order_id>", methods = ["GET"])
+def create_invoice_request(order_id):
+    order = db.get_order(order_id)
+    customer = db.get_customer(order["customer_id"])
+    order_item_list = db.get_order_item_list(order["id"])
+
+    return render_template(
+        "invoice.html",
+        invoice = {},
+        order = order,
+        customer = customer,
+        order_item_list = order_item_list
+    )
+
+@app.route("/invoice", methods = ["POST"])
+@app.route("/invoice/", methods = ["POST"])
+def create_invoice():
+    form = clone_form_and_add_creation_date(request.form)
+    id = db.create_invoice(form)
+    return redirect(url_for("get_invoice", id = id))
+
+@app.route("/invoice/<id>", methods=["POST", "PUT"])
+def update_invoice(id):
+    form = clone_form_and_add_updated_date(request.form)
+    form["id"] = id
+
+    if len(form.getlist("paid")) == 0:
+        form["paid"] = 0
+    if len(form.getlist("tax_included")) == 0:
+        form["tax_included"] = 0
+
+    db.update_invoice(form)
+    return redirect(url_for("get_invoice", id = id, updated = True))
+
+@app.route("/invoice/<id>/delete", methods = ["GET"])
+def get_invoice_delete_page(id):
+    invoice = db.get_invoice(id)
+    return render_template("delete-invoice.html", invoice = invoice)
+
+@app.route("/invoice/<id>", methods = ["DELETE"])
+@app.route("/invoice/<id>/delete", methods = ["POST"])
+def delete_invoice(id):
+    invoice = db.get_invoice(id)
+    order = db.get_order(invoice["order_id"])
+    customer = db.get_customer(order["customer_id"])
+    db.delete_invoice(id)
+    message = "Faktura med numer " + id + " slettet"
+
+    return redirect(url_for("get_order", id = order["id"]))
+
+@app.route("/reports/invoice-overview")
+def invoice_overview(html_template="reports/invoice-overview.html"):
+    from_date = get_datetime_or_past_datetime(
+        request.args.get("from_date"), 30)
+    to_date = get_datetime_or_past_datetime(
+        request.args.get("to_date"), 0)
+    paid = request.args.get("paid")
+
+    invoice_list, total_amount = db.get_invoice_list(
+        from_date,
+        to_date,
+        paid
+    )
+    return render_template(
+        html_template,
+        from_date = from_date,
+        to_date = to_date,
+        invoice_list = invoice_list,
+        total_amount = total_amount["total_amount"]
+    )
+
 @app.route("/reports/order-overview")
 def order_overview():
     from_date = get_datetime_or_past_datetime(request.args.get("from_date"), 30)
@@ -394,13 +505,6 @@ if __name__ == '__main__':
     app.jinja_env.filters["number_of_days"] = filter_number_of_days
     app.jinja_env.filters["boolean_to_yes_no"] = filter_boolean_to_yes_no
     app.jinja_env.filters["compact_norwegian_date"] = filter_compact_norwegian_date
-    db = AtelierDB(
-        conf_data["db"]["host"],
-        conf_data["db"]["user"],
-        conf_data["db"]["password"],
-        conf_data["db"]["db"],
-        app.logger
-    )
 
     if "log_dir" in conf_data:
         log_dir = conf_data["log_dir"]
@@ -410,17 +514,24 @@ if __name__ == '__main__':
     setlocale(LC_ALL, str(conf_data["locale"]))
     app.wsgi_app = ReverseProxied(app.wsgi_app)
 
-    if not app.debug:
-        file_handler = FileHandler(log_dir + "/" + "atelier.log")
-        file_handler.setLevel(logging.DEBUG)
-        file_handler.setFormatter(Formatter(
-            '%(asctime)s %(levelname)s: %(message)s '
-            '[in %(pathname)s:%(lineno)d]'
-        ))
-        app.logger.addHandler(file_handler)
+    file_handler = FileHandler(log_dir + "/" + "atelier.log")
+    file_handler.setLevel(logging.DEBUG)
+    file_handler.setFormatter(Formatter(
+        '%(asctime)s %(levelname)s: %(message)s '
+        '[in %(pathname)s:%(lineno)d]'
+    ))
+    app.logger.addHandler(file_handler)
+
+    db = AtelierDB(
+        conf_data["db"]["host"],
+        conf_data["db"]["user"],
+        conf_data["db"]["password"],
+        conf_data["db"]["db"],
+        app.logger
+    )
 
     # TODO make debug mode configurable
-    app.run(debug=False)
-
-
-
+    app.run(
+        host='0.0.0.0',
+        debug=True
+    )

@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC
+          "-//W3C//DTD XHTML 1.0 Strict//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"
+>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="author" content="Torstein Krause Johansen"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <style type="text/css">
+     body {
+       font-family: monospace;
+     }
+     table {
+       width: 100%;
+     }
+     th {
+       text-align: left;
+     }
+     td {
+       vertical-align: top;
+     }
+     .center {
+       text-align: center;
+     }
+    </style>
+    <title>
+      Studio S A/S ~ Fakturanummer {{ invoice["id"] }}
+    </title>
+  </head>
+  <body>
+    <h1 class="center">Faktura fra Studio S A/S </h1>
+    <table>
+      <tr>
+        <td>
+          <h2>Faturaadresse</h2>
+          Kundenummer: {{ customer["id"] }}<br/>
+          {{ customer["first_name"] }} {{ customer["last_name" ] }}<br/>
+          {{ customer["address"] | sn }}<br/>
+          {{ customer["post_code"] }} {{ customer["post_place"] }}<br/>
+          <br/>
+          Ordrenummer: {{ invoice["order_id"] }}<br/>
+          Fakturanummer: {{ invoice["id"] }}<br/>
+          Fakturadato: {{ invoice["creation_date"] | compact_norwegian_date }}<br/>
+          Forfallsdato: {{ invoice["due_date"] | compact_norwegian_date }}<br/>
+        </td>
+        <td>
+          <h2>Studio S A/S</h2>
+          Torget 2, 1707 Sarpsborg<br/>
+          Telefon: 69 15 57 60<br/>
+          Web: www.studio-s.no<br/>
+          Bankgiro: 9486 05 31555<br/>
+          Foretaksnummer: 935 350 794<br/>
+        </td>
+      </tr>
+    </table>
+    <hr/>
+    <table>
+      <tr>
+        <th>Artikkel #</th>
+        <th>Vare</th>
+        <th>Antall</th>
+        <th>Enhetspris</th>
+        <th>Rabatt</th>
+        <th>Totalt eks. mva</th>
+        <th>Totalt inkl. mva</th>
+      </tr>
+      {% for order_item in order_item_list %}
+      <tr>
+        <td>
+          {{ order_item["product_id"] }}
+        </td>
+        <td>
+          {{ order_item["product_name"] | sn }}
+        </td>
+        <td>
+          {{ order_item["number_of_items"] }}
+        </td>
+        <td>
+          {{
+            (order_item["product_price"] -
+            ((order_item["product_price"] * 25) / 100)) |
+            round(precision=2)
+          }} kr
+        </td>
+        <td>
+          {{ order_item["discount"] }} %
+        </td>
+        <td>
+          {{
+            (order_item["total_amount"] -
+            ((order_item["total_amount"] * 25) / 100)) |
+            round(precision=2)
+          }} kr
+        </td>
+        <td>
+          {{ order_item["total_amount"] }}  kr
+        </td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td colspan="7">
+          <hr/>
+        </td>
+      </tr>
+      <tr>
+        <th colspan="6">Beløp ekslusiv mva:</th>
+        <td>
+          {% if sum_exclusive_tax %}
+          {{ "%.2f"|format(sum_exclusive_tax) }} kr
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <th colspan="6">Mva 25%:</th>
+        <td>
+          {% if total_tax %}
+          {{ "%.2f"|format(total_tax) }} kr
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="7">
+          <hr/>
+        </td>
+      </tr>
+      <tr>
+        <th colspan="6">Beløp inklusiv mva:</th>
+        <td>{{ total_amount }} kr</td>
+      </tr>
+    </table>
+    <hr/>
+    <p class="center">
+      Copyright &copy;
+      Studio S, Fotografmester Terje S. Johansen A/S ❧
+      Foretaksnummer: 935 350 794 ❧
+      Kontonummer: 9486 05 31555
+    </p>
+  </body>
+</html>

@@ -15,49 +15,7 @@
       </p>
 {% endblock %}
 {% block content %}
-      <div class="well">
-        <div class="row">
-          <div class="col-sm-3">
-            Kundenummer:
-            <a href="/customer/{{ customer["id"] }}">
-              {{ customer["id"] }}
-            </a>
-          </div>
-          <div class="col-sm-3">Mobil: {{ customer["mobile_phone"] | sn }}</div>
-          <div class="col-sm-3">Telefon: {{ customer["home_phone"] | sn }}</div>
-          <div class="col-sm-3">Arbeid: {{ customer["work_phone"] | sn }}</div>
-        </div>
-        <div class="row">
-          <div class="col-sm-3">
-            Navn:
-            <a href="/customer/{{ customer["id"] }}">
-              {{ customer["first_name" ] | sn }}
-              {{ customer["last_name"] | sn }}
-            </a>
-          </div>
-          <div class="col-sm-3">
-            Adresse: {{ customer["address"] | sn }}, {{ customer["post_code"] | sn }}
-          </div>
-          <div class="col-sm-3">Født: {{ customer["birth_date"] | sn }}</div>
-          <div class="col-sm-3">
-            Epost:
-            <a href="mailto:{{customer["email_address"] | sn }}">
-              {{ customer["email_address"] | sn }}
-            </a>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-3">
-            Brukes i avis: {{ customer["newspaper_allowed" ] | boolean_to_yes_no }}
-          </div>
-          <div class="col-sm-3">
-            Brukes i markedsføring: {{ customer["marketing_allowed" ] | boolean_to_yes_no }}
-          </div>
-          <div class="col-sm-3">
-            Brukes på hjemmesiden: {{ customer["internet_allowed" ] | boolean_to_yes_no }}
-          </div>
-        </div>
-      </div>
+      {% include "inline-customer-info.html" %}
       <h2>
         Varelinjer
       </h2>
@@ -151,7 +109,7 @@
           <th>Varelinje #</th>
           <th>Vare</th>
           <th>Antall</th>
-          <th>Rabatt</th>
+          <th>Rabatt %</th>
           <th>Sum</th>
           <th>Opprettet</th>
           <th>Kommentar</th>
@@ -295,5 +253,15 @@
               onclick="window.location.href = '/order/{{ order['id'] }}/delete'">
         Slett ordre
       </button>
+      {% if invoice_id_list | length > 0 %}
+      <a href="/invoice/{{ invoice_id_list[0].id }}">
+        Faktura nummer {{ invoice_id_list[0].id }}
+      </a>
+      {% else %}
+      <button
+        class="btn btn-default"
+        onclick="window.location.href = '/invoice/of/{{ order['id'] }}'">
+        Lag faktura
+      </button>
+      {% endif %}
 {% endblock %}
-

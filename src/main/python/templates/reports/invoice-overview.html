@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}
+      <h1>Fakturaoversikt</h1>
+      {% include "from-to-date-info.html" %}
+{% endblock %}
+{% block content %}
+      <script type="text/javascript">
+       function showInvoicePrintOverview() {
+         fromDate = document.getElementById("from_date").value;
+         toDate = document.getElementById("to_date").value;
+
+         let paid = 0;
+         paidList = document.getElementsByName("paid");
+         for (let i = 0; i < paidList.length; i++) {
+           if (paidList[i].checked) {
+             paid = paidList[i].value;
+           }
+         }
+
+         let base_url = window.location.href.split("/")[0];
+         let url = base_url
+                 + "/print/invoice-overview"
+                 + "?from_date=" + fromDate
+                 + "&to_date=" + toDate
+                 + "&paid=" + paid;
+
+         window.location.replace(url);
+         alert(url);
+       }
+      </script>
+      <form action="/reports/invoice-overview"
+            method="get"
+            class="form-inline">
+        {% include "inline-from-date.html" %}
+        {% include "inline-to-date.html" %}
+        {% include "inline-paid-or-not.html" %}
+        <div class="form-group">
+          <div class="">
+            <button type="submit" class="btn btn-primary">
+              Få oversikt
+            </button>
+            <button
+              onclick="showInvoicePrintOverview(); return;"
+              class="btn btn-primary">
+              Skriv ut oversikt
+            </button>
+          </div>
+        </div>
+      </form>
+      <h2>
+        Totalt {{ invoice_list | length }} fakturaer med en omsetning
+        på kr {{ total_amount }}
+      </h2>
+      <table class="table table-striped">
+        <tr>
+          <th>Kunde</th>
+          <th>Fakturanummer</th>
+          <th>Faktura opprettet</th>
+          <th>Betalingsfrist</th>
+          <th>Betalt</th>
+        </tr>
+        {% for invoice in invoice_list %}
+        <tr>
+          <td>
+            <a href="/customer/{{ invoice['customer_id'] }}">
+              {{ invoice["first_name"] | sn }}
+              {{ invoice["last_name"] | sn }}
+            </a>
+          </td>
+          <td>
+            <a href="/invoice/{{ invoice["id"] }}">{{ invoice["id"] }}</a>
+          </td>
+          <td>
+            {{ invoice['creation_date'] | sn }}
+          </td>
+          <td>
+            {{ invoice['due_date'] | sn }}
+          </td>
+          <td>
+            {{ invoice['paid'] | boolean_to_yes_no }}
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+{% endblock %}

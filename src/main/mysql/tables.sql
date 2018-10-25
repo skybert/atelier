@@ -4,6 +4,7 @@ create table customer
  first_name VARCHAR(200) ,
  last_name VARCHAR(200) ,
  creation_date DATETIME,
+ updated_date DATETIME,
  email_address VARCHAR(60) ,
  address VARCHAR(255) ,
  post_code VARCHAR(255) ,
@@ -13,9 +14,9 @@ create table customer
  birth_date DATETIME,
  old_customer_id VARCHAR(255),
  old_archive_id VARCHAR(255),
- internet_allowed INTEGER not null,
- newspaper_allowed INTEGER not null,
- marketing_allowed INTEGER not null,
+ internet_allowed INTEGER not null default 0,
+ newspaper_allowed INTEGER not null default 0,
+ marketing_allowed INTEGER not null default 0,
  constraint pk_customer primary key(id)
 ) ENGINE=InnoDB;
 
@@ -55,9 +56,12 @@ create table invoice
 (
  id INTEGER AUTO_INCREMENT,
  order_id INTEGER,
+ customer_id INTEGER,
  creation_date DATETIME,
+ updated_date DATETIME,
  due_date DATETIME,
- tax_included INTEGER not null,
+ tax_included INTEGER not null default 0,
+ paid INTEGER not null default 0,
  constraint pk_order primary key(id)
 ) ENGINE=InnoDB;
 
