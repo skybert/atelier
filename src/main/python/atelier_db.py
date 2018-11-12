@@ -293,7 +293,7 @@ class AtelierDB:
         where
           order_id = %s
         """
-        return self.query_list(query, (order_id))
+        return self.query_list(query, (order_id,))
 
     def delete_invoice(self, id):
         return self.delete("invoice", id)

@@ -18,6 +18,14 @@ endpoint script which bootstraps the database on a fresh system.
 ## Upgrade to 3.0
 
 ```sql
-alter table invoice 
+alter table invoice
       add column paid INTEGER not null;
+
+alter table invoice
+      add column customer_id INTEGER not null;
+
+alter table invoice
+      add constraint fk_invoice_customer
+      foreign key(customer_id)
+      references customer(id);
 ```
