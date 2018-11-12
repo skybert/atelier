@@ -15,17 +15,6 @@ If you wish to install it without Docker, just follow the steps in the
 <a href="Dockerfile">Dockerfile</a> for the project, including the
 endpoint script which bootstraps the database on a fresh system.
 
-## Upgrade to 3.0
-
-```sql
-alter table invoice
-      add column paid INTEGER not null;
-
-alter table invoice
-      add column customer_id INTEGER not null;
-
-alter table invoice
-      add constraint fk_invoice_customer
-      foreign key(customer_id)
-      references customer(id);
-```
+# Upgrade
+See [UPGRADE.md](UPGRADE.md) for notes on upgrading Atelier from a
+version to another.

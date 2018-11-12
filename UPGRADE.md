@@ -1,5 +1,20 @@
 # Upgrade notes
 
+## Upgrade to 3.0
+
+```sql
+alter table invoice
+      add column paid INTEGER not null;
+
+alter table invoice
+      add column customer_id INTEGER not null;
+
+alter table invoice
+      add constraint fk_invoice_customer
+      foreign key(customer_id)
+      references customer(id);
+```
+
 ## Upgrade to 2.4
 ```
 alter table customer add updated_date datetime null;
