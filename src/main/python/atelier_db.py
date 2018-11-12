@@ -379,7 +379,10 @@ class AtelierDB:
         """
         for invoice in result:
             total_amount = self.query_one(total_amount_query, (invoice["id"],))
-            invoice["total_amount"] = float(total_amount["total_amount"])
+            if total_amount["total_amount"] is not None:
+                invoice["total_amount"] = float(total_amount["total_amount"])
+            else:
+                invoice["total_amount"] = 0
 
         return result, total_amount
 
